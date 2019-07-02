@@ -1,5 +1,3 @@
-"use strict"; //ES6
-
 class AppState {
 	constructor() {
 		this.view = null; // type: BaseStateView

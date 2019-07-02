@@ -1,5 +1,3 @@
-"use strict"; //ES6
-
 class LoadingState extends AppState {
 	constructor( params /*resNameArr, nextStateName*/ ) {
 		super();

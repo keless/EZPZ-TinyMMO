@@ -1,4 +1,3 @@
-"use strict"; //ES6
 
 /*
 CastCommandState

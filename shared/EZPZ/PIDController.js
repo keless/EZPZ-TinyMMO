@@ -1,4 +1,3 @@
-"use strict"; //ES6
 /** 
  * Attempt at a generic PID controller
  * 

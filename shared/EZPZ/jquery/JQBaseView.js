@@ -1,5 +1,3 @@
-"use strict"; //ES6
-
 class JQBaseView {
 	constructor(){
 		this.div = null;

@@ -1,4 +1,3 @@
-"use strict"; //ES6
 //#include js/framework/Graphics.js
 //#include js/framework/ResourceProvider.js
 

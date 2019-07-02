@@ -1,4 +1,3 @@
-"use strict"; //ES6
 //#include js/framework/Service.js
 
 class Graphics {

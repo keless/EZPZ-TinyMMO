@@ -1,4 +1,3 @@
-"use strict"; //ES6
 //#include js/framework/Graphics.js
 
 //scene node heirarchy of sprites/animations

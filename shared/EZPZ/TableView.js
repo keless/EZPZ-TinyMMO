@@ -1,5 +1,3 @@
-"use strict"; //ES6
-
 class TableView extends NodeView {
 	static get VERTICAL() { return 0; }
 	static get HORIZONTAL() { return 1; }

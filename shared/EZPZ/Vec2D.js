@@ -1,5 +1,3 @@
-"use strict"; //ES6
-
 class Vec2D {
   	constructor( x, y ) {
 		this.x = x || 0;

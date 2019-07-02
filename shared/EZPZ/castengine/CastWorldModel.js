@@ -1,5 +1,3 @@
-"use strict"; //ES6
-
 //TODO: FIX POSSIBLE BUG: to and from could be pointing at entities that die and delete before castPath is finished
 class CastEffectPath
 {

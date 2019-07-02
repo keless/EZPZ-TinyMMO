@@ -1,4 +1,4 @@
-"use strict"; //ES6
+
 //#include https://code.jquery.com/ui/1.11.0/jquery-ui.min.js
 //NOTE: jQuery using "jQuery()"" format, not "$()"
 //#include js/framework/EventBus.js

@@ -1,5 +1,3 @@
-"use strict"; //ES6
-
 class SaveData {
 	constructor( appPrefix ) {
 		this.appPrefix = appPrefix;

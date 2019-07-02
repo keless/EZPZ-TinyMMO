@@ -1,5 +1,3 @@
-"use strict"; //ES6
-
 class ParticleModel {
 	constructor() {
 		this.pos = new Vec2D();

@@ -1,5 +1,3 @@
-"use strict"; //ES6
-
 class CastEffectType {
 	static get DAMAGE_STAT() { return "DAMAGE_STAT"; } 	//decrements stats that can be decremented (health, mana, etc)
 	static get SUPPRESS_STAT() { return "SUPPRESS_STAT"; } //temporarily decrements stats while in effect (str, agi, etc)

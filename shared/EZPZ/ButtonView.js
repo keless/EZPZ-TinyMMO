@@ -1,5 +1,3 @@
-"use strict"; //ES6
-
 class ButtonView extends NodeView {
 	static get STATE_NORMAL() { return 0 }
 	static get STATE_PRESSED() { return 1 }

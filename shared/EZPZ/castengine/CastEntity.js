@@ -1,5 +1,3 @@
-"use strict"; //ES6
-
 class ICastEntity {
 	
 	constructor() { 

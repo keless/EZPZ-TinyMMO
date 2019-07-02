@@ -1,5 +1,3 @@
-"use strict"; //ES6
-
 /**
  * Animation class represents a RESOURCE which describes an animation state graph
  * 
@@ -11,7 +9,6 @@
  * When an animation state completes, the "end" event is sent, which it can use to 
  *  automatically transition to a new state, or continue looping.
  */
-
 class Animation {
 	constructor() {
 		this.events = ["end"];

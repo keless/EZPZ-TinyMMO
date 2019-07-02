@@ -1,6 +1,6 @@
 const SERVER_PORT = process.env.port || 2000
 const SHARED_SECRET = "tricksie hobitses"
-
+const COMPILE_CLIENT_SCRIPTS = true
 
 const path = require('path')
 const linvoDB = require('linvodb3')
@@ -9,6 +9,17 @@ const expressLayouts = require('express-ejs-layouts')
 const passport = require('passport');
 const flash = require('connect-flash');
 const session = require('express-session');
+
+
+// Minify client library
+if (COMPILE_CLIENT_SCRIPTS) {
+  var clientCompileStart = Date.now
+  require('./generateClientEZPZ')()
+  var clientCompileEnd = Date.now
+  var delta = clientCompileEnd - clientCompileStart
+  console.log("client compile took " + delta)
+}
+
 
 // DB Config
 linvoDB.dbPath = process.cwd() + "/db"
@@ -50,12 +61,10 @@ app.use(function(req, res, next) {
     next();
   });
 
-// client javascript concatenation
-const clientEZPZ = require('../client/clientEZPZ')
-
 // Routes
-app.use('/', clientEZPZ, require('./routes/index')) //
+app.use('/', require('./routes/index')) //
 app.use('/user', require('./routes/user'))
+app.use('/js', express.static('../client/'))
 
 
 // Start server

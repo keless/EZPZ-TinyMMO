@@ -1,5 +1,3 @@
-"use strict"; //ES6
-
 /*
  CastTarget 
   used to describe what a cast ability is trying to affect
