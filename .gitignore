@@ -9,6 +9,9 @@ Desktop.ini
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
 
+# Ignore the node_modules folder
+node_modules
+
 # Windows Installer files
 *.cab
 *.msi
