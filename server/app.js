@@ -6,18 +6,15 @@ const path = require('path')
 const linvoDB = require('linvodb3')
 const express = require('express')
 const expressLayouts = require('express-ejs-layouts')
-//xxx const mongoose = require('mongoose');
 const passport = require('passport');
 const flash = require('connect-flash');
 const session = require('express-session');
 
 // DB Config
-//xxx linvoDB.defaults.store = { db: require("levelup") }
 linvoDB.dbPath = process.cwd() + "/db"
 
 // Passport Config
 require('./config/passport')(passport);
-
 
 var app = express()
 
@@ -28,7 +25,6 @@ app.set('views', path.join(__dirname, '/views'))
 
 // Express body parser
 app.use(express.urlencoded({ extended: true }));
-
 
 // Express session
 app.use(
@@ -54,9 +50,11 @@ app.use(function(req, res, next) {
     next();
   });
 
+// client javascript concatenation
+const clientEZPZ = require('../client/clientEZPZ')
 
 // Routes
-app.use('/', require('./routes/index'))
+app.use('/', clientEZPZ, require('./routes/index')) //
 app.use('/user', require('./routes/user'))
 
 
