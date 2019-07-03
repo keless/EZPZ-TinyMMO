@@ -65,7 +65,10 @@ app.use('/', require('./routes/index')) //
 app.use('/user', require('./routes/user'))
 app.use('/static', express.static(path.join(__dirname, '../client')))
 app.use('/js', express.static(path.join(__dirname, '../client/js/')))
-app.use('/shared', express.static(path.join(__dirname, '../shared/')))
+app.use('/model', express.static(path.join(__dirname, '../shared/model')))
+app.use('/view', express.static(path.join(__dirname, '../client/js/view')))
+app.use('/controller', express.static(path.join(__dirname, '../client/js/controller')))
+app.use('/data', express.static(path.join(__dirname, '../shared/data')))
 app.use('/gfx', express.static(path.join(__dirname, '../client/gfx')))
 
 

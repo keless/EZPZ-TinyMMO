@@ -3,15 +3,33 @@
 <script src='static/ezpz.js'></script>
 
 <!-- game code -->
+<!-- data -->
+<script type="text/javascript" src="data/abilities.json"></script>
+<script type="text/javascript" src="data/locations.json"></script>
+<script type="text/javascript" src="data/enemies.json"></script>
+<script type="text/javascript" src="data/items.js"></script>
 <!-- model -->
-<script type="text/javascript" src="shared/model/MapModel.js"></script>
-<script type="text/javascript" src="shared/model/EntityModel.js"></script>
+<script type="text/javascript" src="model/PlayerModel.js"></script>
+<script type="text/javascript" src="model/EntityModel.js"></script>
+<script type="text/javascript" src="model/InventoryModel.js"></script>
+<script type="text/javascript" src="model/SkillsModel.js"></script>
 <!-- view -->
-<script type="text/javascript" src="js/view/MapView.js"></script>
-<script type="text/javascript" src="js/view/EntityView.js"></script>   
+<script type="text/javascript" src="view/MapView.js"></script>
+<script type="text/javascript" src="view/EntityView.js"></script> 
+<script type="text/javascript" src="view/BattleView.js"></script>  
+<script type="text/javascript" src="view/InventoryView.js"></script>  
+<script type="text/javascript" src="view/PlayerHudView.js"></script>
+<script type="text/javascript" src="view/CraftView.js"></script>
+<script type="text/javascript" src="view/StoreView.js"></script>
+<script type="text/javascript" src="view/SkillsConfigureView.js"></script>
 <!-- controller -->
-<script type="text/javascript" src="js/controller/MenuState.js"></script>
-<script type="text/javascript" src="js/controller/BattleState.js"></script>
+<script type="text/javascript" src="controller/MenuState.js"></script>
+<script type="text/javascript" src="controller/BattleState.js"></script>
+<script type="text/javascript" src="controller/LocationState.js"></script>
+<script type="text/javascript" src="controller/CharacterManagerState.js"></script>
+<script type="text/javascript" src="controller/AIController.js"></script>
+<script type="text/javascript" src="controller/SpawnFactory.js"></script>
+
 <script src='static/main.js'></script>
 <script type="text/javascript">
   document.addEventListener( "DOMContentLoaded", function() {

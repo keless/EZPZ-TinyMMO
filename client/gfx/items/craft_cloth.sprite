@@ -1,0 +1,7 @@
+{
+	"image":"items.png",
+	"format":"gridSub",
+	"width":48,
+	"height":48,
+	"frames":[1,2,3,4,5,6]
+}
