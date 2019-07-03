@@ -6,7 +6,11 @@ var options = { filename: "./db/users.db" }
 
 var schema = {
     name: String,
-    email: String,
+    email: {
+        type: String,
+        index: true,
+        unique: true
+    },
     password: String,
     date: {
         type: "date",

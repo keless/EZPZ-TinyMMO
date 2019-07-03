@@ -29,6 +29,12 @@ class ServerProtocol {
         this.io.on('connection', (socket)=>{
             this._log("Protocol: new socket connection")
 
+            if (!socket.request.session.passport) {
+                //connection from invalid client, throw away
+                socket.disconnect(true)
+                return
+            }
+
             //xxx todo: how to determine client from socket
             var userId = socket.request.session.passport.user;
             console.log("Your User ID is", userId);

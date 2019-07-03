@@ -13,6 +13,29 @@ class Facing {
 	"dead" entity:this  when health reaches zero
 */
 
+var EntitySchema = {
+	owner:String, //corresponds to playerSchema.userID
+	name:String,
+	race:String,
+	class:String,
+	hp_base:Number,
+	hp_curr:Number,
+	xp_level:Number,
+	xp_next:Number,
+	xp_curr:Number,
+	int_base:Number,
+	int_curr:Number,
+	str_base:Number,
+	str_curr:Number,
+	agi_base:Number,
+	agi_curr:Number,
+	pos: {
+		x:Number,
+		y:Number
+	},
+	facing:Number
+}
+
 class EntityModel extends ICastEntity {
 	
 	// in: string name
@@ -432,3 +455,6 @@ class EntityModel extends ICastEntity {
 	onCooldownEnd( ccs ) { this.dispatch({evtName:"cooldownEnd", ability:ccs}); }
 
 }
+
+exports.EntitySchema = EntitySchema
+exports.EntityModel = EntityModel

@@ -87,3 +87,15 @@ serv.listen(SERVER_PORT, ()=>{
   console.log("Started server on port " + SERVER_PORT)
   protocol.beginListening()
 })
+
+
+const User = require('./models/linvoUser')
+var dumpUsers = function() {
+  User.find({}, (err, docs)=>{
+    docs.forEach(element => {
+      console.log("User: " + element.email)
+    });
+  })
+}
+
+dumpUsers()

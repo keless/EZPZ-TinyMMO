@@ -41,7 +41,7 @@ router.post('/register', (req, res) => {
       });
     } else {
       console.log("begin trying to register new user")
-      User.findOne({ email: email }, (user => {
+      User.findOne({ email: email }, ((findErr, user) => {
         if (user) {
           console.log("error: found existing user with that email")
           errors.push({ msg: 'Email already exists' });
@@ -61,10 +61,9 @@ router.post('/register', (req, res) => {
 
               var newUser = new User()
               newUser.name = name
-              newUser.password = hash
               newUser.email = email
-              newUser.test = "five"
-
+              newUser.password = hash
+              
               newUser.save((saveErr)=>{
                 console.log("save new user " + newUser.email)
                 if (saveErr) {
