@@ -1,6 +1,7 @@
 const uglify = require('uglify-es');
 const path = require('path')
 const fs = require('fs')
+const { removeFromArray } = require('../shared/EZPZ/Utility')
 
 module.exports = function() {
   const walkSyncJS = (dir, filelist = []) => {
@@ -16,7 +17,17 @@ module.exports = function() {
   
   var resourcePath = './shared/EZPZ/'
   var jsfiles = walkSyncJS(resourcePath)
-  //console.log("minifying EZPZ files " + jsfiles)
+
+  //move known dependancies to the top
+  var moveToFront = function(filename, array) {
+    removeFromArray(array, filename)
+    array.unshift(filename)
+  }
+
+  moveToFront("shared/EZPZ/TableView.js", jsfiles) //before MenuView
+  moveToFront("shared/EZPZ/NodeView.js", jsfiles)
+  moveToFront("shared/EZPZ/AppStateController.js", jsfiles)
+
   
   var options = {
     mangle: {
@@ -25,6 +36,7 @@ module.exports = function() {
   }
 
   var sourceToMinify = {}
+  sourceToMinify["hack.js"] = "var exports = {}"
   jsfiles.forEach(file => {
     sourceToMinify[file] = fs.readFileSync(file, "utf8")
   })

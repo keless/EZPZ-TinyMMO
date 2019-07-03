@@ -501,5 +501,5 @@ class Rect2D {
 	}
 }
 
-module.exports.Vec2D = Vec2D
-module.exports.Rect2D = Rect2D
+exports.Vec2D = Vec2D
+exports.Rec2D = Rect2D

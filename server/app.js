@@ -13,11 +13,10 @@ const session = require('express-session');
 
 // Minify client library
 if (COMPILE_CLIENT_SCRIPTS) {
-  var clientCompileStart = Date.now
+  console.log("begin minifying client scripts")
+  console.time('generateClientEZPZ')
   require('./generateClientEZPZ')()
-  var clientCompileEnd = Date.now
-  var delta = clientCompileEnd - clientCompileStart
-  console.log("client compile took " + delta)
+  console.timeEnd('generateClientEZPZ')
 }
 
 
@@ -64,7 +63,7 @@ app.use(function(req, res, next) {
 // Routes
 app.use('/', require('./routes/index')) //
 app.use('/user', require('./routes/user'))
-app.use('/js', express.static('../client/'))
+app.use('/static', express.static(path.join(__dirname, '../client')))
 
 
 // Start server

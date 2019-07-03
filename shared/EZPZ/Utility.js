@@ -217,11 +217,9 @@ function CreateSimpleProgressBar( strColor, strBgColor, w, h ) {
   return bar;
 }
 
-module.exports = {
-  getRand: getRand,
-  radToDeg: radToDeg,
-  arrayContains: arrayContains,
-  removeFromArray: removeFromArray,
-  isArray: isArray,
-  isString, isString
-}
+exports.getRand = getRand
+exports.radToDeg = radToDeg
+exports.arrayContains = arrayContains
+exports.removeFromArray = removeFromArray
+exports.isArray = isArray
+exports.isString = isString
