@@ -1,5 +1,6 @@
 const SERVER_PORT = process.env.port || 2000
 const SHARED_SECRET = "tricksie hobitses"
+const SESSION_COOKIE_NAME = "cookieMonster"
 const COMPILE_CLIENT_SCRIPTS = false
 
 const path = require('path')
@@ -37,13 +38,14 @@ app.set('views', path.join(__dirname, '/views'))
 app.use(express.urlencoded({ extended: true }));
 
 // Express session
-app.use(
-  session({
-    secret: SHARED_SECRET,
-    resave: true,
-    saveUninitialized: true
-  })
-);
+var expressSessionMiddleware = session({
+  name:   SESSION_COOKIE_NAME,
+  secret: SHARED_SECRET,
+  resave: true,
+  saveUninitialized: true
+})
+
+app.use(expressSessionMiddleware);
 
 // Passport middleware
 app.use(passport.initialize());
@@ -71,10 +73,13 @@ app.use('/controller', express.static(path.join(__dirname, '../client/js/control
 app.use('/data', express.static(path.join(__dirname, '../shared/data')))
 app.use('/gfx', express.static(path.join(__dirname, '../client/gfx')))
 
-// Initialize protocol
+// Initialize socket protocol
 const { ServerProtocol } = require('./networking/protocol.js')
 var serv = require('http').Server(app)
 var io = require('socket.io')(serv, {})
+io.use((socket, next)=> {
+  expressSessionMiddleware(socket.request, {}, next)
+})
 var protocol = new ServerProtocol(io)
 
 // Start server

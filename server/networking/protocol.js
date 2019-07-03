@@ -1,3 +1,5 @@
+const User = require('../models/linvoUser')
+
 class SocketClient {
     constructor(socket, clientID) {
         this.socket = socket
@@ -25,12 +27,26 @@ class ServerProtocol {
     beginListening() {
         this._log("Protocol: begin listening")
         this.io.on('connection', (socket)=>{
-            //xxx todo: how to determine client from socket
             this._log("Protocol: new socket connection")
-            var client = new SocketClient(socket, "???")
-            this.socketClients.push(client)
-            
-            client.emit("connected")
+
+            //xxx todo: how to determine client from socket
+            var userId = socket.request.session.passport.user;
+            console.log("Your User ID is", userId);
+
+            User.findOne({_id:userId}, (findErr, user)=>{
+                if (user) {
+                    console.log("Your User email is", user.email);
+
+                    var client = new SocketClient(socket, userId)
+                    this.socketClients.push(client)
+                    
+                    client.emit("connected")
+                } else {
+                    console.warn("socket connected with passport session, but no registered user " + findErr)
+                }
+            })
+
+
 
         })
     }
