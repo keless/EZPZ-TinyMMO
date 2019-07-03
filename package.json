@@ -8,6 +8,10 @@
   },
   "keywords": [],
   "author": "pzirkle",
+  "nodemonConfig": {
+    "ignore": ["client/ezpz.js", "db/*"],
+    "delay": "2500"
+  },
   "license": "copyleft-next-0.3.1",
   "dependencies": {
     "bcryptjs": "^2.4.3",
