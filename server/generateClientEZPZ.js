@@ -1,7 +1,8 @@
 const uglify = require('uglify-es');
 const path = require('path')
 const fs = require('fs')
-const { removeFromArray } = require('../shared/EZPZ/Utility')
+const Utility = require('../shared/EZPZ/Utility')
+const removeFromArray = Utility.removeFromArray
 
 module.exports = function() {
   const walkSyncJS = (dir, filelist = []) => {
@@ -15,7 +16,7 @@ module.exports = function() {
     return filelist
   }
   
-  var resourcePath = './shared/EZPZ/'
+  var resourcePath = path.normalize('./shared/EZPZ/')
   var jsfiles = walkSyncJS(resourcePath)
 
   //move known dependancies to the top
@@ -24,9 +25,9 @@ module.exports = function() {
     array.unshift(filename)
   }
 
-  moveToFront("shared/EZPZ/TableView.js", jsfiles) //before MenuView
-  moveToFront("shared/EZPZ/NodeView.js", jsfiles)
-  moveToFront("shared/EZPZ/AppStateController.js", jsfiles)
+  moveToFront(path.normalize("shared/EZPZ/TableView.js"), jsfiles) //before MenuView
+  moveToFront(path.normalize("shared/EZPZ/NodeView.js"), jsfiles)
+  moveToFront(path.normalize("shared/EZPZ/AppStateController.js"), jsfiles)
 
   
   var options = {
