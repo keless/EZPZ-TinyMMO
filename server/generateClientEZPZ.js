@@ -31,8 +31,9 @@ module.exports = function() {
 
   
   var options = {
-    mangle: {
-        properties: true,
+    mangle: false,
+    compress: {
+      conditionals: false
     }
   }
 

@@ -27,15 +27,6 @@ class Application {
 			appSelf.OnKeyUp(e);
 		}
 
-		test = function (x, y) {
-			var w = 10
-			if (x < w/2) {
-				return y + 0.01 * x
-			}else {
-				return y + 0.01 * (w-x)
-			}
-		}
-
 		var updateLastMousePos = function(e) {
 			var canvas = Service.Get("gfx").canvas;
 			var mouseX = e.clientX - (canvas.left || canvas.offsetLeft);
@@ -112,6 +103,10 @@ class Application {
 		//arguments.callee.minTickPeriod = 1;
 		var stateController = Service.Get("state");
 		var state = stateController.currentState;
+		if (!state) {
+			console.warn("no app state")
+			return
+		}
 		
 		var ct = Date.now(); 
 		ct /= 1000.0; //convert to seconds

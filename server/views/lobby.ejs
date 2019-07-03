@@ -1,3 +1,21 @@
-<p class="lead mb-3">Welcome <%= user.name %></p><a href="/user/logout" class="btn btn-secondary">Logout</a>
+<p class="lead mb-3">Welcome <%= user.name %><a href="/user/logout" class="btn btn-secondary">Logout</a></p>
 <div><canvas id="content" width="1024" height="800" style="border:1px solid #000000;" tabindex="1"></canvas></div>
 <script src='static/ezpz.js'></script>
+
+<!-- game code -->
+<!-- model -->
+<script type="text/javascript" src="shared/model/MapModel.js"></script>
+<script type="text/javascript" src="shared/model/EntityModel.js"></script>
+<!-- view -->
+<script type="text/javascript" src="js/view/MapView.js"></script>
+<script type="text/javascript" src="js/view/EntityView.js"></script>   
+<!-- controller -->
+<script type="text/javascript" src="js/controller/MenuState.js"></script>
+<script type="text/javascript" src="js/controller/BattleState.js"></script>
+<script src='static/main.js'></script>
+<script type="text/javascript">
+  document.addEventListener( "DOMContentLoaded", function() {
+      document.removeEventListener( "DOMContentLoaded", arguments.callee, false );
+       game_create();
+  }, false );
+</script>
