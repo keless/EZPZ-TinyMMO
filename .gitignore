@@ -15,6 +15,9 @@ node_modules
 # Ignore the linvodb files
 *.db
 
+# MacOS folder metadata
+.DS_Store
+
 # Windows Installer files
 *.cab
 *.msi

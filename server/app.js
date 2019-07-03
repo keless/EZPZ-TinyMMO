@@ -64,6 +64,7 @@ app.use(function(req, res, next) {
 app.use('/', require('./routes/index')) //
 app.use('/user', require('./routes/user'))
 app.use('/static', express.static(path.join(__dirname, '../client')))
+app.use('/gfx', express.static(path.join(__dirname, '../client/gfx')))
 
 
 // Start server
