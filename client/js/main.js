@@ -12,9 +12,19 @@ var game_create = function()
 {
 	var app = new Application("KinderQuest", "content");
 	window.app = app;
-	
+
+	// Initialize networking protocol
+	new ClientProtocol()
+
+	// Initialize global listeners
+	EventBus.game.addListener("serverConnect", ()=>{
+		Service.Get("state").gotoState("manager")
+	})
+
+	// Initialize app statemachine
 	var stateController = Service.Get("state");
 	stateController.addState("loading", LoadingState);
+	stateController.addState("connecting", ConnectingState);
 	stateController.addState("manager", CharacterManagerState);
 	stateController.addState("location", LocationState);
 	stateController.addState("battle", BattleState);
@@ -74,7 +84,7 @@ var game_create = function()
 			"gfx/avatars/orc_attack.sprite",
 			"gfx/avatars/avatar.anim"
 			];
-	stateController.gotoState("loading", [resources, "manager"]); 
+	stateController.gotoState("loading", [resources, "connecting"]); 
 	
 	app.Play();
 };

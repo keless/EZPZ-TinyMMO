@@ -1,6 +1,6 @@
 const SERVER_PORT = process.env.port || 2000
 const SHARED_SECRET = "tricksie hobitses"
-const COMPILE_CLIENT_SCRIPTS = true
+const COMPILE_CLIENT_SCRIPTS = false
 
 const path = require('path')
 const linvoDB = require('linvodb3')
@@ -71,8 +71,14 @@ app.use('/controller', express.static(path.join(__dirname, '../client/js/control
 app.use('/data', express.static(path.join(__dirname, '../shared/data')))
 app.use('/gfx', express.static(path.join(__dirname, '../client/gfx')))
 
+// Initialize protocol
+const { ServerProtocol } = require('./networking/protocol.js')
+var serv = require('http').Server(app)
+var io = require('socket.io')(serv, {})
+var protocol = new ServerProtocol(io)
 
 // Start server
-app.listen(SERVER_PORT, ()=>{
-    console.log("Started server on port " + SERVER_PORT)
+serv.listen(SERVER_PORT, ()=>{
+  console.log("Started server on port " + SERVER_PORT)
+  protocol.beginListening()
 })
