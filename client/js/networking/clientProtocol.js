@@ -37,11 +37,23 @@ class ClientProtocol {
         }
     }
 
-    send(category, data, binary = false) {
+    send(category, data, cbFunc, binary = false) {
         if(this.socket) {
-            this.socket.binary(binary).emit(category, data)
+            this.socket.binary(binary).emit(category, data, cbFunc)
         } else {
             console.warn("Protocol: tried to send without a socket")
         }
+    }
+
+    // Ask the server to create a character (with us as the owner)
+    requestCreateCharacter( name, race, charClass ) {
+        var self = this
+        this.send("createCharacter", { name:name, race:race, class:charClass }, this.ackRequestCreateCharacter.bind(this))
+    }
+
+    ackRequestCreateCharacter(data) {
+        this._log("ackRequestCreateCharacter with data " + data)
+
+        EventBus.game.dispatch({ evtName:"characterCreated", data:data })
     }
 }
