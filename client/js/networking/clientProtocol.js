@@ -46,14 +46,8 @@ class ClientProtocol {
     }
 
     // Ask the server to create a character (with us as the owner)
-    requestCreateCharacter( name, race, charClass ) {
+    requestCreateCharacter( name, race, charClass, ackCB ) {
         var self = this
-        this.send("createCharacter", { name:name, race:race, class:charClass }, this.ackRequestCreateCharacter.bind(this))
-    }
-
-    ackRequestCreateCharacter(data) {
-        this._log("ackRequestCreateCharacter with data " + data)
-
-        EventBus.game.dispatch({ evtName:"characterCreated", data:data })
+        this.send("createCharacter", { name:name, race:race, charClass:charClass }, ackCB)
     }
 }

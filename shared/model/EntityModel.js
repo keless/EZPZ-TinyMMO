@@ -14,10 +14,11 @@ class Facing {
 */
 
 var EntitySchema = {
+	uuid:String,
 	owner:String, //corresponds to playerSchema.userID
 	name:String,
 	race:String,
-	class:String,
+	charClass:String,
 	hp_base:Number,
 	hp_curr:Number,
 	xp_level:Number,
@@ -36,8 +37,10 @@ var EntitySchema = {
 	facing:Number
 }
 
+const EntityModelAttributes = [ "uuid", "owner", "name", "race", "charClass", "hp_base", "hp_curr", "xp_level", "xp_next", "xp_curr", "int_base", "int_curr", "str_base", "str_curr", "agi_base", "agi_curr", "facing" ]
+
 class EntityModel extends ICastEntity {
-	
+
 	// in: string name
 	constructor() {
 		super();
@@ -45,9 +48,11 @@ class EntityModel extends ICastEntity {
 		this.eventBus = new EventBus("entityModel");
 		this.eventBus.verbose = false;
 
+		this.uuid = "none"
+		this.owner = "" //type: User._id
 		this.name = "(null)";
 		this.race = "";
-		this.class = "";
+		this.charClass = "";
 
 		this.isDead = false;
 		this.deadTime = 0;
@@ -81,10 +86,43 @@ class EntityModel extends ICastEntity {
 		this.facing = Facing.RIGHT;
 	}
 
+	initNewCharacter(ownerId, name, race, charClass) {
+		this.uuid = uuidv4() //xxx todo: generate uuid correctly on client + server
+		this.owner = ownerId
+		this.name = name
+		this.race = race
+		this.charClass = charClass
+	}
+
+	initWithSchema(schemaModel) {
+		for (var i=0; i<EntityModelAttributes.length; i++) {
+			this._copyAttribute(schemaModel, this, EntityModelAttributes[i])
+		}
+		if (schemaModel.pos) {
+			this.pos.setVal( schemaModel.pos.x, schemaModel.pos.y)
+		}
+		//xxx todo: inventory
+		//xxx todo: abilities
+	}
+	_copyAttribute(from, to, attrib, defaultValue) {
+		defaultValue = defaultValue || to[attrib]
+		to[attrib] = from[attrib] || defaultValue
+	}
+
+	writeToSchema(schemaModel) {
+		for (var i=0; i<EntityModelAttributes.length; i++) {
+			this._copyAttribute(this, schemaModel, EntityModelAttributes[i])
+		}
+		schemaModel.pos.x = this.pos.x
+		schemaModel.pos.y = this.pos.y
+		//xxx todo: inventory
+		//xxx todo: abilities
+	}
+
 	initWithJson(json) {
 		this.name = json["name"] || "No Name";
 		this.race = json["race"] || "base";
-		this.class = json["class"] || "";
+		this.charClass = json["charClass"] || "";
 		
 		if(json["stats"]) {
 			this.hp_curr = this.hp_base = json.stats["hp_base"] || this.hp_base;
@@ -128,7 +166,7 @@ class EntityModel extends ICastEntity {
 		var json = {
 			name: this.name,
 			race: this.race,
-			class: this.class,
+			charClass: this.charClass,
 			stats:{
 				hp_base: this.hp_base,
 				xp_level: this.xp_level,

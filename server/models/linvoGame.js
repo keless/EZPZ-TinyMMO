@@ -18,17 +18,6 @@ var playerSchema = {
     }
 }
 
-var characterSchema = {
-    name: String,
-    level: String,
-    currHP: String,
-    owner: String, //corresponds to playerSchema.userID
-    pos: {
-        x: Number,
-        y: Number
-    }
-}
-
 var gameSchema = {
     date: {
         type: Date,

@@ -100,8 +100,13 @@ class CharacterSelectStateView extends BaseStateView {
 
   onBtnDel(e) {
     if(confirm('Are you sure?')) {
+
+      /* xxx old
       var sd = Service.Get("sd");
       sd.clear("char"+e.idx);
+      */
+
+      //xxx todo: send message to server to delete character id
 
       //reload view
       this.state.gotoSelectView();
@@ -113,6 +118,9 @@ class CharacterSelectStateView extends BaseStateView {
       //create new char
       this.state.gotoCreationView(e.idx);
     }else {
+
+      //xxx TODO: get character data from server
+
       //load char and go to game
       PlayerModel.Load("char"+e.idx);
 
@@ -240,12 +248,26 @@ class CharacterCreationStateView extends BaseStateView {
     
     var newJson = { locIdx:locIdx, entity:{name:name, race:selectedRace, class:selectedClass, stats:{ hp_base:30, xp_level:1 }}};
     
+    /* xxx old
     var sd = Service.Get("sd");
     sd.save("char"+this.idx, newJson);
+    */
 
-    PlayerModel.Load("char"+this.idx);
+    //xxx WIP: send server message to create character
+    var clientProtocol = Service.Get("protocol")
+    clientProtocol.requestCreateCharacter( name, selectedRace, selectedClass, (data) => {
+      console.log("ackRequestCreateCharacter with data " + data)
 
-    Service.Get("state").gotoState("location", locIdx);
+      if (data.worldUpdate) {
+        //world update should have our new character in it
+      }
+      //xxx TODO: how do we send the character data over?
+      //PlayerModel.Load("char"+this.idx);
+
+      Service.Get("state").gotoState("location", locIdx);
+    } )//xxx
+
+
   }
 
 }

@@ -82,13 +82,19 @@ io.use((socket, next)=> {
 })
 var protocol = new ServerProtocol(io)
 
+const GameSim = require('./controllers/gameSim')
+
+// Start game simulation
+//xxx todo: main loop
+var gameSim = new GameSim()
+
 // Start server
 serv.listen(SERVER_PORT, ()=>{
   console.log("Started server on port " + SERVER_PORT)
   protocol.beginListening()
 })
 
-
+/* debug 
 const User = require('./models/linvoUser')
 var dumpUsers = function() {
   User.find({}, (err, docs)=>{
@@ -99,3 +105,4 @@ var dumpUsers = function() {
 }
 
 dumpUsers()
+*/
