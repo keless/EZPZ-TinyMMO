@@ -39,7 +39,7 @@ class SocketClient {
         var entityID = gameSim.createCharacterForUser(userId, name, race, charClass)
         if (entityID) {
             var entity = gameSim.getEntityForId(entityID)
-            _log("create character success; sending ack")
+            _log("create character success; sending ack entityID " + entityID )
             //xxx WIP
             response({ entityID: entityID, name:name }) //todo: send whole character
         } else {

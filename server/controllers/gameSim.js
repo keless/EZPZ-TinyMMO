@@ -5,6 +5,8 @@ const EntityModel = require('../../shared/model/EntityModel')
 class GameSim {
     constructor() {
 
+        this.entities = []
+
         startupFromDB()
     }
 
@@ -26,9 +28,9 @@ class GameSim {
 
         //xxx todo: validate params
         entity.initNewCharacter(userId, name, race, charClass)
+        this.entities.push(entity)
 
-
-        return entity.
+        return entity.uuid
     }
 }
 
