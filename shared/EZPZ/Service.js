@@ -26,3 +26,5 @@ class Service {
     delete this.g_services[serviceName];
   }
 }
+
+export default Service

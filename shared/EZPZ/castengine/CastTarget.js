@@ -1,3 +1,5 @@
+import Vec2D from '../Vec2D.js'
+
 /*
  CastTarget 
   used to describe what a cast ability is trying to affect
@@ -96,3 +98,6 @@ class CastTarget
 		}
 	}
 }
+
+export default CastTarget
+export { CastTargetType, CastTarget }

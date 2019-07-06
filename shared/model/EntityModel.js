@@ -1,4 +1,9 @@
-"use strict"; //ES6
+import ICastEntity from '../EZPZ/castengine/CastEntity.js'
+import CastTarget from '../EZPZ/castengine/CastTarget.js'
+import Vec2D from '../EZPZ/Vec2D.js'
+import EventBus from '../EZPZ/EventBus.js'
+import uuid from 'uuid'
+const uuidv4 = uuid.v4
 
 class Facing {
 	static get UP() { return 0; }
@@ -73,7 +78,9 @@ class EntityModel extends ICastEntity {
 		this.buffs = {};
 		this.debuffs = {};
 
+		/* xxx todo
 		this.inventory = new InventoryModel();
+		*/
 		
 		this.m_abilities = [];
 		this.m_abilityTargets = new CastTarget();
@@ -161,7 +168,7 @@ class EntityModel extends ICastEntity {
 	}
 
 	toJson() {
-		var inv = this.inventory.toJson();
+		var inv = {} //xxx todo: this.inventory.toJson();
 		//var abilities = []; //this is managed by skillModel
 		var json = {
 			name: this.name,
@@ -494,5 +501,7 @@ class EntityModel extends ICastEntity {
 
 }
 
-exports.EntitySchema = EntitySchema
-exports.EntityModel = EntityModel
+//exports.EntitySchema = EntitySchema
+//exports.EntityModel = EntityModel
+export default EntityModel
+export { EntitySchema, EntityModel }

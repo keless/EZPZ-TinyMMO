@@ -501,5 +501,7 @@ class Rect2D {
 	}
 }
 
-exports.Vec2D = Vec2D
-exports.Rec2D = Rect2D
+//exports.Vec2D = Vec2D
+//exports.Rect2D = Rect2D
+export default Vec2D
+export { Vec2D, Rect2D}

@@ -360,3 +360,6 @@ class CastEffect {
 		return effect;
 	}
 }
+
+export default CastEffect
+export { CastEffect, CastEffectType }

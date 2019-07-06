@@ -1,3 +1,5 @@
+import { CastWorldModel } from './CastWorldModel.js'
+
 class ICastEntity {
 	
 	constructor() { 
@@ -41,3 +43,6 @@ class ICastEntity {
 	ce_onCastComplete(castEngineTime) {}
 	ce_onChannelComplete(castEngineTime) {}
 }
+
+export default ICastEntity
+export { ICastEntity }

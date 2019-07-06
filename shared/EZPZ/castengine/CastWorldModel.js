@@ -264,3 +264,6 @@ class ICastPhysics
 	// out: array<ICastEntity> entities
 	GetEntitiesInRadius( p, r, ignoreEntities ) { return null; }
 }
+
+export default CastWorldModel
+export { CastWorldModel, CastEffectPath, CastCommandTime, ICastPhysics }

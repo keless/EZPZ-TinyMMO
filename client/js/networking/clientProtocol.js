@@ -47,6 +47,7 @@ class ClientProtocol {
 
     // Ask the server to create a character (with us as the owner)
     requestCreateCharacter( name, race, charClass, ackCB ) {
+        this._log("request create character")
         var self = this
         this.send("createCharacter", { name:name, race:race, charClass:charClass }, ackCB)
     }

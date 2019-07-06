@@ -428,3 +428,6 @@ class CastCommandScheduler {
 }
 
 CastCommandScheduler.instance = null;
+
+export default CastCommandModel
+export { CastCommandState, CastCommandModel, CastCommandScheduler }

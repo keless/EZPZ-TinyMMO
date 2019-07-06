@@ -1,6 +1,9 @@
-const User = require('../models/linvoUser')
+//const User = require('../models/linvoUser')
 //const GameWorld = require('../models/linvoGame')
-const Service = require('../../shared/EZPZ/Service')
+//const Service = require('../../shared/EZPZ/Service')
+import GameSim from '../controllers/gameSim.js'
+import User from '../models/linvoUser.js'
+import Service from '../../shared/EZPZ/Service.js'
 
 
 class SocketClient {
@@ -34,16 +37,16 @@ class SocketClient {
         var charClass = data.charClass
         
         //xxx WIP
-        _log("on create character with name " + name + " race " + race + " class " + charClass)
+        this._log("on create character with name " + name + " race " + race + " class " + charClass)
         var gameSim = Service.Get("gameSim")
         var entityID = gameSim.createCharacterForUser(userId, name, race, charClass)
         if (entityID) {
             var entity = gameSim.getEntityForId(entityID)
-            _log("create character success; sending ack entityID " + entityID )
+            this._log("create character success; sending ack entityID " + entityID )
             //xxx WIP
             response({ entityID: entityID, name:name }) //todo: send whole character
         } else {
-            _log("could not create character")
+            this._log("could not create character")
             response({error:"could not create character"})
         }
     }
@@ -54,18 +57,18 @@ class SocketClient {
     /// will disconnect socket if no valid Passport session
     /// @param callback  func(err, data, response)
     _addUserMessageHandler(message, callback) {
-        callback.bind(this)
-        this.socket.on(message, (data, response)=> {
+        this._log("add message handler for " + message)
+        this.socket.on(message, (data, response) => {
             this._log("Protocol: handle " + message)
-            if (!socket.request.session.passport) {
+            if (!this.socket.request.session.passport) {
                 //connection from invalid client, throw away
-                socket.disconnect(true)
+                this.socket.disconnect(true)
 
-                callback("invalid client", callback)
-                return 
+                response("invalid client", data)
+                return
             }
 
-            callback(null, data, response)
+            callback.bind(this)(null, data, response)
         })
     }
 }
@@ -122,4 +125,6 @@ class ServerProtocol {
     }
 }
 
-module.exports = { SocketClient, ServerProtocol }
+//module.exports = { SocketClient, ServerProtocol }
+export default ServerProtocol
+export { SocketClient, ServerProtocol }

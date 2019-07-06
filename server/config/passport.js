@@ -1,11 +1,15 @@
-const LocalStrategy = require('passport-local').Strategy;
-//const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+//const LocalStrategy = require('passport-local').Strategy;
+//const bcrypt = require('bcryptjs');
+import PassportLocal from 'passport-local'
+const LocalStrategy = PassportLocal.Strategy
+import bcrypt from 'bcryptjs'
 
 // Load User model
-const User = require('../models/linvoUser')
+//const User = require('../models/linvoUser')
+import User from '../models/linvoUser.js'
 
-module.exports = function(passport) {
+//module.exports = function(passport) {
+export default function(passport) {
   passport.use(
     new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
       // Match user

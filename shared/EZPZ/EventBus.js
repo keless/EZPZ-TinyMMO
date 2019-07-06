@@ -24,29 +24,29 @@ class EventBus {
   removeListener ( strEventName, callbackFunction ) {
     if(!(strEventName in this.listeners) ) return; //nothing to remove
 
-    var idx = this.listeners[strEventName].indexOf( callbackFunction );
-    this.listeners[strEventName].splice( idx, 1 );
+    var idx = this.listeners[strEventName].indexOf( callbackFunction )
+    this.listeners[strEventName].splice( idx, 1 )
   }
 	clearListeners( strEventName ) {
-		this.listeners[strEventName] = [];
+		this.listeners[strEventName] = []
 	}
   //note: expects evtObj.evtName to be the strEventName to send to
   dispatch ( evtObj, quiet ) {
     if (typeof evtObj === 'string' || evtObj instanceof String) {
-      evtObj = { 'evtName': evtObj };
+      evtObj = { 'evtName': evtObj }
     }
     
     if(!evtObj.evtName) { console.log("abort dispatch event -- no evtName %O", evtObj); return; }
 
 		if(this.verbose && !quiet) {
-			console.log("EB["+this.busName+"] "+evtObj.evtName+":%O", evtObj);
+			console.log("EB["+this.busName+"] "+evtObj.evtName+":%O", evtObj)
 		}
 
     if(!this.listeners[evtObj.evtName] ) return; //no one listening
 
     this.listeners[evtObj.evtName].forEach(function(ele, idx, arr){
       ele( evtObj ); //dispatch the event
-    });
+    })
   }
   
   static Get(strBusName) {
@@ -72,4 +72,5 @@ class EventBus {
   }
 }
 
-exports.EventBus = EventBus
+//exports.EventBus = EventBus
+export default EventBus
