@@ -1,4 +1,4 @@
-"use strict"; //ES6
+import { AppState, BaseStateView } from '../../shared/EZPZ/AppStateController.js'
 
 class ConnectingState extends AppState {
 	constructor() { 
@@ -21,3 +21,5 @@ class ConnectingStateView extends BaseStateView {
 		this.rootView.addChild(label);
 	}
 }
+
+export default ConnectingState

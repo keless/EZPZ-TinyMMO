@@ -5,7 +5,7 @@ import linvoDB from 'linvodb3'
 import uuid from 'uuid'
 const uuidv4 = uuid.v4
 //const uuidv4 = require('uuid/v4')
-import { EntitySchema, EntityModel } from '../../shared/model/EntityModel.js'
+import { EntitySchema, EntityModel } from '../../static/shared/model/EntityModel.js'
 
 var options = { filename: "./db/game.db" }
 

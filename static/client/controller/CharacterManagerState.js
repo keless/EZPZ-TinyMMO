@@ -1,4 +1,7 @@
-"use strict"; //ES6
+import { AppState, BaseStateView } from '../../shared/EZPZ/AppStateController.js'
+import Service from '../../shared/EZPZ/Service.js'
+import ResourceProvider from '../../shared/EZPZ/ResourceProvider.js'
+import Graphics from '../../shared/EZPZ/Graphics.js'
 
 class CharacterManagerState extends AppState {
 	constructor() { 
@@ -266,8 +269,7 @@ class CharacterCreationStateView extends BaseStateView {
 
       Service.Get("state").gotoState("location", locIdx);
     } )//xxx
-
-
   }
-
 }
+
+export default CharacterManagerState

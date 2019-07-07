@@ -85,13 +85,10 @@ import userRouter from './routes/user.js'
 //app.use('/user', require('./routes/user'))
 app.use('/', indexRouter)
 app.use('/user', userRouter)
-app.use('/static', express.static(path.join(__dirname, '../client')))
-app.use('/js', express.static(path.join(__dirname, '../client/js/')))
-app.use('/model', express.static(path.join(__dirname, '../shared/model')))
-app.use('/view', express.static(path.join(__dirname, '../client/js/view')))
-app.use('/controller', express.static(path.join(__dirname, '../client/js/controller')))
-app.use('/data', express.static(path.join(__dirname, '../shared/data')))
-app.use('/gfx', express.static(path.join(__dirname, '../client/gfx')))
+app.use('/static', express.static(path.join(__dirname, '../static')))
+app.use('/js', express.static(path.join(__dirname, '../static/client/')))
+app.use('/data', express.static(path.join(__dirname, '../static/shared/data')))
+app.use('/gfx', express.static(path.join(__dirname, '../static/gfx')))
 
 // Initialize socket protocol
 //const { ServerProtocol } = require('./networking/protocol.js')

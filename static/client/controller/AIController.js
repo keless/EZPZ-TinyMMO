@@ -1,4 +1,4 @@
-"use strict"; //ES6
+import Service from '../../shared/EZPZ/Service.js'
 
 class AIController {
 	constructor( entityModel ) {
@@ -55,3 +55,5 @@ class AIController {
 		}
 	}
 }
+
+export default AIController

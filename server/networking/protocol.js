@@ -3,7 +3,7 @@
 //const Service = require('../../shared/EZPZ/Service')
 import GameSim from '../controllers/gameSim.js'
 import User from '../models/linvoUser.js'
-import Service from '../../shared/EZPZ/Service.js'
+import Service from '../../static/shared/EZPZ/Service.js'
 
 
 class SocketClient {

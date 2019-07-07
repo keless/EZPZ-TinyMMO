@@ -1,4 +1,6 @@
-"use strict"; //ES6
+import { AppState, BaseStateModel } from '../../shared/EZPZ/AppStateController.js'
+import CastWorldModel from '../../shared/EZPZ/castengine/CastWorldModel.js'
+import PlayerModel from '../../shared/model/PlayerModel.js'
 
 class BattleState extends AppState {
 	constructor(locationIdx) { 
@@ -361,3 +363,4 @@ class BattleStateModel extends BaseStateModel {
 	}
 }
 
+export default BattleState
