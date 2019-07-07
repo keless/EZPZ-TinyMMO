@@ -1,4 +1,4 @@
-"use strict"; //ES6
+import EntityModel from './EntityModel.js'
 
 class PlayerModel {
   static get BANK_PAGE_SLOTS() { return 9; }

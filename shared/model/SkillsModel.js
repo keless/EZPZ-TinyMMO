@@ -1,5 +1,4 @@
-"use strict"; //ES6
-
+import { CastCommandModel, CastCommandState } from '../EZPZ/castengine/CastCommand.js'
 
 class ISkillsModelDelegate {
   // return array of string classTree names

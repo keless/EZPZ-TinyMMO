@@ -1,4 +1,5 @@
-"use strict"; //ES6
+//"use strict"; //ES6
+import PlayerModel from '../../../shared/model/PlayerModel.js'
 
 class LocationState extends AppState {
 	constructor(locationIdx) { 
