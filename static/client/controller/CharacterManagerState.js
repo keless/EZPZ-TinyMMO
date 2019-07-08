@@ -258,8 +258,11 @@ class CharacterCreationStateView extends BaseStateView {
     clientProtocol.requestCreateCharacter( name, selectedRace, selectedClass, (data) => {
       console.log("ackRequestCreateCharacter with data " + data)
 
+      console.log(data)
       if (data.worldUpdate) {
         //world update should have our new character in it
+        console.log("got world update")
+        
       }
       console.log("WIP load created character")
       //xxx TODO: how do we send the character data over?

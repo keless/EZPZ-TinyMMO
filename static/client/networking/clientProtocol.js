@@ -47,6 +47,7 @@ export default class ClientProtocol {
     }
 
     // Ask the server to create a character (with us as the owner)
+    // ackCB should contain a WorldUpdateModel with only the new character in it
     requestCreateCharacter( name, race, charClass, ackCB ) {
         this._log("request create character")
         var self = this

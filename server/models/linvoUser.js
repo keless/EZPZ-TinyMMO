@@ -1,8 +1,9 @@
 //const linvoDB = require('linvodb3')
 //const uuidv4 = require('uuid/v4')
 import linvoDB from 'linvodb3'
-import uuid from 'uuid'
-const uuidv4 = uuid.v4
+//import uuid from 'uuid'
+//const uuidv4 = uuid.v4
+import { uuidv4 } from '../../static/shared/EZPZ/ext/uuid.js'
 var modelName = "user"
 
 var options = { filename: "./db/users.db" }

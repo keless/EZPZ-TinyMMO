@@ -6,6 +6,8 @@
 
 // EX:   var myUid = uuid.v4();
 
+var __uuid = function() {};
+
 (function() {
   var _global = this;
 
@@ -14,28 +16,8 @@
   // returns 128-bits of randomness, since that's what's usually required
   var _rng;
 
-  // Node.js crypto-based RNG - http://nodejs.org/docs/v0.6.2/api/crypto.html
-  //
-  // Moderately fast, high quality
-  if (typeof(_global.require) == 'function') {
-    try {
-      var _rb = _global.require('crypto').randomBytes;
-      _rng = _rb && function() {return _rb(16);};
-    } catch(e) {}
-  }
 
-  if (!_rng && _global.crypto && crypto.getRandomValues) {
-    // WHATWG crypto-based RNG - http://wiki.whatwg.org/wiki/Crypto
-    //
-    // Moderately fast, high quality
-    var _rnds8 = new Uint8Array(16);
-    _rng = function whatwgRNG() {
-      crypto.getRandomValues(_rnds8);
-      return _rnds8;
-    };
-  }
-
-  if (!_rng) {
+  if (true) {
     // Math.random()-based (RNG)
     //
     // If all else fails, use Math.random().  It's fast, but is of unspecified
@@ -52,7 +34,7 @@
   }
 
   // Buffer class to use
-  var BufferClass = typeof(_global.Buffer) == 'function' ? _global.Buffer : Array;
+  var BufferClass = Array;
 
   // Maps for number <-> hex string conversion
   var _byteToHex = [];
@@ -227,22 +209,12 @@
   uuid.unparse = unparse;
   uuid.BufferClass = BufferClass;
 
-  if (typeof define === 'function' && define.amd) {
-    // Publish as AMD module
-    define(function() {return uuid;});
-  } else if (typeof(module) != 'undefined' && module.exports) {
-    // Publish as node.js module
-    module.exports = uuid;
-  } else {
-    // Publish as global (in browsers)
-    var _previousRoot = _global.uuid;
+  __uuid = uuid
 
-    // **`noConflict()` - (browser only) to reset global 'uuid' var**
-    uuid.noConflict = function() {
-      _global.uuid = _previousRoot;
-      return uuid;
-    };
-
-    _global.uuid = uuid;
-  }
 }).call(this);
+
+var uuidv4 = function(){
+  return __uuid.v4()
+}
+export default uuidv4
+export { uuidv4 }

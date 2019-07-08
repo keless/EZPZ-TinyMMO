@@ -1,9 +1,7 @@
-//const User = require('../models/linvoUser')
-//const GameWorld = require('../models/linvoGame')
-//const Service = require('../../shared/EZPZ/Service')
 import GameSim from '../controllers/gameSim.js'
 import User from '../models/linvoUser.js'
 import Service from '../../static/shared/EZPZ/Service.js'
+import WorldUpdateModel from '../../static/shared/model/WorldUpdateModel.js'
 
 
 class SocketClient {
@@ -43,12 +41,29 @@ class SocketClient {
         if (entityID) {
             var entity = gameSim.getEntityForId(entityID)
             this._log("create character success; sending ack entityID " + entityID )
-            //xxx WIP
-            response({ entityID: entityID, name:name }) //todo: send whole character
+    
+            response( this._getWorldUpdateForEntityIDs([entityID]) )
         } else {
             this._log("could not create character")
             response({error:"could not create character"})
         }
+    }
+
+    /// @param entityIDs is an array of uuids
+    _getWorldUpdateForEntityIDs( entityIDs ) {
+        var gameSim = Service.Get("gameSim")
+        var entities = []
+        entityIDs.forEach((entityID)=>{
+            var entity = gameSim.getEntityForId(entityID)
+            if (entity) {
+                entities.push( entity.getWorldUpdateJson() )
+            }
+        })
+
+        var worldUpdate = new WorldUpdateModel()
+        worldUpdate.addEntities(entities)
+
+        return worldUpdate.getPayloadJson()
     }
 
 

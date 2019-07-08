@@ -3,10 +3,9 @@ import CastTarget from '../EZPZ/castengine/CastTarget.js'
 import Vec2D from '../EZPZ/Vec2D.js'
 import EventBus from '../EZPZ/EventBus.js'
 
-//xxx WIP 
-var uuidv4 = function() { return "blah"}
 //import uuid from 'uuid'
 //const uuidv4 = uuid.v4
+import uuidv4 from '../../shared/EZPZ/ext/uuid.js'
 
 class Facing {
 	static get UP() { return 0; }
@@ -39,6 +38,10 @@ var EntitySchema = {
 	agi_base:Number,
 	agi_curr:Number,
 	pos: {
+		x:Number,
+		y:Number
+	},
+	vel: {
 		x:Number,
 		y:Number
 	},
@@ -93,6 +96,7 @@ class EntityModel extends ICastEntity {
 		this.m_passiveAbilities = [];
 
 		this.pos = new Vec2D();
+		this.vel = new Vec2D();
 		this.facing = Facing.RIGHT;
 	}
 
@@ -123,10 +127,20 @@ class EntityModel extends ICastEntity {
 		for (var i=0; i<EntityModelAttributes.length; i++) {
 			this._copyAttribute(this, schemaModel, EntityModelAttributes[i])
 		}
-		schemaModel.pos.x = this.pos.x
-		schemaModel.pos.y = this.pos.y
+		schemaModel.pos = { x: this.pos.x, y: this.pos.y }
+		schemaModel.vel = { x: this.vel.x, y: this.vel.y }
 		//xxx todo: inventory
 		//xxx todo: abilities
+
+		return schemaModel
+	}
+
+	getWorldUpdateJson() {
+		var json = this.writeToSchema({})
+		return json
+	}
+	fromWorldUpdateJson(json) {
+		this.initWithSchema(json)
 	}
 
 	initWithJson(json) {
@@ -162,6 +176,12 @@ class EntityModel extends ICastEntity {
 			this.pos.setVal(json.pos.x, json.pos.y);
 		}
 
+		if(!json["vel"]) {
+			this.vel.setVal(0,0);
+		}else {
+			this.vel.setVal(json.vel.x, json.vel.y);
+		}
+
 		this.facing = Facing.RIGHT;
 		this.isDead = false;
 		this.negativeEffects = [];
@@ -186,7 +206,15 @@ class EntityModel extends ICastEntity {
 				str_base: this.str_base,
 				agi_base: this.agi_base,
 			},
-			inventory:inv
+			inventory:inv,
+			pos:{
+				x: this.pos.x,
+				y: this.pos.y
+			},
+			vel:{
+				x: this.vel.x,
+				y: this.vel.y
+			}
 		};
 		return json;
 	}
