@@ -11,7 +11,7 @@ EZPZ + CastEngine
 
 
 Pre-installation:
-Have NodeJS v10.16.0 installed
+Have NodeJS v12.6.0 installed
 Have NPM 6.9.2 installed
 Have git available from command line
 
