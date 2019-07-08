@@ -1,12 +1,18 @@
-//#include js/framework/Graphics.js
+import {Graphics} from './Graphics.js'
+import {BaseListener} from './AppStateController.js'
+import {Vec2D, Rect2D} from './Vec2D.js'
+import {Service} from './Service.js'
+import {ResourceProvider} from './ResourceProvider.js'
+import {isString} from './Utility.js'
 
 //scene node heirarchy of sprites/animations
+export default class NodeView extends BaseListener {
+	static canSerializeNodeViews = false
 
-class NodeView extends BaseListener {
 	constructor() {
 		super();
 
-		this.serializable = Config ? (Config.canSerializeNodeViews || false) : false;
+		this.serializable = NodeView.canSerializeNodeViews;
 		this.pos = new Vec2D();
 		this.size = new Vec2D();
 		this.rotation = 0;
@@ -1002,3 +1008,5 @@ class NodeAction_arrayPath extends NodeAction
 		return vFrom.getVecAdd( delta.scalarMult( segmentPercent ) );
 	}
 }
+
+export { NodeView }

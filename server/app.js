@@ -17,6 +17,7 @@ const passport = require('passport');
 const flash = require('connect-flash');
 const session = require('express-session');
 */
+import _ from './serverEZPZ.js'
 import path from 'path'
 import linvoDB from 'linvodb3'
 import express from 'express'
@@ -86,6 +87,7 @@ import userRouter from './routes/user.js'
 app.use('/', indexRouter)
 app.use('/user', userRouter)
 app.use('/static', express.static(path.join(__dirname, '../static')))
+app.use('/shared', express.static(path.join(__dirname, '../static/shared')))
 app.use('/js', express.static(path.join(__dirname, '../static/client/')))
 app.use('/data', express.static(path.join(__dirname, '../static/shared/data')))
 app.use('/gfx', express.static(path.join(__dirname, '../static/gfx')))

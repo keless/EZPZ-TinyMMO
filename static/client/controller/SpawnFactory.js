@@ -1,6 +1,6 @@
-"use strict"; //ES6
+import _ from './clientEZPZ.js'
 
-class SpawnFactory {
+export default class SpawnFactory {
 
   static _getTypeLookupCache() {
     if(s_cachedTypeLookup == null) {

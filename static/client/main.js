@@ -1,12 +1,16 @@
-"use strict"; //ES6
+import { Application, Service, EventBus, Graphics, LoadingState } from './clientEZPZ.js'
+import ClientProtocol from './networking/clientProtocol.js'
+import ConnectingState from './controller/ConnectingState.js'
+import LocationState from './controller/LocationState.js'
+import BattleState from './controller/BattleState.js'
+import CharacterManagerState from './controller/CharacterManagerState.js'
+
 
 var bShowDebug = false;
 
-class Config {
-	static get areSpritesCentered() {
-		return true;
-	}
-}
+// Config
+Graphics.areSpritesCentered = true
+
 
 var game_create = function()
 {
@@ -87,4 +91,6 @@ var game_create = function()
 	stateController.gotoState("loading", [resources, "connecting"]); 
 	
 	app.Play();
-};
+}
+
+document.game_create = game_create

@@ -1,6 +1,6 @@
-"use strict"; //ES6
+import _ from './clientEZPZ.js'
 
-class PlayerHudView extends NodeView {
+export default class PlayerHudView extends NodeView {
 	constructor( model ) {
 		super();
 

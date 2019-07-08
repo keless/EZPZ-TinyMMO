@@ -1,7 +1,6 @@
-//#include js/framework/Service.js
+import Service from './Service.js'
 
-
-class Physics {
+export default class Physics {
 	constructor() {
 		Service.Add("physics", this);
 	}
@@ -14,3 +13,5 @@ class Physics {
 		//TODO
 	}
 }
+
+export { Physics }

@@ -28,3 +28,4 @@ class Service {
 }
 
 export default Service
+export { Service }

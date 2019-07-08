@@ -1,3 +1,7 @@
+import {Service} from './Service.js'
+import {NodeView} from './NodeView.js'
+import {EventBus} from './EventBus.js'
+
 class AppState {
 	constructor() {
 		this.view = null; // type: BaseStateView
@@ -129,3 +133,6 @@ class BaseStateView extends BaseListener {
 	}
 }
 
+
+export default AppState
+export { AppState, AppStateController, BaseListener, BaseStateModel, BaseStateView }

@@ -1,4 +1,6 @@
-class TableView extends NodeView {
+import NodeView from './NodeView.js'
+
+export default class TableView extends NodeView {
 	static get VERTICAL() { return 0; }
 	static get HORIZONTAL() { return 1; }
 	
@@ -178,3 +180,5 @@ class TableView extends NodeView {
 		gfx.restoreMatrix();
 	}
 }
+
+export {TableView}

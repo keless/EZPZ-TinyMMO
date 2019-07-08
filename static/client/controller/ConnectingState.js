@@ -1,6 +1,6 @@
-import { AppState, BaseStateView } from '../../shared/EZPZ/AppStateController.js'
+import { AppState, BaseStateView, NodeView, Service } from '../clientEZPZ.js'
 
-class ConnectingState extends AppState {
+export default class ConnectingState extends AppState {
 	constructor() { 
 		super();
 		this.view = new ConnectingStateView();
@@ -21,5 +21,3 @@ class ConnectingStateView extends BaseStateView {
 		this.rootView.addChild(label);
 	}
 }
-
-export default ConnectingState

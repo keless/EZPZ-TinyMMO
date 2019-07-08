@@ -1,6 +1,6 @@
-"use strict"; //ES6
+import { BaseStateView, NodeView, ButtonView, CreateSimpleProgressBar } from './clientEZPZ.js'
 
-class BattleStateView extends BaseStateView {
+export default class BattleStateView extends BaseStateView {
 	constructor( model ) {
 		super();
 		
@@ -427,7 +427,6 @@ class BattleStateView extends BaseStateView {
 	}
 	
 }
-
 
 class ModeHudView extends NodeView {
 	constructor( battleStateModel ) {

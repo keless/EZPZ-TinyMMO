@@ -1,3 +1,5 @@
+import Service from './Service.js'
+import EventBus from './EventBus.js'
 /*
 
 	event handled:
@@ -9,7 +11,7 @@
 
 //TODO:  make sure switching to ES6 class syntax didnt break audioManager
 
-class AudioManager {
+export default class AudioManager {
   constructor( ) {
 		console.log("AudioManager created");
 
@@ -33,3 +35,5 @@ class AudioManager {
 	}
 
 }
+
+export { AudioManager }

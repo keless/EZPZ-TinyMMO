@@ -1,25 +1,27 @@
 //#include js/framework/EventDispatcher
+import { Vec2D, Rect2D } from './Vec2D.js'
+import { NodeView } from './NodeView.js'
 
 //random int (min-inclusive, max-inclusive)
-function getRand(min, max) {
+export function getRand(min, max) {
   return ~~(Math.random() * (max - min + 1)) + min
 }
 
-function radToDeg( rad ) {
+export function radToDeg( rad ) {
   return (rad *180)/Math.PI
 }
 
 //get dictionary length
-function dicLength( dictionary ) {
+export function dicLength( dictionary ) {
 	return Object.keys(dictionary).length;
 }
 
-function arrayContains( array, element ) {
+export function arrayContains( array, element ) {
 	if (array.some(function(e){ return e == element; })) return true;
 	return false;
 }
 
-function removeFromArray( array, element) {
+export function removeFromArray( array, element) {
   var index = array.indexOf(element);
   if (index > -1) {
     array.splice(index, 1);
@@ -28,15 +30,15 @@ function removeFromArray( array, element) {
   return false;
 }
 
-function isString( obj ) {
+export function isString( obj ) {
 	return (typeof obj === 'string' || obj instanceof String);
 }
 
-function isArray( obj ) {
+export function isArray( obj ) {
   return obj.constructor === Array || Array.isArray(obj);
 }
 
-function generateUUID(){
+export function generateUUID(){
     var d = Date.now()
     if(window.performance && typeof window.performance.now === "function"){
         d += performance.now(); //use high-precision timer if available
@@ -50,7 +52,7 @@ function generateUUID(){
 }
 
 //fnCallback = function (data)  where data = null on error
-function getJSON( url, fnCallback ) {
+export function getJSON( url, fnCallback ) {
 	var request = new XMLHttpRequest();
 	request.open('GET', url, true);
 	
@@ -75,7 +77,7 @@ function getJSON( url, fnCallback ) {
 	request.send();
 }
 
-function CreateScreenShade( alpha ) {
+export function CreateScreenShade( alpha ) {
   alpha = alpha || 0.5;
   var screenSize = Graphics.ScreenSize;
   
@@ -86,7 +88,7 @@ function CreateScreenShade( alpha ) {
   return node;
 }
 
-function CreateSimpleButton( strLabel, strEvt, bus ) 
+export function CreateSimpleButton( strLabel, strEvt, bus ) 
 {
   var area = new Vec2D(100,40);
 
@@ -106,7 +108,7 @@ function CreateSimpleButton( strLabel, strEvt, bus )
   return btn;
 }
 
-function CreateSimpleImageButton( strLabel, img, strEvt, bus ) {
+export function CreateSimpleImageButton( strLabel, img, strEvt, bus ) {
   
   if(!bus) {
     bus = EventBus.ui;
@@ -126,7 +128,7 @@ function CreateSimpleImageButton( strLabel, img, strEvt, bus ) {
   return btn;
 }
 
-function CreateSimplePopup( strMsg, strBtnLabel, okEvt, bus ) 
+export function CreateSimplePopup( strMsg, strBtnLabel, okEvt, bus ) 
 {
   var area = new Vec2D(300, 250);
   
@@ -148,7 +150,7 @@ function CreateSimplePopup( strMsg, strBtnLabel, okEvt, bus )
 }
 
 //slides up and down
-function CreateSimpleVerticleSlider(w, h, evtName, bus) {
+export function CreateSimpleVerticleSlider(w, h, evtName, bus) {
   if(!bus) {
     bus = EventBus.ui;
   } if(isString(bus)) {
@@ -179,7 +181,7 @@ function CreateSimpleVerticleSlider(w, h, evtName, bus) {
   return slider;
 }
 
-function CreateSimpleEditBox( strMsg, strDefaultTxt, strBtnLabel, okEvt, strBus ) {
+export function CreateSimpleEditBox( strMsg, strDefaultTxt, strBtnLabel, okEvt, strBus ) {
   var area = new Vec2D(300, 250);
   
   var pop = new NodeView();
@@ -201,7 +203,7 @@ function CreateSimpleEditBox( strMsg, strDefaultTxt, strBtnLabel, okEvt, strBus 
 }
 
 //returns a NodeView with a 'pct' value that shows as progress bar 
-function CreateSimpleProgressBar( strColor, strBgColor, w, h ) {
+export function CreateSimpleProgressBar( strColor, strBgColor, w, h ) {
   var area = new Vec2D(w, h);
   var bar = new NodeView();
   bar.pct = 0;
@@ -217,9 +219,6 @@ function CreateSimpleProgressBar( strColor, strBgColor, w, h ) {
   return bar;
 }
 
-exports.getRand = getRand
-exports.radToDeg = radToDeg
-exports.arrayContains = arrayContains
-exports.removeFromArray = removeFromArray
-exports.isArray = isArray
-exports.isString = isString
+export default { 
+  getRand, radToDeg, isString, isArray, arrayContains, getJSON, CreateSimpleProgressBar
+}

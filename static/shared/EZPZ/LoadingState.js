@@ -1,4 +1,8 @@
-class LoadingState extends AppState {
+import { AppState, BaseStateView } from './AppStateController.js'
+import { Service } from './Service.js'
+import { EventBus } from './EventBus.js'
+
+export default class LoadingState extends AppState {
 	constructor( params /*resNameArr, nextStateName*/ ) {
 		super();
 		this.view = new LoadingView(params[0], params[1]);
@@ -125,3 +129,5 @@ class LoadingView extends BaseStateView {
 		g.drawText("("+pct+"%) loading: " + this.loadingName, g.getWidth()/2, 50);
 	}
 }
+
+export { LoadingState }

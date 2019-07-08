@@ -1,4 +1,9 @@
-class ButtonView extends NodeView {
+import {NodeView} from './NodeView.js'
+import {Graphics} from './Graphics.js'
+import {Vec2D, Rect2D} from './Vec2D.js'
+import {EventBus} from './EventBus.js'
+
+export default class ButtonView extends NodeView {
 	static get STATE_NORMAL() { return 0 }
 	static get STATE_PRESSED() { return 1 }
 	
@@ -85,7 +90,7 @@ class ButtonView extends NodeView {
 		
 		var originX = 0;
 		var originY = 0;
-		if( Config.areSpritesCentered ) {
+		if( Graphics.areSpritesCentered ) {
 			originX -= this.size.x/2;
 			originY -= this.size.y/2;
 		}
@@ -105,3 +110,5 @@ class ButtonView extends NodeView {
 		super.OnMouseDown(e,x,y);
 	}
 }
+
+export { ButtonView }

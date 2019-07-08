@@ -60,7 +60,7 @@ update(dt) {
 
  */
  
-class PIDController {
+export default class PIDController {
 	constructor( Kp, Ki, Kd, timeStep, reverse ) {
 		this.reverse = reverse || false;
 		
@@ -332,3 +332,5 @@ class PIDTuneGraph {
 		gfx.translate(-x,-y);
 	}
 }
+
+export { PIDController }

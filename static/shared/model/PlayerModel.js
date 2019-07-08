@@ -1,6 +1,6 @@
 import EntityModel from './EntityModel.js'
 
-class PlayerModel {
+export default class PlayerModel {
   static get BANK_PAGE_SLOTS() { return 9; }
 
   static get EQUIP_MAIN() { return 0; }

@@ -1,6 +1,6 @@
-"use strict"; //ES6
+import _ from './clientEZPZ.js'
 
-class CraftView extends NodeView {
+export default class CraftView extends NodeView {
   constructor() {
     super();
 

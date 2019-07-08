@@ -1,6 +1,6 @@
-"use strict"; //ES6
+import _ from './clientEZPZ.js'
 
-class StoreView extends NodeView {
+export default class StoreView extends NodeView {
   constructor(storeId) {
     super();
 

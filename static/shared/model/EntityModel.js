@@ -2,8 +2,11 @@ import ICastEntity from '../EZPZ/castengine/CastEntity.js'
 import CastTarget from '../EZPZ/castengine/CastTarget.js'
 import Vec2D from '../EZPZ/Vec2D.js'
 import EventBus from '../EZPZ/EventBus.js'
-import uuid from 'uuid'
-const uuidv4 = uuid.v4
+
+//xxx WIP 
+var uuidv4 = function() { return "blah"}
+//import uuid from 'uuid'
+//const uuidv4 = uuid.v4
 
 class Facing {
 	static get UP() { return 0; }
@@ -504,4 +507,4 @@ class EntityModel extends ICastEntity {
 //exports.EntitySchema = EntitySchema
 //exports.EntityModel = EntityModel
 export default EntityModel
-export { EntitySchema, EntityModel }
+export { EntitySchema, EntityModel, Facing }

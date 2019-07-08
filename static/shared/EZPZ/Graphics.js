@@ -1,6 +1,10 @@
-//#include js/framework/Service.js
+import Service from './Service.js'
+import {Vec2D, Rect2D} from './Vec2D.js'
 
 class Graphics {
+	static areSpritesCentered = false
+	static useTextHeightHack = false
+
 	static get ScreenSize() {
 		return Service.Get("gfx").getSize();
 	}
@@ -13,8 +17,8 @@ class Graphics {
 		this.font = "30px Arial";
 		
 		this.ctx = this.canvas.getContext("2d");
-		this.drawCentered = Config ? Config.areSpritesCentered : false;
-		this.useTextHeightHack = Config ? Config.useTextHeightHack : false;
+		this.drawCentered = Graphics.areSpritesCentered;
+		this.useTextHeightHack = Graphics.useTextHeightHack;
 		this.verbose = false;
 		
 		Service.Add("gfx", this);
@@ -536,3 +540,6 @@ class SpriteBatch {
 		//console.log("sb: add sprite from spriteBatch - " + fileName)
 	}
 }
+
+export default Graphics
+export { Graphics, Sprite, SpriteBatch }

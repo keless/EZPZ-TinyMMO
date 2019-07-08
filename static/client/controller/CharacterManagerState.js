@@ -1,9 +1,8 @@
-import { AppState, BaseStateView } from '../../shared/EZPZ/AppStateController.js'
-import Service from '../../shared/EZPZ/Service.js'
-import ResourceProvider from '../../shared/EZPZ/ResourceProvider.js'
-import Graphics from '../../shared/EZPZ/Graphics.js'
+import { AppState, NodeView, BaseStateView, Service, Graphics, ResourceProvider, ButtonView, arrayContains} from '../clientEZPZ.js'
+import {g_races, g_classes} from '../../shared/data/abilities.js'
+import {g_locations} from '../../shared/data/locations.js'
 
-class CharacterManagerState extends AppState {
+export default class CharacterManagerState extends AppState {
 	constructor() { 
 		super();
 		//this.model = new CharacterManagerStateModel(this);
@@ -271,5 +270,3 @@ class CharacterCreationStateView extends BaseStateView {
     } )//xxx
   }
 }
-
-export default CharacterManagerState

@@ -1,7 +1,7 @@
 ///EX: EventBus.ui.dispatch({evtName:evtName});
 ///EX: EventBus.game.addListener("updateEvtName", this.onUpdateFunction.bind(this) );
 ///EX: EventBus.game.removeListener("updateEvtName", this.onUpdateFunction.bind(this) );
-class EventBus {
+export default class EventBus {
   constructor( strBusName ) {
     this.listeners = {};
 		this.busName = strBusName;
@@ -72,5 +72,4 @@ class EventBus {
   }
 }
 
-//exports.EventBus = EventBus
-export default EventBus
+export { EventBus }

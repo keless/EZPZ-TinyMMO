@@ -1,6 +1,6 @@
-"use strict"; //ES6
+import _ from './clientEZPZ.js'
 
-class MapView extends NodeView {
+export default class MapView extends NodeView {
 	constructor( currentLocationIdx ) {
 		super();
 		

@@ -18,7 +18,7 @@ class ISkillsModelDelegate {
  *  playerUnequippedSkill - when a skill is unequipped
  */
 
-class SkillsModel {
+export default class SkillsModel {
   constructor( iDelegate ) {
     this.delegate = iDelegate;
     this.trees = []; //array of [{name:str, abilities:[abilityId, ... ]}, ... ]
@@ -161,3 +161,5 @@ class SkillsModel {
     }
   }
 }
+
+export { ISkillsModelDelegate, SkillsModel }

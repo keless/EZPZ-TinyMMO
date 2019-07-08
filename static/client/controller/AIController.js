@@ -1,6 +1,6 @@
-import Service from '../../shared/EZPZ/Service.js'
+import _ from './clientEZPZ.js'
 
-class AIController {
+export default class AIController {
 	constructor( entityModel ) {
 		this.pEntityModel = entityModel;
 		
@@ -55,5 +55,3 @@ class AIController {
 		}
 	}
 }
-
-export default AIController

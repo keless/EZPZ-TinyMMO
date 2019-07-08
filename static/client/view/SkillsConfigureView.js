@@ -1,6 +1,4 @@
-"use strict"; //ES6
-
-
+import _ from './clientEZPZ.js'
 /*
 
 <skillTreeTab1><skillTreeTab2><skillTreeTab3><skillTreeTab4>
@@ -19,7 +17,7 @@ where chosenAbility has
 <name   (x)>
 */
 
-class SkillsConfigureView extends NodeView {
+export default class SkillsConfigureView extends NodeView {
 	constructor( playerModel ) {
 		super();
 

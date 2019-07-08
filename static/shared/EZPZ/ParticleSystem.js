@@ -1,3 +1,6 @@
+import _ from './Vec2D.js'
+import Graphics from './Graphics.js'
+
 class ParticleModel {
 	constructor() {
 		this.pos = new Vec2D();
@@ -76,5 +79,6 @@ class ParticleSystem {
 		p.vel.setVal(vx,vy);
 		p.sprite = sprite;
 	}
-
 }
+
+export { ParticleSystem }

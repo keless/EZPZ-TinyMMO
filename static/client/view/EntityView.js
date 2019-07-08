@@ -1,6 +1,6 @@
-"use strict"; //ES6
+import _ from './clientEZPZ.js'
 
-class EntityView extends NodeView
+export default class EntityView extends NodeView
 {
 	constructor( entityModel, isPlayer ) {
 		super();

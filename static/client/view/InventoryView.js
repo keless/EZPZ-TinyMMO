@@ -1,7 +1,7 @@
-"use strict"; //ES6
+import _ from './clientEZPZ.js'
 
 // in-depth inventory "open" dialog
-class InventoryView extends NodeView {
+export default class InventoryView extends NodeView {
 	constructor( model ) {
 		super();
   }

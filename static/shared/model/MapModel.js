@@ -1,4 +1,4 @@
-"use strict"; //ES6
+import _ from '../EZPZ/AppStateController.js'
 
 class MapState extends AppState {
 	constructor() {
@@ -8,10 +8,12 @@ class MapState extends AppState {
 	}
 }
 
-class MapModel extends BaseStateModel {
+export default class MapModel extends BaseStateModel {
 	constructor() {
 		super();
 		console.log("map model loaded")
 	}
 	
 }
+
+export { MapModel, MapState }

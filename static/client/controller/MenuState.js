@@ -1,6 +1,6 @@
-"use strict"; //ES6
+import { AppState, BaseStateView, NodeView, ButtonView, ResourceProvider, Service } from '../clientEZPZ.js'
 
-class MenuState extends AppState {
+export default class MenuState extends AppState {
 	constructor() { 
 		super();
 		this.view = new MenuStateView();

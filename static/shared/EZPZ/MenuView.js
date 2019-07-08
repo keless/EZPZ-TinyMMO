@@ -1,4 +1,7 @@
-class MenuView extends TableView
+import TableView from './TableView.js'
+
+
+export default class MenuView extends TableView
 {
   /**
    * 
@@ -65,3 +68,5 @@ class MenuView extends TableView
 
 
 }
+
+export { MenuView }

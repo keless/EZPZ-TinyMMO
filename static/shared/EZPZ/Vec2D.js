@@ -1,4 +1,4 @@
-class Vec2D {
+export default class Vec2D {
   	constructor( x, y ) {
 		this.x = x || 0;
 		this.y = y || 0;
@@ -501,7 +501,4 @@ class Rect2D {
 	}
 }
 
-//exports.Vec2D = Vec2D
-//exports.Rect2D = Rect2D
-export default Vec2D
 export { Vec2D, Rect2D}

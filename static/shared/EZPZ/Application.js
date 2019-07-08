@@ -1,11 +1,19 @@
-//#include js/framework/Service.js
+import {Service} from './Service.js'
+import {AppState, AppStateController} from './AppStateController.js'
+import {ResourceProvider} from './ResourceProvider.js'
+import {AudioManager} from './AudioManager.js'
+import {Physics} from './Physics.js'
+import {Graphics} from './Graphics.js'
+import {SaveData} from './SaveData.js'
+import {Vec2D, Rect2D} from './Vec2D.js'
+import {EventBus} from './EventBus.js'
 
 var KEY_LEFT = 37;
 var KEY_UP = 38;
 var KEY_RIGHT = 39;
 var KEY_DOWN = 40;
 
-class Application {
+export default class Application {
 	static getTime() {
 		var app = Service.Get("app");
 		return app.elapsedTime;
@@ -188,3 +196,5 @@ class Application {
 	//ex: load game -- json = JSON.parse( localStorage.getItem("sudoku.save") );
 	
 }
+
+export { Application }

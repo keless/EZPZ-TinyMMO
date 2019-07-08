@@ -8,7 +8,6 @@
  *  MIT License
  */
 
-(function() {
   // create a buffer that stores all inputs so that tabbing
   // between them is made possible.
   var inputs = [];
@@ -1457,4 +1456,7 @@
       };
     }
   };
-})();
+
+
+export default CanvasInput
+export { CanvasInput }

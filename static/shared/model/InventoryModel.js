@@ -237,3 +237,6 @@ class ItemModel {
     return true;
   }
 }
+
+export default InventoryModel
+export { InventoryModel, ItemModel }

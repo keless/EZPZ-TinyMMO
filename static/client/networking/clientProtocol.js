@@ -1,5 +1,6 @@
+import { Service, EventBus } from '../clientEZPZ.js'
 
-class ClientProtocol {
+export default class ClientProtocol {
     constructor() { 
         this.verbose = true
         this.socket = null

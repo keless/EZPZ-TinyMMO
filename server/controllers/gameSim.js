@@ -1,8 +1,8 @@
 //const Game = require('../models/linvoGame')
 //const EntityModel = require('../../shared/model/EntityModel')
 import Game from '../models/linvoGame.js'
-import Service from '../../shared/EZPZ/Service.js'
-import EntityModel from '../../shared/model/EntityModel.js'
+import {Service} from '../serverEZPZ.js'
+import {EntityModel} from '../../static/shared/model/EntityModel.js'
 
 class GameSim {
     constructor() {

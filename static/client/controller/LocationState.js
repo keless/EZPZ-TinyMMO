@@ -1,7 +1,7 @@
-//"use strict"; //ES6
+import { AppState, BaseStateView, NodeView, Service, Vec2D } from '../clientEZPZ.js'
 import PlayerModel from '../../../shared/model/PlayerModel.js'
 
-class LocationState extends AppState {
+export default class LocationState extends AppState {
 	constructor(locationIdx) { 
 		super();
 		this.view = new LocationStateView(locationIdx);	

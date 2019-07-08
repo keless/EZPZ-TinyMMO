@@ -1,6 +1,6 @@
 import { CastWorldModel } from './CastWorldModel.js'
 
-class ICastEntity {
+export default class ICastEntity {
 	
 	constructor() { 
 		CastWorldModel.Get().AddEntity(this); 
@@ -44,5 +44,4 @@ class ICastEntity {
 	ce_onChannelComplete(castEngineTime) {}
 }
 
-export default ICastEntity
 export { ICastEntity }

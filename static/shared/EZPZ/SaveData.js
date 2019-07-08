@@ -1,4 +1,6 @@
-class SaveData {
+import Service from './Service.js'
+
+export default class SaveData {
 	constructor( appPrefix ) {
 		this.appPrefix = appPrefix;
 		Service.Add("sd", this);
@@ -28,3 +30,5 @@ class SaveData {
 		localStorage.removeItem(this.appPrefix + strName);
 	}
 }
+
+export { SaveData }

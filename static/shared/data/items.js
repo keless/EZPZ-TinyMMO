@@ -1,5 +1,5 @@
-"using strict"; //ES6
-class ItemType {
+export {}
+export class ItemType {
 	static get TRASH() { return 0; }
   static get MAINHAND() { return 1; }
 	static get ARMOR() { return 2; }
@@ -8,7 +8,7 @@ class ItemType {
   static get CRAFT() { return 5; }
 }
 
-var g_items = {
+export var g_items = {
   "wp_sword_1":{ type:ItemType.MAINHAND, hackColor:"#FF0000", stats:{"str_curr":10}, gold:5, sprite:"gfx/items/weap_sword.sprite" },
   "wp_dagger_1":{ type:ItemType.MAINHAND, hackColor:"#FF0000", stats:{"agi_curr":10}, gold:5, sprite:"gfx/items/weap_dagger.sprite" },
   "wp_axe_1":{ type:ItemType.TWOHANDED, hackColor:"#FF00FF", stats:{"str_curr":20}, gold:10, sprite:"gfx/items/weap_axe.sprite" },
@@ -53,7 +53,7 @@ var g_items = {
   "mat_metal_6":{ type:ItemType.CRAFT, hackColor:"#0000FF", gold:2500, maxStacks:100, sprite:"gfx/items/craft_metal.sprite", sprIdx:5 }
 }
 
-var g_stores = {
+export var g_stores = {
   "default": {
     "items":[
       "wp_sword_1", "wp_dagger_1", "wp_axe_1", "wp_wand_1", 
@@ -63,7 +63,7 @@ var g_stores = {
   }
 }
 
-function formatMoneyString(money) {
+export function formatMoneyString(money) {
     var mS = ~~(money / 100);
     var mC = money - mS*100;
     var mG = ~~(mS / 100);

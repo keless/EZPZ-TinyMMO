@@ -1,6 +1,9 @@
-//#include js/framework/Service.js
+import Service from './Service.js'
+import EventBus from './EventBus.js'
+import { Sprite, SpriteBatch } from './Graphics.js'
+import { getJSON } from './Utility.js'
 
-class ResourceProvider {
+export default class ResourceProvider {
 	constructor() {
 		
 		this.eventBus = new EventBus("RP");
@@ -327,3 +330,5 @@ class ResourceProvider {
 		return this.dynamicRes[fileName];
 	}
 }
+
+export { ResourceProvider }

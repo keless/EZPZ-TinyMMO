@@ -1,3 +1,6 @@
+import ResourceProvider from './ResourceProvider.js'
+import Sprite from './Graphics.js'
+
 /**
  * Animation class represents a RESOURCE which describes an animation state graph
  * 
@@ -253,3 +256,6 @@ class FourPoleAnimationInstance extends AnimationInstance {
 		}
 	}
 }
+
+export default Animation
+export { Animation, AnimationInstance, FourPoleAnimation, FourPoleAnimationInstance }

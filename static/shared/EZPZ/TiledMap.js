@@ -1,12 +1,12 @@
-//#include js/framework/Graphics.js
-//#include js/framework/ResourceProvider.js
+import { Graphics, Sprite } from './Graphics.js'
+import { ResourceProvider } from './ResourceProvider.js'
 
 /**
  * Tiled map .json loader and renderer
  *   also reads physics rectangles with the format:
  * 
  */
- class TiledMap {
+export default class TiledMap {
 	constructor( path, outputW, outputH ) {
 		this.path = path.substring(0, path.lastIndexOf("/")+1);
 		this.width = outputW;
@@ -240,3 +240,5 @@
 		return node;
 	}
  }
+
+ export { TiledMap }

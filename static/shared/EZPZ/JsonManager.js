@@ -1,4 +1,4 @@
-class JsonManager
+export default class JsonManager
 {
 	static Get() {
 		return JsonManager.instance;
@@ -46,3 +46,5 @@ class JsonManager
 }
 
 JsonManager.instance = new JsonManager();
+
+export { JsonManager }

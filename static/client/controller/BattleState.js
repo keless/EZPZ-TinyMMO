@@ -1,8 +1,7 @@
-import { AppState, BaseStateModel } from '../../shared/EZPZ/AppStateController.js'
-import CastWorldModel from '../../shared/EZPZ/castengine/CastWorldModel.js'
+import { AppState, BaseStateModel, NodeView, Service } from '../clientEZPZ.js'
 import PlayerModel from '../../shared/model/PlayerModel.js'
 
-class BattleState extends AppState {
+export default class BattleState extends AppState {
 	constructor(locationIdx) { 
 		super();
 		this.model = new BattleStateModel(this, locationIdx);
@@ -363,4 +362,4 @@ class BattleStateModel extends BaseStateModel {
 	}
 }
 
-export default BattleState
+export { BattleState }
