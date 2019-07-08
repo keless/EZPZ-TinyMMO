@@ -1,4 +1,4 @@
-import { AppState, NodeView, BaseStateView, Service, Graphics, ResourceProvider, ButtonView, arrayContains} from '../clientEZPZ.js'
+import { AppState, NodeView, BaseStateView, Service, Graphics, ResourceProvider, ButtonView, arrayContains, Animation} from '../clientEZPZ.js'
 import {g_races, g_classes} from '../../shared/data/abilities.js'
 import {g_locations} from '../../shared/data/locations.js'
 

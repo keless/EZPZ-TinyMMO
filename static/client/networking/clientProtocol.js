@@ -21,12 +21,17 @@ export default class ClientProtocol {
         this.socket = io()
 
         var self = this
-        this.socket.on("connected", ()=>{
+        this.socket.on("connected", (data)=>{
             self._log("connected to server")
 
+            if (data && data.worldUpdate) {
+                console.log(data.worldUpdate)
+            }
 
             EventBus.game.dispatch("serverConnect")
         })
+
+        //xxx WIP - add error handler
     }
 
     closeConnection() {

@@ -34,7 +34,6 @@ class SocketClient {
         var race = data.race
         var charClass = data.charClass
         
-        //xxx WIP
         this._log("on create character with name " + name + " race " + race + " class " + charClass)
         var gameSim = Service.Get("gameSim")
         var entityID = gameSim.createCharacterForUser(userId, name, race, charClass)
@@ -131,7 +130,15 @@ class ServerProtocol {
                     var client = new SocketClient(socket, userId)
                     this.socketClients.push(client)
                     
-                    client.emit("connected")
+                    //return player's characters
+                    var gameSim = Service.Get("gameSim")
+                    var entitiesForPlayer = gameSim.getEntitiesForOwner(userId) //xxx WIP
+
+                    var worldUpdate = new WorldUpdateModel()
+                    worldUpdate.addEntities(entitiesForPlayer)
+                    
+
+                    client.emit("connected", worldUpdate.getPayloadJson())
                 } else {
                     console.warn("socket connected with passport session, but no registered user " + findErr)
                 }

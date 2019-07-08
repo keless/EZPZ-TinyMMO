@@ -7,6 +7,7 @@ export { AppState, AppStateController, BaseListener, BaseStateModel, BaseStateVi
 export { Application } from '../shared/EZPZ/Application.js'
 export { AudioManager } from '../shared/EZPZ/AudioManager.js'
 export { ButtonView } from '../shared/EZPZ/ButtonView.js'
+export { Animation, AnimationInstance, FourPoleAnimation, FourPoleAnimationInstance} from '../shared/EZPZ/Animation.js'
 export { PIDController } from '../shared/EZPZ/PIDController.js'
 export { ParticleSystem } from '../shared/EZPZ/ParticleSystem.js'
 export {Physics} from '../shared/EZPZ/Physics.js'
@@ -24,5 +25,6 @@ export { CastCommandModel, CastCommandScheduler, CastCommandState } from '../sha
 export { CastEffect, CastEffectType } from '../shared/EZPZ/castengine/CastEffect.js'
 export { ICastEntity } from '../shared/EZPZ/castengine/CastEntity.js'
 export { CastTarget, CastTargetType } from '../shared/EZPZ/castengine/CastTarget.js'
+export { uuidv4 } from '../shared/EZPZ/ext/uuid.js'
 
 export default { }

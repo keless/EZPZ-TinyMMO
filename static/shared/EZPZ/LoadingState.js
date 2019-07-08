@@ -30,7 +30,7 @@ class LoadingView extends BaseStateView {
 		this.loadingName = "";
 		this.nextStateName = nextStateName;
 		
-		this.verbose = true;
+		this.verbose = false;
 
 		this._loadNext( 5 );
 	}

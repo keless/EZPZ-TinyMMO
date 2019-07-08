@@ -42,6 +42,26 @@ class GameSim {
             return entity.uuid == entityId
         })
     }
+
+    getEntityIDsForOwner(ownerId) {
+        var entityIDs = []
+        this.entities.forEach((entity)=>{
+            if (entity.owner == ownerId) {
+                entityIDs.push(entity.uuid)
+            }
+        })
+        return entityIDs
+    }
+
+    getEntitiesForOwner(ownerId) {
+        var owned = []
+        this.entities.forEach((entity)=>{
+            if (entity.owner == ownerId) {
+                owned.push(entity)
+            }
+        })
+        return owned
+    }
 }
 
 export default GameSim

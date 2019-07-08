@@ -1,5 +1,6 @@
 import ResourceProvider from './ResourceProvider.js'
 import Sprite from './Graphics.js'
+import Service from './Service.js'
 
 /**
  * Animation class represents a RESOURCE which describes an animation state graph
