@@ -103,11 +103,7 @@ class CharacterSelectStateView extends BaseStateView {
   onBtnDel(e) {
     if(confirm('Are you sure?')) {
 
-      /* xxx old
-      var sd = Service.Get("sd");
-      sd.clear("char"+e.idx);
-      */
-
+      console.log("WIP - delete character " + e.idx)
       //xxx todo: send message to server to delete character id
 
       //reload view
@@ -124,10 +120,12 @@ class CharacterSelectStateView extends BaseStateView {
       //xxx TODO: get character data from server
 
       //load char and go to game
-      PlayerModel.Load("char"+e.idx);
+      console.log("WIP load known character " + e.idx)
 
+
+      //PlayerModel.Load("char"+e.idx);
       //todo: go to location instead of battle
-      Service.Get("state").gotoState("location", PlayerModel.Get().locationIdx);
+      //Service.Get("state").gotoState("location", PlayerModel.Get().locationIdx);
     }
 	}
 }
@@ -263,10 +261,11 @@ class CharacterCreationStateView extends BaseStateView {
       if (data.worldUpdate) {
         //world update should have our new character in it
       }
+      console.log("WIP load created character")
       //xxx TODO: how do we send the character data over?
       //PlayerModel.Load("char"+this.idx);
 
-      Service.Get("state").gotoState("location", locIdx);
-    } )//xxx
+      //Service.Get("state").gotoState("location", locIdx);
+    })
   }
 }
