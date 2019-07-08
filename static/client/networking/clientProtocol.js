@@ -24,8 +24,8 @@ export default class ClientProtocol {
         this.socket.on("connected", (data)=>{
             self._log("connected to server")
 
-            if (data && data.worldUpdate) {
-                console.log(data.worldUpdate)
+            if (data) {
+                console.log(data)
             }
 
             EventBus.game.dispatch("serverConnect")

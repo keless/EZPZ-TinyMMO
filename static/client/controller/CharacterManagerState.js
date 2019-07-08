@@ -1,6 +1,7 @@
 import { AppState, NodeView, BaseStateView, Service, Graphics, ResourceProvider, ButtonView, arrayContains, Animation} from '../clientEZPZ.js'
 import {g_races, g_classes} from '../../shared/data/abilities.js'
 import {g_locations} from '../../shared/data/locations.js'
+import { ClientGame } from './ClientGame.js'
 
 export default class CharacterManagerState extends AppState {
 	constructor() { 
@@ -262,7 +263,9 @@ class CharacterCreationStateView extends BaseStateView {
       if (data.worldUpdate) {
         //world update should have our new character in it
         console.log("got world update")
-        
+        var clientGame = ClientGame.Get()
+        clientGame.applyWorldUpdate( data.worldUpdate )
+ 
       }
       console.log("WIP load created character")
       //xxx TODO: how do we send the character data over?
