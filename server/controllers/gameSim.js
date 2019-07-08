@@ -1,13 +1,17 @@
-const Game = require('../models/linvoGame')
-const EntityModel = require('../../shared/model/EntityModel')
-
+//const Game = require('../models/linvoGame')
+//const EntityModel = require('../../shared/model/EntityModel')
+import Game from '../models/linvoGame.js'
+import {Service} from '../serverEZPZ.js'
+import {EntityModel} from '../../static/shared/model/EntityModel.js'
 
 class GameSim {
     constructor() {
 
         this.entities = []
 
-        startupFromDB()
+        this.startupFromDB()
+
+        Service.Add("gameSim", this)
     }
 
     startupFromDB() {
@@ -32,8 +36,12 @@ class GameSim {
 
         return entity.uuid
     }
+
+    getEntityForId(entityId) {
+        return this.entities.find((entity)=> {
+            return entity.uuid == entityId
+        })
+    }
 }
 
-module.exports = {
-    GameSim
-}
+export default GameSim

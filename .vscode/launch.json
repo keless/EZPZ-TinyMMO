@@ -10,6 +10,7 @@
       "name": "nodemon",
       "runtimeExecutable": "nodemon",
       "program": "${workspaceFolder}/server/app.js",
+      "runtimeArgs": ["--experimental-modules"],
       "restart": true,
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
@@ -18,7 +19,8 @@
       "type": "node",
       "request": "launch",
       "name": "Launch Program",
-      "program": "${workspaceFolder}/server/app.js"
+      "program": "${workspaceFolder}/server/app.js",
+      "runtimeArgs": ["--experimental-modules"]
     }
   ]
 }

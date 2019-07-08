@@ -1,5 +1,8 @@
-const linvoDB = require('linvodb3')
-const uuidv4 = require('uuid/v4')
+//const linvoDB = require('linvodb3')
+//const uuidv4 = require('uuid/v4')
+import linvoDB from 'linvodb3'
+import uuid from 'uuid'
+const uuidv4 = uuid.v4
 var modelName = "user"
 
 var options = { filename: "./db/users.db" }
@@ -22,4 +25,5 @@ var User = new linvoDB(modelName, schema, options)
 
 
 
-module.exports = User
+//module.exports = User
+export default User

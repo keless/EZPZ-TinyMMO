@@ -3,13 +3,17 @@
   "version": "1.0.0",
   "description": "testing nodejs+express+linvodb3 for backend of persistant html5 game",
   "main": "app.js",
+  "type": "module",
   "scripts": {
     "test": "echo 'test' && exit 1"
   },
   "keywords": [],
   "author": "pzirkle",
   "nodemonConfig": {
-    "ignore": ["client/ezpz.js", "db/*"],
+    "ignore": [
+      "client/ezpz.js",
+      "db/*"
+    ],
     "delay": "2500"
   },
   "license": "copyleft-next-0.3.1",

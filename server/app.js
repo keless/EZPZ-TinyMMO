@@ -3,6 +3,12 @@ const SHARED_SECRET = "tricksie hobitses"
 const SESSION_COOKIE_NAME = "cookieMonster"
 const COMPILE_CLIENT_SCRIPTS = false
 
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+/*
 const path = require('path')
 const linvoDB = require('linvodb3')
 const express = require('express')
@@ -10,6 +16,15 @@ const expressLayouts = require('express-ejs-layouts')
 const passport = require('passport');
 const flash = require('connect-flash');
 const session = require('express-session');
+*/
+import _ from './serverEZPZ.js'
+import path from 'path'
+import linvoDB from 'linvodb3'
+import express from 'express'
+import expressLayouts from 'express-ejs-layouts'
+import passport from 'passport'
+import flash from 'connect-flash'
+import session from 'express-session'
 
 
 // Minify client library
@@ -25,7 +40,9 @@ if (COMPILE_CLIENT_SCRIPTS) {
 linvoDB.dbPath = process.cwd() + "/db"
 
 // Passport Config
-require('./config/passport')(passport);
+//require('./config/passport')(passport);
+import configurePassport from './config/passport.js'
+configurePassport(passport)
 
 var app = express()
 
@@ -63,26 +80,32 @@ app.use(function(req, res, next) {
   });
 
 // Routes
-app.use('/', require('./routes/index')) //
-app.use('/user', require('./routes/user'))
-app.use('/static', express.static(path.join(__dirname, '../client')))
-app.use('/js', express.static(path.join(__dirname, '../client/js/')))
-app.use('/model', express.static(path.join(__dirname, '../shared/model')))
-app.use('/view', express.static(path.join(__dirname, '../client/js/view')))
-app.use('/controller', express.static(path.join(__dirname, '../client/js/controller')))
-app.use('/data', express.static(path.join(__dirname, '../shared/data')))
-app.use('/gfx', express.static(path.join(__dirname, '../client/gfx')))
+import indexRouter from './routes/index.js'
+import userRouter from './routes/user.js'
+//app.use('/', require('./routes/index'))
+//app.use('/user', require('./routes/user'))
+app.use('/', indexRouter)
+app.use('/user', userRouter)
+app.use('/static', express.static(path.join(__dirname, '../static')))
+app.use('/shared', express.static(path.join(__dirname, '../static/shared')))
+app.use('/js', express.static(path.join(__dirname, '../static/client/')))
+app.use('/data', express.static(path.join(__dirname, '../static/shared/data')))
+app.use('/gfx', express.static(path.join(__dirname, '../static/gfx')))
 
 // Initialize socket protocol
-const { ServerProtocol } = require('./networking/protocol.js')
-var serv = require('http').Server(app)
-var io = require('socket.io')(serv, {})
+//const { ServerProtocol } = require('./networking/protocol.js')
+import ServerProtocol from './networking/protocol.js'
+import http from 'http'
+import socketIO from 'socket.io'
+var serv = http.Server(app)
+var io = socketIO(serv, {})
 io.use((socket, next)=> {
   expressSessionMiddleware(socket.request, {}, next)
 })
 var protocol = new ServerProtocol(io)
 
-const GameSim = require('./controllers/gameSim')
+//const GameSim = require('./controllers/gameSim')
+import GameSim from './controllers/gameSim.js'
 
 // Start game simulation
 //xxx todo: main loop
