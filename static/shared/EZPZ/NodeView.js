@@ -712,7 +712,7 @@ export default class NodeView extends BaseListener {
 		}
     
     if(this.textInput) {
-      this.textInput.onkeyup(e, this.textInput);
+      this.textInput._onkeyup(e, this.textInput);
     }
     
     for(var child of this.children) {

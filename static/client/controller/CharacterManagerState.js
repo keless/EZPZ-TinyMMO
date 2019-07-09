@@ -44,16 +44,24 @@ class CharacterSelectStateView extends BaseStateView {
     var xStart = (screenSize.x/2) - ( (cols*xSpace) /2 ) + xSpace/2; 
     var yStart = 300;
 
+    var clientGame = ClientGame.Get()
+    var playerOwned = clientGame.getEntitiesForCurrentPlayer()
+    //xxx WIP - get list of player owned characters
+
+
     for(var y=0; y<rows; y++) {
       for(var x=0; x<cols; x++) {
         var idx = (x+y*rows);
-        var json = sd.load("char"+idx, null);
+        var json = null //sd.load("char"+idx, null);
+        if (idx < playerOwned.length) {
+          json = playerOwned[idx].toJson()
+        }
         var text = "<New>";
         var race = "";
         var isNew = true;
         if(json) {
-          text = json.entity["name"];
-          race = json.entity["race"];
+          text = json["name"];
+          race = json["race"];
           isNew = false;
         }
 
@@ -66,13 +74,13 @@ class CharacterSelectStateView extends BaseStateView {
         if(!isNew) {
           //show level
           var lblLevel = new NodeView();
-          lblLevel.setLabel("Lvl " + json.entity.stats.xp_level, "10px Arial", "#000000" );
+          lblLevel.setLabel("Lvl " + json.stats.xp_level, "10px Arial", "#000000" );
           lblLevel.pos.setVal(bx - 30, by + 25);
           this.rootView.addChild(lblLevel);
 
           //show class
           var lblClass = new NodeView();
-          lblClass.setLabel(json.entity.class, "10px Arial", "#000000" );
+          lblClass.setLabel(json.class, "10px Arial", "#000000" );
           lblClass.pos.setVal(bx - 20, by + 35);
           this.rootView.addChild(lblClass);
 
@@ -260,17 +268,20 @@ class CharacterCreationStateView extends BaseStateView {
       console.log("ackRequestCreateCharacter with data " + data)
 
       console.log(data)
-      if (data.worldUpdate) {
+      if (data.entities) {
         //world update should have our new character in it
         console.log("got world update")
         var clientGame = ClientGame.Get()
-        clientGame.applyWorldUpdate( data.worldUpdate )
+        clientGame.applyWorldUpdate( data )
  
       }
       console.log("WIP load created character")
+
+      //xxx WIP: temp jump back to selection screen
+      Service.Get("state").gotoState("manager");
+
       //xxx TODO: how do we send the character data over?
       //PlayerModel.Load("char"+this.idx);
-
       //Service.Get("state").gotoState("location", locIdx);
     })
   }

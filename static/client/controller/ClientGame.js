@@ -1,33 +1,28 @@
 import PlayerModel from '../../shared/model/PlayerModel.js'
 import {uuidv4} from '../clientEZPZ.js'
+import EntityModel from '../../shared/model/EntityModel.js';
 
-class ClientGame {
-  static s_instance = new ClientGame()
-  static Get() { 
-    return ClientGame.s_instance
-  }
-
-  constructor() {
-    this.uuid = uuidv4()
-    this.currentUserID = null
-    this.players = []
-  }
-
-  setUserID( userID ) {
-    console.log("current user set to " + userID)
-    this.currentUserID = userID
-  }
-}
 
 class ClientGameSim {
   constructor() {
     this.entities = []
   }
 
-  applyWorldUpdate( worldUpdateJson ) {
-    console.log("todo: apply world update")
+  updateEntityFromJson(entityJson) {
+    //1) see if entity already exists, if so update it
+    //2) else create new from json
+    var entity = this.getEntityForId(entityJson.uuid)
+    if (entity) {
+      entity.updateFromJson(entityJson)
+    } else {
+      
+      entity = new EntityModel()
+      entity.fromWorldUpdateJson(entityJson)
+      this.entities.push(entity)
+      console.log("ClientGameSim; update with new entity " + entity.owner +":"+ entity.uuid )
+    }
   }
-  
+
   getEntityForId(entityId) {
     return this.entities.find((entity)=> {
         return entity.uuid == entityId
@@ -36,7 +31,9 @@ class ClientGameSim {
 
   getEntityIDsForOwner(ownerId) {
       var entityIDs = []
+      console.log("get entities for owner " + ownerId)
       this.entities.forEach((entity)=>{
+          console.log("compare owner " + entity.owner + " with " + ownerId) 
           if (entity.owner == ownerId) {
               entityIDs.push(entity.uuid)
           }
@@ -52,6 +49,41 @@ class ClientGameSim {
           }
       })
       return owned
+  }
+}
+
+class ClientGame {
+  static s_instance = new ClientGame()
+  static Get() { 
+    return ClientGame.s_instance
+  }
+
+  constructor() {
+    this.uuid = uuidv4()
+    this.currentUserID = null
+
+    this.gameSim = new ClientGameSim()
+  }
+
+  setUserID( userID ) {
+    console.log("current user set to " + userID)
+    this.currentUserID = userID
+  }
+
+  getEntitiesForCurrentPlayer() {
+    return this.gameSim.getEntitiesForOwner(this.currentUserID)
+  }
+
+  applyWorldUpdate( worldUpdateJson ) {
+    console.log("todo: apply world update")
+    if (worldUpdateJson.entities) {
+      console.log("todo: update with entities")
+      console.log(worldUpdateJson.entities)
+
+      worldUpdateJson.entities.forEach((entityJson)=>{
+        this.gameSim.updateEntityFromJson(entityJson)
+      })
+    }
   }
 }
 

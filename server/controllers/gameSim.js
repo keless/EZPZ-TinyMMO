@@ -7,6 +7,7 @@ import {EntityModel} from '../../static/shared/model/EntityModel.js'
 class GameSim {
     constructor() {
 
+        this.players = []
         this.entities = []
 
         this.startupFromDB()
