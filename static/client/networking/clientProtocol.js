@@ -1,4 +1,5 @@
 import { Service, EventBus } from '../clientEZPZ.js'
+import ClientGame from '../controller/ClientGame.js';
 
 export default class ClientProtocol {
     constructor() { 
@@ -25,7 +26,14 @@ export default class ClientProtocol {
             self._log("connected to server")
 
             if (data) {
-                console.log(data)
+                var clientGame = ClientGame.Get()
+                if (data.userId) {
+                    clientGame.setUserID(data.userId)
+                }
+                if (data.worldUpdate) {
+                    var worldUpdate = data.worldUpdate
+                    clientGame.applyWorldUpdate(worldUpdate)
+                }
             }
 
             EventBus.game.dispatch("serverConnect")

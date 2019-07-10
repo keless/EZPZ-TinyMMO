@@ -14,8 +14,8 @@ class SocketClient {
         this._addUserMessageHandler('createCharacter', this.onCreateCharacter)
     }
 
-    emit(data) {
-        this.socket.emit(data)
+    emit(message, data) {
+        this.socket.emit(message, data)
     }
 
     _log(text) {
@@ -138,7 +138,7 @@ class ServerProtocol {
                     worldUpdate.addEntities(entitiesForPlayer)
                     
 
-                    client.emit("connected", worldUpdate.getPayloadJson())
+                    client.emit("connected", { userId: userId, worldUpdate: worldUpdate.getPayloadJson() })
                 } else {
                     console.warn("socket connected with passport session, but no registered user " + findErr)
                 }

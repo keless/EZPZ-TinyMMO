@@ -7,7 +7,7 @@ export default class PlayerModel {
   static get EQUIP_ARMOR() { return 1; }
   static get EQUIP_OFF() { return 2; }
 
-	constructor( saveId ) {
+	constructor( forUserId ) {
     this.ghostPeriod = 3; //in seconds
     this.restPeriod = 4; //in seconds
     this.returnPeriod = 3; //in seconds
@@ -16,9 +16,9 @@ export default class PlayerModel {
     this._isResting = false;
     this.restTime = 0;
 
-		// serialized properties
-    this.entity = new EntityModel();
-    this.saveId = saveId;
+    // serialized properties
+    this.userId = forUserId;
+    this.currentEntityId = null
     this.locationIdx = 0;
 
     this.bankPages = 1;
@@ -34,7 +34,8 @@ export default class PlayerModel {
 	}
 
   initWithJson(json) {
-    this.entity.initWithJson( json["entity"] || {} );
+    this.userId = json["userId"] || null;
+    this.currentEntityId = json["currentEntityId"] || null;
     this.locationIdx = json["locIdx"] || 0;
     this.stratRestHealth = json["stratRestHealth"] || 0.3;
 
@@ -83,7 +84,8 @@ export default class PlayerModel {
     }
 
     var json = { 
-      entity:this.entity.toJson(), 
+      userId:this.userId,
+      currentEntityId:this.currentEntityId, 
       locIdx:this.locationIdx,
       stratRestHealth:this.stratRestHealth,
       craftingLevel:this.craftingLevel,
@@ -95,10 +97,12 @@ export default class PlayerModel {
     return json;
   }
 
+  /*
   save() {
     var sd = Service.Get("sd");
     sd.save(this.saveId, this.toJson());
   }
+  */
 
   //ISkillsModelDelegate
   getSkillTrees() {

@@ -21,8 +21,15 @@ export default class WorldUpdateModel {
         this.data.entities = this.data.entities.concat(entities)
     }
 
+    addPlayers(players) {
+        if (!this.data.players) {
+            this.data.players = []
+        }
+        this.data.players = this.data.players.concat(players)
+    }
+
     getPayloadJson() {
-        return { "worldUpdate": this.data }
+        return this.data
     }
 
     fromPayloadJson(json) {

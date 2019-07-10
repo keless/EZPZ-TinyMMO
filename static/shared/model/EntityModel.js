@@ -143,7 +143,13 @@ class EntityModel extends ICastEntity {
 		this.initWithSchema(json)
 	}
 
+	updateFromJson(json) {
+		//xxx todo; 
+		console.log("TODO: update entity from json")
+	}
+
 	initWithJson(json) {
+		this.uuid = json["uuid"] || "none"
 		this.name = json["name"] || "No Name";
 		this.race = json["race"] || "base";
 		this.charClass = json["charClass"] || "";
