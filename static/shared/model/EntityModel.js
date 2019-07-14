@@ -115,6 +115,9 @@ class EntityModel extends ICastEntity {
 		if (schemaModel.pos) {
 			this.pos.setVal( schemaModel.pos.x, schemaModel.pos.y)
 		}
+		if (schemaModel.vel) {
+			this.vel.setVal( schemaModel.vel.x, schemaModel.vel.y)
+		}
 		//xxx todo: inventory
 		//xxx todo: abilities
 	}

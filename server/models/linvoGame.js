@@ -8,7 +8,7 @@ import { uuidv4 } from '../../static/shared/EZPZ/ext/uuid.js'
 //const uuidv4 = require('uuid/v4')
 import { EntitySchema, EntityModel } from '../../static/shared/model/EntityModel.js'
 
-var options = { filename: "./db/game.db" }
+var options = { filename: "./db/game.db", autoLoad: true }
 
 var playerSchema = {
     name: String,
