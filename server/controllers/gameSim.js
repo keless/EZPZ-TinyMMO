@@ -3,14 +3,32 @@
 import {Game} from '../models/linvoGame.js'
 import {Service} from '../serverEZPZ.js'
 import {EntityModel, EntitySchema} from '../../static/shared/model/EntityModel.js'
+import { isArray } from '../../static/shared/EZPZ/Utility.js';
 
 class GameSim {
     constructor() {
 
-        this.gameDB = new Game()
-        this.entities = []
 
-        this.startupFromDB()
+        this.entities = []
+        Game.findOne({}, (err, doc)=>{
+
+            if (isArray(doc)) {
+                doc = doc[0]
+            }
+
+            if (!err) {
+                console.log("loaded existing gameDB instance")
+                this.gameDB = doc
+
+                console.log("test entity name: " + this.gameDB.testEntity.name)
+            } else {
+                console.log("Created new gameDB instance")
+                this.gameDB = new Game({_id:'gameID'})
+            }
+
+            this.startupFromDB()
+        })
+        
 
         Service.Add("gameSim", this)
     }
@@ -33,12 +51,24 @@ class GameSim {
         console.log("flushToDB")
         var entitySchemas = []
         this.entities.forEach((entity)=>{
-            console.log("get schema from object")
+            console.log("get schema for object")
             var schemaObject = {}
             entity.writeToSchema(schemaObject)
             entitySchemas.push(schemaObject)
         })
+
+        
+        var name = this.gameDB.testEntity.name +">"
+        this.gameDB.testEntity = entitySchemas[0]
+        this.gameDB.testEntity.name = name
+
+        /*
         this.gameDB.entities = entitySchemas
+        */
+       Game.update({_id:this.gameDB._id}, {$set: {entities: entitySchemas }}, (err, numreplaced, upserted)=>{
+           console.log( "update entities with #replaced:" +numreplaced+ " & err? " + err)
+       })
+
         this.gameDB.save((err)=>{
             if (err) {
                 console.log("Write error")
@@ -46,6 +76,7 @@ class GameSim {
                 console.log("game saved ")
             }
         })
+    
     }
 
     update() {
