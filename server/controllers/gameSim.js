@@ -21,6 +21,8 @@ class GameSim {
                 this.gameDB = doc
 
                 console.log("test entity name: " + this.gameDB.testEntity.name)
+                var numEntities =   this.gameDB.entities.length
+                console.log(`loaded ${numEntities} entities`)
             } else {
                 console.log("Created new gameDB instance")
                 this.gameDB = new Game({_id:'gameID'})
@@ -55,6 +57,8 @@ class GameSim {
             var schemaObject = {}
             entity.writeToSchema(schemaObject)
             entitySchemas.push(schemaObject)
+
+            this.gameDB.entities.push(schemaObject)
         })
 
         
@@ -65,9 +69,11 @@ class GameSim {
         /*
         this.gameDB.entities = entitySchemas
         */
-       Game.update({_id:this.gameDB._id}, {$set: {entities: entitySchemas }}, (err, numreplaced, upserted)=>{
+       /*
+       Game.update({_id:this.gameDB._id}, {$set: {entities: entitySchemas }} , {upsert:true}, (err, numreplaced, upserted)=>{
            console.log( "update entities with #replaced:" +numreplaced+ " & err? " + err)
        })
+       */
 
         this.gameDB.save((err)=>{
             if (err) {
