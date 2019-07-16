@@ -12,15 +12,14 @@ class GameSim {
         this.entities = []
         Game.findOne({}, (err, doc)=>{
 
-            if (isArray(doc)) {
-                doc = doc[0]
-            }
+            if (!err && doc) {
+                if (isArray(doc)) {
+                    doc = doc[0]
+                }
 
-            if (!err) {
                 console.log("loaded existing gameDB instance")
                 this.gameDB = doc
 
-                console.log("test entity name: " + this.gameDB.testEntity.name)
                 var numEntities =   this.gameDB.entities.length
                 console.log(`loaded ${numEntities} entities`)
             } else {
@@ -39,41 +38,29 @@ class GameSim {
         var entitySchemas = this.gameDB.entities
 
         console.log("startupFromDB")
-        entitySchemas.forEach((entitySchema)=>{
-            console.log("load entity")
-            var entity = new EntityModel()
-            entity.initWithSchema(entitySchema)
-            this.entities.push(entity)
-        })
+        if (entitySchemas) {
+            entitySchemas.forEach((entitySchema)=>{
+                console.log("load entity")
+                var entity = new EntityModel()
+                entity.initWithSchema(entitySchema)
+                this.entities.push(entity)
+            })
+        }
 
         //todo: when complete, start update loop
     }
 
     flushToDB() {
         console.log("flushToDB")
-        var entitySchemas = []
+
+        // does this trigger re-saving the entire entity list every time? or is it smart enough to delta?
+        this.gameDB.entities = []
         this.entities.forEach((entity)=>{
             console.log("get schema for object")
             var schemaObject = {}
             entity.writeToSchema(schemaObject)
-            entitySchemas.push(schemaObject)
-
             this.gameDB.entities.push(schemaObject)
         })
-
-        
-        var name = this.gameDB.testEntity.name +">"
-        this.gameDB.testEntity = entitySchemas[0]
-        this.gameDB.testEntity.name = name
-
-        /*
-        this.gameDB.entities = entitySchemas
-        */
-       /*
-       Game.update({_id:this.gameDB._id}, {$set: {entities: entitySchemas }} , {upsert:true}, (err, numreplaced, upserted)=>{
-           console.log( "update entities with #replaced:" +numreplaced+ " & err? " + err)
-       })
-       */
 
         this.gameDB.save((err)=>{
             if (err) {

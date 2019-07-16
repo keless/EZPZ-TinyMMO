@@ -4,13 +4,16 @@ import { EntitySchema, EntityModel } from '../../static/shared/model/EntityModel
 
 var options = { filename: "./db/game.db" }
 
+var EntityDoc = new linvoDB('', EntitySchema, { autoLoad:false })
+
 var gameSchema = {
     date: {
         type: Date,
         default: Date.now
     },
-    entities:[EntitySchema],
-    testEntity: EntitySchema
+    
+    // entities:[EntitySchema], // Hack: dont define this in schema and it will work -__-'
+
 }
 
 var Game = new linvoDB("game", gameSchema, options)
