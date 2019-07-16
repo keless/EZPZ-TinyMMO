@@ -12,6 +12,7 @@ class SocketClient {
         this.verbose = true
         
         this._addUserMessageHandler('createCharacter', this.onCreateCharacter)
+        this._addUserMessageHandler('deleteCharacter', this.onCreateCharacter)
     }
 
     emit(message, data) {
@@ -24,7 +25,8 @@ class SocketClient {
         }
     }
 
-    // Expect: { name:String, race:String, charClass:String }
+    /// Expect: { name:String, race:String, charClass:String }
+    /// Response: { worldUpdate:WorldUpdate }
     onCreateCharacter(err, data, response) {
         //create character for user
         var userId = this.clientID
@@ -45,6 +47,30 @@ class SocketClient {
         } else {
             this._log("could not create character")
             response({error:"could not create character"})
+        }
+    }
+
+    /// Expect: { uuid:String }
+    /// Response: { entitiesRemoved:[uuid] }
+    onDeleteCharacter(err, data, response) {
+        var userId = this.clientID
+        var charId= data.uuid
+
+        var gameSim = Service.Get("gameSim")
+        var character = gameSim.getEntityForId(charId)
+        if (!character) {
+            //doesnt exist
+            this._log("could not delete non-existant character")
+            response({error:"cant delete character: does not exist"})
+        } else if (character.owner != userId ) {
+            //dont own it, so cant delete it
+            this._log("could not delete un-owned character")
+            response({error:"cant delete character: not the owner"})
+        } else {
+            //delete
+            this._log("deleted character " + charId)
+            gameSim.removeEntityWithId(charId)
+            response({entitiesRemoved:[charId]})
         }
     }
 

@@ -112,6 +112,28 @@ class CharacterSelectStateView extends BaseStateView {
   onBtnDel(e) {
     if(confirm('Are you sure?')) {
 
+
+      var clientProtocol = Service.Get("protocol")
+      var charId = //xxx WIP
+
+      clientProtocol.requestDeleteCharacter( charId, (data) => {
+        console.log("ackRequestCreateCharacter with data " + data)
+  
+        console.log(data)
+        if (data.entities) {
+          //world update should have our new character in it
+          console.log("got world update after creating char")
+          var clientGame = ClientGame.Get()
+          clientGame.applyWorldUpdate( data )
+        }
+  
+        //xxx todo: jump into game once character is created
+        // jump back to selection screen
+        Service.Get("state").gotoState("manager");
+      })
+
+
+
       console.log("WIP - delete character " + e.idx)
       //xxx todo: send message to server to delete character id
 
@@ -254,15 +276,7 @@ class CharacterCreationStateView extends BaseStateView {
         }
       }
     }
-    
-    var newJson = { locIdx:locIdx, entity:{name:name, race:selectedRace, class:selectedClass, stats:{ hp_base:30, xp_level:1 }}};
-    
-    /* xxx old
-    var sd = Service.Get("sd");
-    sd.save("char"+this.idx, newJson);
-    */
 
-    //xxx WIP: send server message to create character
     var clientProtocol = Service.Get("protocol")
     clientProtocol.requestCreateCharacter( name, selectedRace, selectedClass, (data) => {
       console.log("ackRequestCreateCharacter with data " + data)
@@ -270,19 +284,14 @@ class CharacterCreationStateView extends BaseStateView {
       console.log(data)
       if (data.entities) {
         //world update should have our new character in it
-        console.log("got world update")
+        console.log("got world update after creating char")
         var clientGame = ClientGame.Get()
         clientGame.applyWorldUpdate( data )
- 
       }
-      console.log("WIP load created character")
 
-      //xxx WIP: temp jump back to selection screen
+      //xxx todo: jump into game once character is created
+      // jump back to selection screen
       Service.Get("state").gotoState("manager");
-
-      //xxx TODO: how do we send the character data over?
-      //PlayerModel.Load("char"+this.idx);
-      //Service.Get("state").gotoState("location", locIdx);
     })
   }
 }

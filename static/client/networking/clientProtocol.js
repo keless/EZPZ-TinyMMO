@@ -63,7 +63,13 @@ export default class ClientProtocol {
     // ackCB should contain a WorldUpdateModel with only the new character in it
     requestCreateCharacter( name, race, charClass, ackCB ) {
         this._log("request create character")
-        var self = this
         this.send("createCharacter", { name:name, race:race, charClass:charClass }, ackCB)
+    }
+
+    // Ask the server to delete a character (we must be the owner)
+    // ackCB should contain { entitiesRemoved:[uuid] } with the uuid of the character removed
+    requestDeleteCharacter(uuid, ackCB) {
+        this._log("request delete character")
+        this.send("deleteCharacter", { uuid:uuid }, ackCB)
     }
 }
