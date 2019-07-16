@@ -12,7 +12,7 @@ class SocketClient {
         this.verbose = true
         
         this._addUserMessageHandler('createCharacter', this.onCreateCharacter)
-        this._addUserMessageHandler('deleteCharacter', this.onCreateCharacter)
+        this._addUserMessageHandler('deleteCharacter', this.onDeleteCharacter)
     }
 
     emit(message, data) {
@@ -35,6 +35,11 @@ class SocketClient {
         var name = data.name
         var race = data.race
         var charClass = data.charClass
+
+        if (!name || !race || !charClass) {
+            response({error:"invalid inputs name " + name + " race " + race + " class " + charClass})
+            return
+        }
         
         this._log("on create character with name " + name + " race " + race + " class " + charClass)
         var gameSim = Service.Get("gameSim")
@@ -69,7 +74,7 @@ class SocketClient {
         } else {
             //delete
             this._log("deleted character " + charId)
-            gameSim.removeEntityWithId(charId)
+            gameSim.removeEntitiesById([charId])
             response({entitiesRemoved:[charId]})
         }
     }

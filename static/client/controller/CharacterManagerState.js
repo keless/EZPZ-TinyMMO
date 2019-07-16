@@ -44,10 +44,9 @@ class CharacterSelectStateView extends BaseStateView {
     var xStart = (screenSize.x/2) - ( (cols*xSpace) /2 ) + xSpace/2; 
     var yStart = 300;
 
+    //get list of player owned characters
     var clientGame = ClientGame.Get()
     var playerOwned = clientGame.getEntitiesForCurrentPlayer()
-    //xxx WIP - get list of player owned characters
-
 
     for(var y=0; y<rows; y++) {
       for(var x=0; x<cols; x++) {
@@ -112,33 +111,23 @@ class CharacterSelectStateView extends BaseStateView {
   onBtnDel(e) {
     if(confirm('Are you sure?')) {
 
+      var clientGame = ClientGame.Get()
+      var playerOwned = clientGame.getEntitiesForCurrentPlayer()
+
+      console.log("delete character " + e.idx)
+      var charId = playerOwned[e.idx].uuid
 
       var clientProtocol = Service.Get("protocol")
-      var charId = //xxx WIP
-
       clientProtocol.requestDeleteCharacter( charId, (data) => {
-        console.log("ackRequestCreateCharacter with data " + data)
+        console.log("ackRequestDeleteCharacter with data " + data)
   
-        console.log(data)
-        if (data.entities) {
-          //world update should have our new character in it
-          console.log("got world update after creating char")
-          var clientGame = ClientGame.Get()
-          clientGame.applyWorldUpdate( data )
+        if(data.entitiesRemoved) {
+          console.log("client rcv removed ${data.removedEntities.length} entities, refresh view" )
+          clientGame.removeEntitiesById(data.entitiesRemoved)
         }
-  
-        //xxx todo: jump into game once character is created
-        // jump back to selection screen
-        Service.Get("state").gotoState("manager");
+
+        this.state.gotoSelectView();
       })
-
-
-
-      console.log("WIP - delete character " + e.idx)
-      //xxx todo: send message to server to delete character id
-
-      //reload view
-      this.state.gotoSelectView();
     }
   }
 	
@@ -265,6 +254,15 @@ class CharacterCreationStateView extends BaseStateView {
     var name = this.inputName.getTextInputValue();
     var selectedRace = g_races[this.selectedRaceIdx];
     var selectedClass = g_classes[this.selectedClassIdx];
+
+    if (!selectedRace) {
+      console.error("invalid race")
+      return
+    }
+    if (!selectedClass) {
+      console.error("invalid class")
+      return
+    }
 
     var locIdx = 0;
     for(var i=0; i<g_locations.length; i++) {

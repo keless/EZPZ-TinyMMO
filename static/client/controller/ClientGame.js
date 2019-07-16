@@ -23,6 +23,15 @@ class ClientGameSim {
     }
   }
 
+  removeEntitiesById(entityIDs) {
+    //xxx todo: optimize this
+    for (var i=this.entities.length-1; i>=0; i--) {
+      if (entityIDs.includes(this.entities[i].uuid)) {
+        this.entities.splice(i, 1)
+      }
+    }
+  }
+
   getEntityForId(entityId) {
     return this.entities.find((entity)=> {
         return entity.uuid == entityId
@@ -68,6 +77,10 @@ class ClientGame {
   setUserID( userID ) {
     console.log("current user set to " + userID)
     this.currentUserID = userID
+  }
+
+  removeEntitiesById(entityIDs) {
+    this.gameSim.removeEntitiesById(entityIDs)
   }
 
   getEntitiesForCurrentPlayer() {

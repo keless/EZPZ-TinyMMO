@@ -5,6 +5,9 @@ import {Service} from '../serverEZPZ.js'
 import {EntityModel, EntitySchema} from '../../static/shared/model/EntityModel.js'
 import { isArray } from '../../static/shared/EZPZ/Utility.js';
 
+
+//xxx TODO: make this shared across client+server
+//xxx move database load/flush out to server-only code
 class GameSim {
     constructor() {
 
@@ -95,6 +98,25 @@ class GameSim {
         return this.entities.find((entity)=> {
             return entity.uuid == entityId
         })
+    }
+
+
+    removeEntitiesById(entityIDs) {
+        //xxx todo: optimize this
+        console.log("xxx remove entities " + entityIDs)
+        var removed = false
+        for (var i=this.entities.length-1; i>=0; i--) {
+            if (entityIDs.includes(this.entities[i].uuid)) {
+                console.log("xxx    remove entity " + this.entities[i].uuid)
+                this.entities.splice(i, 1)
+                removed = true
+            }
+        }
+        
+        if (removed) {
+            console.log("flush after removing entity")
+            this.flushToDB()
+        }
     }
 
     getEntityIDsForOwner(ownerId) {
