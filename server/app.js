@@ -104,18 +104,24 @@ io.use((socket, next)=> {
 })
 var protocol = new ServerProtocol(io)
 
-//const GameSim = require('./controllers/gameSim')
-import GameSim from './controllers/gameSim.js'
-
 // Start game simulation
-//xxx todo: main loop
-var gameSim = new GameSim()
+import GameSimDatabaseConnector from './controllers/GameSimDatabaseConnector.js'
+var gameSimDatabaseConnector = GameSimDatabaseConnector.instance
 
-// Start server
-serv.listen(SERVER_PORT, ()=>{
-  console.log("Started server on port " + SERVER_PORT)
-  protocol.beginListening()
+gameSimDatabaseConnector.startupFromDB((err)=>{
+  if (err) {
+    console.log("ERROR - could not start gameworld from database, abort starting server")
+    return
+  }
+
+  // Start server
+  serv.listen(SERVER_PORT, ()=>{
+    console.log("Started server on port " + SERVER_PORT)
+    protocol.beginListening()
+  })
 })
+
+
 
 /* debug 
 const User = require('./models/linvoUser')

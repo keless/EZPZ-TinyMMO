@@ -1,7 +1,8 @@
-import GameSim from '../controllers/gameSim.js'
+import GameSim from '../../static/shared/controller/GameSim.js'
 import User from '../models/linvoUser.js'
 import Service from '../../static/shared/EZPZ/Service.js'
 import WorldUpdateModel from '../../static/shared/model/WorldUpdateModel.js'
+import GameSimDatabaseConnector from '../controllers/GameSimDatabaseConnector.js'
 
 
 class SocketClient {
@@ -10,6 +11,7 @@ class SocketClient {
         this.clientID = clientID
 
         this.verbose = true
+        this._veryVerbose = false
         
         this._addUserMessageHandler('createCharacter', this.onCreateCharacter)
         this._addUserMessageHandler('deleteCharacter', this.onDeleteCharacter)
@@ -21,6 +23,11 @@ class SocketClient {
 
     _log(text) {
         if(this.verbose) {
+            console.log(text)
+        }
+    }
+    _logVerbose(text) {
+        if(this._veryVerbose) {
             console.log(text)
         }
     }
@@ -42,13 +49,15 @@ class SocketClient {
         }
         
         this._log("on create character with name " + name + " race " + race + " class " + charClass)
-        var gameSim = Service.Get("gameSim")
+        var gameSim = GameSim.instance
         var entityID = gameSim.createCharacterForUser(userId, name, race, charClass)
         if (entityID) {
             var entity = gameSim.getEntityForId(entityID)
             this._log("create character success; sending ack entityID " + entityID )
     
             response( this._getWorldUpdateForEntityIDs([entityID]) )
+
+            GameSimDatabaseConnector.instance.flushToDB()
         } else {
             this._log("could not create character")
             response({error:"could not create character"})
@@ -61,7 +70,7 @@ class SocketClient {
         var userId = this.clientID
         var charId= data.uuid
 
-        var gameSim = Service.Get("gameSim")
+        var gameSim = GameSim.instance
         var character = gameSim.getEntityForId(charId)
         if (!character) {
             //doesnt exist
@@ -76,12 +85,14 @@ class SocketClient {
             this._log("deleted character " + charId)
             gameSim.removeEntitiesById([charId])
             response({entitiesRemoved:[charId]})
+
+            GameSimDatabaseConnector.instance.flushToDB()
         }
     }
 
     /// @param entityIDs is an array of uuids
     _getWorldUpdateForEntityIDs( entityIDs ) {
-        var gameSim = Service.Get("gameSim")
+        var gameSim = GameSim.instance
         var entities = []
         entityIDs.forEach((entityID)=>{
             var entity = gameSim.getEntityForId(entityID)
@@ -102,12 +113,13 @@ class SocketClient {
     /// will disconnect socket if no valid Passport session
     /// @param callback  func(err, data, response)
     _addUserMessageHandler(message, callback) {
-        this._log("add message handler for " + message)
+        this._logVerbose("add message handler for " + message)
         this.socket.on(message, (data, response) => {
             this._log("Protocol: handle " + message)
             if (!this.socket.request.session.passport) {
                 //connection from invalid client, throw away
                 this.socket.disconnect(true)
+                this._log("disconnected invalid client (no passport session)")
 
                 response("invalid client", data)
                 return
