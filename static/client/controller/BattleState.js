@@ -1,48 +1,44 @@
-import { AppState, BaseStateModel, NodeView, Service } from '../clientEZPZ.js'
-import PlayerModel from '../../shared/model/PlayerModel.js'
+import { AppState, BaseStateModel, NodeView, Service, CastCommandTime, CastWorldModel } from '../clientEZPZ.js'
+//import PlayerModel from '../../shared/model/PlayerModel.js'
+import GameSim from '../../shared/controller/GameSim.js'
+import BattleStateView from '../view/BattleView.js'
 
 export default class BattleState extends AppState {
-	constructor(locationIdx) { 
+	constructor(locationIdx, controlledEntityId) { 
 		super();
-		this.model = new BattleStateModel(this, locationIdx);
+		this.model = new BattleStateModel(this, locationIdx, controlledEntityId);
 		this.view = new BattleStateView(this.model);
-
-		this.model.setMode(BattleState.MODE_GRIND);
 	}
 
-	static get MODE_GRIND(){ return 1; }
-	static get MODE_IDLE() { return 2; }
 }
 
 // conforms to ICastPhysics 
 class BattleStateModel extends BaseStateModel {
-	constructor( state, locationIdx ) {
+	constructor( state, locationIdx, controlledEntityId ) {
 		super();
 		
-		this.mode = BattleState.MODE_IDLE;
-
 		console.log("battle at location " + locationIdx);
 		this.locationIdx = locationIdx;
-		this.isPaused = false;
+		this.controlledEntityId = controlledEntityId
 
-		this.isReturning = false;
-		this.returnTime = 0;
+		this.gameSim = GameSim.instance
+		this.playerEntity = this.gameSim.getEntityForId(this.controlledEntityId)
 
 		this.pState = state;
 		
-		this.entities = [];
 		this.controllers = [];
 
 		this.castWorldModel = CastWorldModel.Get();
 		this.castWorldModel.setPhysicsInterface( this );
 
-		this.playerModel = PlayerModel.Get();
-		this.addPlayerEntity(this.playerModel.entity);
+		//this.playerModel = PlayerModel.Get();
+		//this.addPlayerEntity(this.playerModel.entity);
 
 		//ensure player is registered in cast world after multiple returns
-		this.castWorldModel.RemoveEntity(this.playerModel.entity);
-		this.castWorldModel.AddEntity(this.playerModel.entity);
+		//this.castWorldModel.RemoveEntity(this.playerModel.entity);
+		//this.castWorldModel.AddEntity(this.playerModel.entity);
 
+		/*
 		this.SetListener("btnMapLoc", this.onBtnMapLoc);
 		this.SetListener("btnEquipSlot", this.onBtnEquipSlot);
 		this.SetListener("btnInvSlot", this.onBtnInvSlot);
@@ -53,18 +49,22 @@ class BattleStateModel extends BaseStateModel {
 		this.SetListener("intentGrindMode", this.onPlayerIntentGrind, EventBus.game);
 
 		this.SetListener("setPctRest", this.onSetRestPct, EventBus.game);
+		*/
 
 		Service.Add("battleStateModel", this);
 	}
 	
 	Destroy() {
-		this.playerModel.entity.removeListener("dead", this.onPlayerDeath.bind(this));
 
-		for( var e of this.entities ) {
+		//this.playerModel.entity.removeListener("dead", this.onPlayerDeath.bind(this));
+
+		/*
+		for( var e of this.gameSim.entities ) {
 			e.removeListener("dead", this.onEnemyDeath.bind(this));
 			e.Destroy();
 		}
-		this.entities = [];
+		this.gameSim.entities = [];
+		*/
 
 		for( var e of this.controllers ) {
 			e.Destroy();
@@ -76,19 +76,7 @@ class BattleStateModel extends BaseStateModel {
 		super.Destroy();
 	}
 
-	onPlayerIntentIdle(e) {
-		this.setMode(BattleState.MODE_IDLE);
-	}
-
-	onPlayerIntentGrind(e) {
-		this.setMode(BattleState.MODE_GRIND);
-	}
-
-	onSetRestPct(e) {
-		this.playerModel.setRestPct(e.pct);
-		this.playerModel.save();
-	}
-
+/*
 	setMode(mode) {
 		switch(mode) {
 			case BattleState.MODE_IDLE:
@@ -96,7 +84,7 @@ class BattleStateModel extends BaseStateModel {
 				this.mode = mode;
 				this.removeAllEnemyEntities();
 				this.controllers[0].pause();
-				this.entities[0].stopAllCasting();
+				this.gameSim.entities[0].stopAllCasting();
 				EventBus.game.dispatch({evtName:"battleModeChanged", mode:this.mode});
 			}
 			break;
@@ -109,11 +97,8 @@ class BattleStateModel extends BaseStateModel {
 			break;
 		}
 	}
+	*/
 
-	//return true if ghosting, resting or returning
-	isGhostRestReturn() {
-		return this.playerModel.isGhost() || this.playerModel.isResting() || this.isReturning;
-	}
 
 	onBtnEquipSlot(e) {
 		var slotIdx = e.idx;
@@ -135,31 +120,18 @@ class BattleStateModel extends BaseStateModel {
 		}
 	}
 
-	pause() {
-		this.isPaused = true;
-	}
-	unpause() {
-		this.isPaused = false;
-	}
-
-	getRestPeriod() {
-		return this.playerModel.restPeriod;
-	}
-	getReturnPeriod() {
-		return this.playerModel.returnPeriod;
-	}
-
 	onBtnMapLoc(e) {
 		//var locIdx = e.idx;
 		Service.Get("state").gotoState("location", e.idx);
 	}
 	
+
 	addPlayerEntity( ent ) {
-		if(this.entities.length == 0) {
-			this.entities.push(ent);
+		if(this.gameSim.entities.length == 0) {
+			this.gameSim.entities.push(ent);
 		}else {
 			console.error("overriding player entity, probably bad");
-			this.entities[0] = ent;
+			this.gameSim.entities[0] = ent;
 		}
 
 		ent.addListener("dead", this.onPlayerDeath.bind(this));
@@ -171,7 +143,7 @@ class BattleStateModel extends BaseStateModel {
 	}
 
 	addEntity( ent ) {
-		this.entities.push(ent);
+		this.gameSim.entities.push(ent);
 		var controller = new AIController(ent);
 		this.controllers.push(controller);
 
@@ -180,7 +152,7 @@ class BattleStateModel extends BaseStateModel {
 		EventBus.game.dispatch({evtName:"entitySpawned"});
 	}
 	removeEntity(ent) {
-		if(removeFromArray(this.entities, ent)) {
+		if(removeFromArray(this.gameSim.entities, ent)) {
 			ent.stopAllCasting();
 			ent.removeListener("dead", this.onEnemyDeath.bind(this));
 			for(var i=0; i<this.controllers.length; i++) {
@@ -208,8 +180,8 @@ class BattleStateModel extends BaseStateModel {
 	}
 
 	removeAllEnemyEntities() {
-		for(var i=this.entities.length-1; i>0; i--) {
-			this.removeEntity(this.entities[i]);
+		for(var i=this.gameSim.entities.length-1; i>0; i--) {
+			this.removeEntity(this.gameSim.entities[i]);
 		}
 	}
 
@@ -220,24 +192,16 @@ class BattleStateModel extends BaseStateModel {
 	_doRest() {
 		this.removeAllEnemyEntities();
 
-		this.isPaused = true;
 		this.playerModel.restStart( CastCommandTime.Get() );
 		this.controllers[0].pause();
 
 		EventBus.ui.dispatch({evtName:"playerRest"});
 	}
 
-	onPlayerReturn(e) {
-		this.playerModel.stopAllCasting();
-		this.controllers[0].pause();
-		this.isReturning = true;
-		this.isPaused = true;
-		this.returnTime = CastCommandTime.Get();
-	}
-
 	onEnemyDeath(e) {
 		console.log("on enemy death");
 
+		/*
 		//gather XP & loot drop, give to player
 		var entity = e.entity;
 		var xpGained = entity.xp_next;
@@ -251,6 +215,7 @@ class BattleStateModel extends BaseStateModel {
 		this.playerModel.addItem(loot);
 
 		this.removeEntity(entity);
+		*/
 	}
 
 	Update(ct, dt) {
@@ -258,50 +223,41 @@ class BattleStateModel extends BaseStateModel {
 		
 		this.castWorldModel.updateStep(dt);
 		ct = CastCommandTime.Get();
-			
-		if(!this.isPaused) {
-			if(this.mode == BattleState.MODE_GRIND) {
 
-				if(this.playerModel.shouldRest()) {
-					if( this.entities.length == 1 ) {
-						//only rest if out of combat
-						this._doRest();
-					}
-					
-				}else {
-
-					//check if player has skills equipped, if not, dont let them grind
-					if(this.playerModel.entity.getAbilities().length == 0 ) {
-						EventBus.ui.dispatch({evtName:"noSkillsAlert"});
-						this.setMode(BattleState.MODE_IDLE);
-					} else {
-						this.doSpawnLogic(ct);
-					}
-				}
-			}
+/*
+		//check if player has skills equipped, if not, dont let them grind
+		if(this.playerModel.entity.getAbilities().length == 0 ) {
+			EventBus.ui.dispatch({evtName:"noSkillsAlert"});
+			this.setMode(BattleState.MODE_IDLE);
+		} else {
+			this.doSpawnLogic(ct);
+		}
 			
-			for( var e of this.entities ) {
-				e.Update(ct, dt);
-			}
-			for( var c of this.controllers ) {
-				c.Update(ct, dt);
-			}
+		for( var e of this.gameSim.entities ) {
+			e.Update(ct, dt);
+		}
+		*/
+		for( var c of this.controllers ) {
+			c.Update(ct, dt);
 		}
 
+		this.gameSim.updateStep(ct, dt)
+
+/*
 		if(this.playerModel.isGhost() && this.playerModel.shouldRespawn(ct)) {
 			this.doPlayerRespawn();
 		}
 		if(this.playerModel.isResting() && this.playerModel.shouldFinishResting(ct)) {
 			this.doPlayerRestEnd();
 		}
-		if(this.isReturning && ct > this.returnTime + this.playerModel.returnPeriod) {
-			Service.Get("state").gotoState("location", this.locationIdx);
-		}
+
 
 		this.playerModel.save();
+		*/
 		
 	}
 	
+	/*
 	doPlayerRespawn() {
 		this.playerModel.respawn();
 		this.controllers[0].unpause();
@@ -319,11 +275,11 @@ class BattleStateModel extends BaseStateModel {
 		if(this.playerModel.entity.isDead) {
 			return; //dont spawn while player is dead
 		}
-		if(this.entities.length < 2) {
+		if(this.gameSim.entities.length < 2) {
 			var enemy = SpawnFactory.SpawnEnemyForLocation(this.locationIdx, this.playerModel);
 			this.addEntity(enemy);
 		}
-	}
+	}*/
 
 	// conforms to ICastPhysics
 	// in: ICastEntity fromEntity, ICastEntity toEntity
@@ -348,7 +304,7 @@ class BattleStateModel extends BaseStateModel {
 		var inRadius = [];
 		var rSq = r * r;
 		
-		for( var e of this.entities ) {
+		for( var e of this.gameSim.entities ) {
 			
 			if( ignore && arrayContains(ignore, e) ) continue;
 			
@@ -362,4 +318,4 @@ class BattleStateModel extends BaseStateModel {
 	}
 }
 
-export { BattleState }
+export { BattleState, BattleStateModel }

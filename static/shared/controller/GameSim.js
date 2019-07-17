@@ -25,7 +25,7 @@ class GameSim {
         this.dirty = true
     }
 
-    update() {
+    update(ct, dt) {
         //TODO: update loop
         // perform physics
 

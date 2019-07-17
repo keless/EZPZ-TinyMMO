@@ -1,4 +1,4 @@
-import _ from './clientEZPZ.js'
+import { NodeView, CreateSimpleProgressBar }from '../clientEZPZ.js'
 
 export default class EntityView extends NodeView
 {
@@ -151,3 +151,6 @@ class AbilityView extends NodeView
 		}
  	}
 }
+
+export default EntityView
+export { AbilityView, EntityView }

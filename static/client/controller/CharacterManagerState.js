@@ -142,10 +142,16 @@ class CharacterSelectStateView extends BaseStateView {
       //load char and go to game
       console.log("WIP load known character " + e.idx)
 
+      var clientGame = ClientGame.Get()
+      var playerOwned = clientGame.getEntitiesForCurrentPlayer()
+      var charId = playerOwned[e.idx].uuid
+      var locIdx = 0 //not currently worried about location yet
 
       //PlayerModel.Load("char"+e.idx);
-      //todo: go to location instead of battle
+
       //Service.Get("state").gotoState("location", PlayerModel.Get().locationIdx);
+      Service.Get("state").gotoState("battle", locIdx, charId);
+      
     }
 	}
 }

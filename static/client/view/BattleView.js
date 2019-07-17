@@ -1,27 +1,29 @@
-import { BaseStateView, NodeView, ButtonView, CreateSimpleProgressBar } from './clientEZPZ.js'
+import { BaseStateView, NodeView, ButtonView, Graphics, CreateSimpleProgressBar } from '../clientEZPZ.js'
+import {BattleStateModel} from '../controller/BattleState.js'
 
 export default class BattleStateView extends BaseStateView {
 	constructor( model ) {
 		super();
 		
 		this.pModel = model;
-    this.abilityViews = [];
+
+		this.controlledEntity = null;
+		this.entityViews = []
+
+		/*
 		this.playerView = null;
-		this.enemyViews = [];
 		this.stratView = null;
 		this.noSkillsView = null;
 		this.ghostView = null;
 		this.abilityInfoView = null;
 		this.mapView = null;
+		*/
+		this.entityViews = [];
 
     var screenSize = Graphics.ScreenSize;
 
-		var loc = g_locations[this.pModel.locationIdx];
+		//var loc = g_locations[this.pModel.locationIdx];
 
-		this.lblLocation = new NodeView();
-		this.lblLocation.setLabel(loc.name, "20px Arial", "#000000");
-		this.lblLocation.pos.setVal(screenSize.x/2,50);
-		this.rootView.addChild(this.lblLocation);
 
 		var navX = screenSize.x - 25;
 
@@ -33,23 +35,24 @@ export default class BattleStateView extends BaseStateView {
 		this.btnMap = new ButtonView("btnMap", "gfx/items/icon_map.sprite");
 		this.btnMap.pos.setVal(navX, 75);
 		this.rootView.addChild(this.btnMap);
-		this.SetListener("btnMap", this.onBtnMap);
+		//this.SetListener("btnMap", this.onBtnMap);
 
 		this.btnRest = new ButtonView("btnRest", "gfx/items/icon_rest.sprite");
 		this.btnRest.pos.setVal(navX - 50, 25);
 		this.rootView.addChild(this.btnRest);
-		this.SetListener("btnRest", this.onBtnRest);
+		//this.SetListener("btnRest", this.onBtnRest);
 
 		this.btnStrat = new ButtonView("btnStrat", "gfx/items/icon_gear.sprite");
 		this.btnStrat.pos.setVal(navX - 50, 75);
 		this.rootView.addChild(this.btnStrat);
-		this.SetListener("btnStrat", this.onBtnStrat);
+		//this.SetListener("btnStrat", this.onBtnStrat);
     
 		this.btnSkills = new ButtonView("btnSkills", "gfx/items/icon_book.sprite");
 		this.btnSkills.pos.setVal(navX - 100, 75);
 		this.rootView.addChild(this.btnSkills);
-		this.SetListener("btnSkills", this.onBtnSkills);
+		//this.SetListener("btnSkills", this.onBtnSkills);
 
+		/*
 		var playerEntity = this.pModel.entities[0];
 
     this.playerAbilities = new TableView(screenSize.x, 80);
@@ -75,9 +78,12 @@ export default class BattleStateView extends BaseStateView {
 		this.playerHud = new PlayerHudView(playerEntity);
 		this.playerHud.pos.setVal(screenSize.x - this.playerHud.size.x/2, 652);
 		this.rootView.addChild(this.playerHud);
+		*/
 
+		var playerEntityId = this.pModel.controlledEntityId
     this.createPlayerEntityView(playerEntity);
 
+		/*
     playerEntity.addListener("update", this.onPlayerModelUpdate.bind(this));
 		playerEntity.addListener("castEnd", this.onPlayerModelAttack.bind(this));
 
@@ -99,13 +105,15 @@ export default class BattleStateView extends BaseStateView {
 		this.SetListener("btnCloseNoSkillsAlert", this.onHideNoSkillsAlert);
 
 		this.refreshXPBarView();
-    this.refreshEnemyEntityViews();
+    
 
 		this.enemyLayer = new NodeView();
 		this.rootView.addChild(this.enemyLayer);
 
 		this.progresslayer = new NodeView();
 		this.rootView.addChild(this.progresslayer);
+		*/
+		this.refreshEnemyEntityViews();
 
 		this.topView = new NodeView();
 		this.rootView.addChild(this.topView);
@@ -136,7 +144,7 @@ export default class BattleStateView extends BaseStateView {
 		
 		this._rebuildAllAbilities(entityModel);
 	}
-
+/*
 	onBtnCloseAbilityView(e) {
 		this._hideAbilityInfoView();
 	}
@@ -163,7 +171,7 @@ export default class BattleStateView extends BaseStateView {
 			this.abilityInfoView = null;
 		}
 	}
-
+*/
 	onPlayerModelAttack(e) {
 		var ct = Application.getTime();
 
@@ -171,7 +179,7 @@ export default class BattleStateView extends BaseStateView {
 			this.playerView.avatar.animEvent(ct, "attack");
 		}	
 	}
-
+/*
 	_removeGhostView() {
 		if(this.ghostView) {
 			this.progresslayer.removeChild(this.ghostView, true);
@@ -201,7 +209,7 @@ export default class BattleStateView extends BaseStateView {
 	onPlayerRespawned(e) {
 		this._removeGhostView();
 	}
-
+*/
 	onBtnBack(e) {
 		EventBus.game.dispatch({evtName:"playerReturn"});
 
@@ -219,30 +227,9 @@ export default class BattleStateView extends BaseStateView {
 		this.progresslayer.addChild(this.ghostView);
 	}
 
-	showRest() {
-		var dt = this.pModel.getRestPeriod();
-		this._removeGhostView();
-
-		this.ghostView = CreateScreenShade();
-		var bar = CreateSimpleProgressBar("rgb(255,255,255)", "rgb(0,255,0)", 400, 60);
-		bar.pct = 0;
-		bar.setTween("pct", dt, 1);
-		bar.setLabelWithOutline("Resting...", "12px Arial");
-		bar.pos.setVal(0,-200);
-		this.ghostView.addChild(bar);
-		this.progresslayer.addChild(this.ghostView);
-	}
-
-	onRestEnded(e) {
-		this._removeGhostView();
-	}
-
-	onBattleModeChanged(e) {
-		this._updateAllAbilities();
-	}
+	/*
 	onPlayerModelUpdate(e) {
 		this._updateAllAbilities();
-
   }
 	_updateAllAbilities() {
     for( var i in this.abilityViews ) {
@@ -281,42 +268,43 @@ export default class BattleStateView extends BaseStateView {
 			this.abilityViews.push(av);
 		}
 	}
+	*/
 
 	onEntitySpawned(e) {
-		if(this.pModel.entities.length <= 1) return; //just the player
-		this.refreshEnemyEntityViews();
+		//if(this.pModel.entities.length <= 1) return; //just the player
+		this.refreshEntityViews();
 	}
 	onEntityRemoved(e) {
-		this.refreshEnemyEntityViews();
+		this.refreshEntityViews();
 		this.refreshXPBarView();
 	}
 
 	refreshXPBarView() {
-		var playerEntity = this.pModel.entities[0];
+		var playerEntity = this.pModel.playerEntity
 		this.xpBar.updateLabel(playerEntity.xp_curr + " / " + playerEntity.xp_next);
 		this.xpBar.pct = playerEntity.xp_curr / playerEntity.xp_next;
 	}
 
-	refreshEnemyEntityViews() {
-		this.removeAllEnemyViews();
+	refreshEntityViews() {
+		this.removeAllEntityViews();
 
-    for(var i=1; i<this.pModel.entities.length; i++ ) {
-			this.createEntityView(this.pModel.entities[i], i);
+    for(var i=1; i<this.pModel.gameSim.entities.length; i++ ) {
+			this.createEntityView(this.pModel.gameSim.entities[i], i);
 		}
 	}
 
-	removeAllEnemyViews() {
-		for(var i=0; i<this.enemyViews.length; i++ ) {
-			this.enemyLayer.removeChild(this.enemyViews[i], true);
+	removeAllEntityViews() {
+		for(var i=0; i<this.entityViews.length; i++ ) {
+			this.enemyLayer.removeChild(this.entityViews[i], true);
 		}
-		this.enemyViews = [];
+		this.entityViews = [];
 	}
 
 	createEntityView( entityModel, idx ) {
 		var entView = new EntityView(entityModel, false);
     entView.pos.setVal(400, 180 + (idx*50))
 		this.enemyLayer.addChild(entView);
-		this.enemyViews.push(entView);
+		this.entityViews.push(entView);
 	}
 
 	onBtnCloseSkills(e) {
