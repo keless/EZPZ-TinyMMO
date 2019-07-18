@@ -45,17 +45,17 @@ export default class ClientProtocol {
         })
 
         this.socket.on("disconnect", (reason)=>{
-            self._log("disconnect recieved with reason: " + reason)
+            this._log("disconnect recieved with reason: " + reason)
             setTimeout(() => { window.location.reload(true) }, 2000)
         })
         this.socket.on("error", (err)=>{
-            self._log("error recieved")
+            this._log("error recieved")
             if (err) { console.log(err) }
             setTimeout(() => { window.location.reload(true) }, 2000)
         })
 
         this.socket.on("worldUpdate", (data)=> {
-
+            this._log("TODO: handle world update")
         })
     }
 
@@ -93,8 +93,12 @@ export default class ClientProtocol {
     // Update server with player direction+speed input change (ie: joystick status)
     // ackCB should contain no error
     sendInputImpulseChange( vecDir, speed ) {
-        this._log("send impulse change " + vecDir.x + "," + vecDir.y )
-        this.send("playerImpulse", { vecDir:vecDir, speed:speed }, ackCB )
+        this._log("send impulse change ") // + vecDir.x + "," + vecDir.y )
+        this.send("playerImpulse", { vecDir:vecDir.toJson(), speed:speed }, (data)=>{
+            if (data.error) {
+                this._log("error " + data.error)
+            }
+        } )
     }
 }
 

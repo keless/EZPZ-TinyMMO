@@ -5,12 +5,20 @@ import ClientProtocol from '../networking/clientProtocol.js'
 class ImpulseController {
     constructor() {
         this.dir = new Vec2D()
-        this.speed = 200
+        this._speed = 200
 
         this.up = false
         this.down = false
         this.right = false
         this.left = false
+    }
+
+    get speed() {
+        return this._speed
+    }
+    set speed(val) {
+        this._speed = val
+        this._sendUpdateToServer()
     }
 
     setUp( val ) {
@@ -46,8 +54,11 @@ class ImpulseController {
         var y = (this.up ? -1 : (this.down ? 1 : 0))
         this.dir.setVal(x, y)
 
+        this._sendUpdateToServer()
+    }
+    _sendUpdateToServer() {
         // Send new network update
-
+        ClientProtocol.instance.sendInputImpulseChange(this.dir, this.speed)
     }
 
     getVel() {

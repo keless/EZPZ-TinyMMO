@@ -15,6 +15,7 @@ class SocketClient {
         
         this._addUserMessageHandler('createCharacter', this.onCreateCharacter)
         this._addUserMessageHandler('deleteCharacter', this.onDeleteCharacter)
+        this._addUserMessageHandler('playerImpulse', this.onPlayerImpulse)
     }
 
     emit(message, data) {
@@ -90,6 +91,17 @@ class SocketClient {
         }
     }
 
+    /// Expect: { { vecDir: Vec2D.jsonObject, speed:Number } }
+    /// Response: { } //empty object (for now)
+    onPlayerImpulse(err, data, response) {
+
+        this._logVerbose("got player impulse")
+        this._logVerbose(data)
+        //xxx todo: apply this to next gameSim step
+
+        response({})
+    }
+
     /// @param entityIDs is an array of uuids
     _getWorldUpdateForEntityIDs( entityIDs ) {
         var gameSim = GameSim.instance
@@ -108,6 +120,13 @@ class SocketClient {
     }
 
 
+    _logProtocol(message) {
+        let blacklist = [ "playerImpulse" ]
+        if (!blacklist.includes(message)) {
+            this._log("Protocol: handle " + message)
+        }
+    }
+
     /// adds a socket message handler that expects to come from a valid user
     /// will find socketClient in our stored list, or create a new entry if none exists
     /// will disconnect socket if no valid Passport session
@@ -115,7 +134,7 @@ class SocketClient {
     _addUserMessageHandler(message, callback) {
         this._logVerbose("add message handler for " + message)
         this.socket.on(message, (data, response) => {
-            this._log("Protocol: handle " + message)
+            this._logProtocol(message)
             if (!this.socket.request.session.passport) {
                 //connection from invalid client, throw away
                 this.socket.disconnect(true)

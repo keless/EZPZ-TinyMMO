@@ -6,7 +6,7 @@ import linvoDB from 'linvodb3'
 import { uuidv4 } from '../../static/shared/EZPZ/ext/uuid.js'
 var modelName = "user"
 
-var options = { filename: "./db/users.db", autoload:true }
+var options = { filename: "./db/users.db", autoload: true }
 
 var schema = {
     name: String,
