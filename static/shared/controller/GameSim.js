@@ -35,7 +35,7 @@ class GameSim extends ICastPhysics {
     }
 
     updateStep(ct, dt) {
-        //TODO: update loop
+        this.gameTime = ct
 
         //step each physics entity forward
         for(var eIdx = 0; eIdx < this.entities.length; eIdx++) {
@@ -80,6 +80,20 @@ class GameSim extends ICastPhysics {
         this.setDirty()
 
         return entity.uuid
+    }
+
+    getWorldUpdate() {
+        var updateJson = {}
+        updateJson.gameTime = this.gameTime
+        
+        var entities = []
+        this.entities.forEach((entity)=>{
+            var entitySchema = {}
+            entities.push( entity.writeToSchema(entitySchema) )
+        })
+        updateJson.entities = entities
+
+        return updateJson
     }
 
     updateEntityFromJson(entityJson) {

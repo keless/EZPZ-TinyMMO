@@ -154,6 +154,12 @@ class ServerProtocol {
         this.verbose = true
         this.io = socketio
         this.socketClients = []
+
+        Service.Add("serverProtocol")
+    }
+
+    static get instance() {
+        return Service.Get("serverProtocol")
     }
 
     getSocketClientForUserID(userId) {
@@ -204,6 +210,10 @@ class ServerProtocol {
                 }
             })
         })
+    }
+
+    broadcast(message, data) {
+        this.io.sockets.emit(message, data)
     }
 }
 

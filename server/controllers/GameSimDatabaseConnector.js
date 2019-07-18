@@ -1,14 +1,20 @@
 
 import {Game} from '../models/linvoGame.js'
 //import {EntityModel, EntitySchema} from '../../static/shared/model/EntityModel.js'
-import { isArray } from '../../static/shared/EZPZ/Utility.js';
+import { isArray } from '../../static/shared/EZPZ/Utility.js'
 import GameSim from '../../static/shared/controller/GameSim.js'
+import { CastCommandTime } from '../../static/shared/EZPZ/castengine/CastWorldModel'
+import ServerProtocol from '../networking/protocol.js';
 
 var g_instance = null
 
 class GameSimDatabaseConnector {
     constructor( ){
-        this.gameDB = new GameSim()
+        this.flagShutdown = false
+        this.updateFreq = 1000/30  // 30 fps
+        this.lastUpdate = performance.now()
+        this.gameDB = null
+        this.gameSim = GameSim.instance
     }
 
     static get instance() {
@@ -46,14 +52,12 @@ class GameSimDatabaseConnector {
     }
 
     _initGameSimFromDB() {
-        var gameSim = GameSim.instance
-
         console.log("initGameSimFromDB")
 
         var entitySchemas = this.gameDB.entities
         if (entitySchemas) {
             entitySchemas.forEach((entitySchema)=>{
-                gameSim.updateEntityFromJson(entitySchema)
+                this.gameSim.updateEntityFromJson(entitySchema)
             })
         }
     }
@@ -61,7 +65,7 @@ class GameSimDatabaseConnector {
     flushToDB() {
         console.log("flushToDB")
 
-        var gameSim = GameSim.instance
+        var gameSim = this.gameSim
         if (!gameSim.dirty) {
             return  // no changes to flush
         }
@@ -82,6 +86,30 @@ class GameSimDatabaseConnector {
                 console.log("game saved ")
             }
         })
+    }
+
+    update() {
+        var currDelta = performance.now() - this.lastUpdate
+        var numLoopsToPerform = (currDelta / this.updateFreq) + 1
+
+        // perform update ticks
+        for (var i=0; i<numLoopsToPerform; i++) {
+            CastCommandTime.UpdateDelta(this.updateFreq)
+            //update game timer
+            this.gameSim.updateStep(CastCommandTime.Get(), this.updateFreq)
+        }
+
+        //xxx todo: send world update
+        console.log("broadcast world update ")
+        var updateJson = this.gameSim.getWorldUpdate()
+        ServerProtocol.instance.broadcast("worldUpdate", updateJson)
+
+        // set up next update timer
+        if (!this.flagShutdown) {
+            setTimeout(() => {
+                this.update()
+            }, this.updateFreq);
+        }
     }
 }
 

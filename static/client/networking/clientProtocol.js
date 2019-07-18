@@ -93,7 +93,7 @@ export default class ClientProtocol {
     // Update server with player direction+speed input change (ie: joystick status)
     // ackCB should contain no error
     sendInputImpulseChange( vecDir, speed ) {
-        this._log("send impulse change ") // + vecDir.x + "," + vecDir.y )
+        //this._log("send impulse change ") // + vecDir.x + "," + vecDir.y )
         this.send("playerImpulse", { vecDir:vecDir.toJson(), speed:speed }, (data)=>{
             if (data.error) {
                 this._log("error " + data.error)
