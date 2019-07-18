@@ -88,7 +88,10 @@ var game_create = function()
 			"gfx/avatars/human_attack.sprite",
 			"gfx/avatars/orc_idle.sprite",
 			"gfx/avatars/orc_attack.sprite",
-			"gfx/avatars/avatar.anim"
+			"gfx/avatars/avatar.anim",
+			"gfx/avatars/avatars.spb",
+			"gfx/levels/test.json",
+			"gfx/levels/terrain.png"
 			];
 	stateController.gotoState("loading", [resources, "connecting"]); 
 	

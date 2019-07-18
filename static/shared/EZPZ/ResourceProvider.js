@@ -32,6 +32,10 @@ export default class ResourceProvider {
 		
 		Service.Add("rp", this);
 	}
+
+	static get instance() {
+		return Service.Get("rp")
+	}
 	
 	isLoading() {
 		if( this.numImagesLoading > 0 ) return true;

@@ -467,7 +467,7 @@ class Sprite {
 		}
 		else if( this.format == "grid" || this.format == "gridSub") {
 			
-			if (frameIdx < 0 || frameIdx > this.data.frames.length) {
+			if (frameIdx < 0 || (this.data.frames && frameIdx > this.data.frames.length)) {
 				console.error("frameIdx OOB")
 			}
 

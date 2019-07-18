@@ -1,12 +1,13 @@
 import ICastEntity from '../EZPZ/castengine/CastEntity.js'
 import CastTarget from '../EZPZ/castengine/CastTarget.js'
-import Vec2D from '../EZPZ/Vec2D.js'
+import Vec2D, { Rect2D } from '../EZPZ/Vec2D.js'
 import EventBus from '../EZPZ/EventBus.js'
 
 //import uuid from 'uuid'
 //const uuidv4 = uuid.v4
 import uuidv4 from '../../shared/EZPZ/ext/uuid.js'
 
+// Note, this should match with FourPoleAnimation directions to render correctly (or we'll need to transform it for use with animations)
 class Facing {
 	static get UP() { return 0; }
 	static get RIGHT() { return 1; }
@@ -97,7 +98,14 @@ class EntityModel extends ICastEntity {
 
 		this.pos = new Vec2D();
 		this.vel = new Vec2D();
+		this.bounds = new Rect2D(50,50)
 		this.facing = Facing.RIGHT;
+	}
+
+	getArea() {
+		var area = this.bounds.clone();
+		area.addVecOffset(this.pos);
+		return area;
 	}
 
 	initNewCharacter(ownerId, name, race, charClass) {

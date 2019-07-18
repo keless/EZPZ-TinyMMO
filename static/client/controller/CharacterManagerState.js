@@ -1,4 +1,4 @@
-import { AppState, NodeView, BaseStateView, Service, Graphics, ResourceProvider, ButtonView, arrayContains, Animation} from '../clientEZPZ.js'
+import { AppState, NodeView, BaseStateView, Service, Graphics, ResourceProvider, ButtonView, arrayContains, FourPoleAnimation } from '../clientEZPZ.js'
 import {g_races, g_classes} from '../../shared/data/abilities.js'
 import {g_locations} from '../../shared/data/locations.js'
 import { ClientGame } from './ClientGame.js'
@@ -85,12 +85,13 @@ class CharacterSelectStateView extends BaseStateView {
 
           //show avatar
           var avatar = new NodeView();
-          var avatarAnim = new Animation();
+          var avatarAnim = new FourPoleAnimation();
           var rp = Service.Get("rp");
           var json = rp.getJson("gfx/avatars/avatar.anim");
           avatarAnim.LoadFromJson(json);
-          avatarAnim.QuickAttach("gfx/avatars/"+race+"_", ".sprite");
+          avatarAnim.QuickAttach(race+"_", ".sprite");
           avatar.setAnim(avatarAnim);
+          avatar.setDirection(0, 1) //face right
           avatar.pos.setVal(bx - 65, by + 20);
           avatar.scale = 2;
           avatar.pixelated = true;
@@ -150,7 +151,7 @@ class CharacterSelectStateView extends BaseStateView {
       //PlayerModel.Load("char"+e.idx);
 
       //Service.Get("state").gotoState("location", PlayerModel.Get().locationIdx);
-      Service.Get("state").gotoState("battle", locIdx, charId);
+      Service.Get("state").gotoState("battle", {locationIdx:locIdx, controlledEntityId:charId});
       
     }
 	}

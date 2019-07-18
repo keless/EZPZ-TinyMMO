@@ -1,5 +1,6 @@
 import { Graphics, Sprite } from './Graphics.js'
 import { ResourceProvider } from './ResourceProvider.js'
+import { NodeView } from './NodeView.js'
 
 /**
  * Tiled map .json loader and renderer
@@ -34,7 +35,7 @@ export default class TiledMap {
 	
 	// called by ResourceProvider
 	LoadFromJson( dataJson ) {
-		var rp = Service.Get("rp");
+		var rp = ResourceProvider.instance
 		this.data = dataJson;
 
 		//pull tile sets
@@ -108,7 +109,7 @@ export default class TiledMap {
 		gfx.saveMatrix();
 		gfx.translate(offsetX, offsetY);
 
-		var rp = Service.Get("rp");
+		var rp = ResourceProvider.instance
 		for( var layerIdx=0; layerIdx < this.imgLayers.length; layerIdx++ ) {
 			var layer = this.data.layers[layerIdx];
 
@@ -229,12 +230,11 @@ export default class TiledMap {
 	}
 
 	CreateDrawNode() {
-		var self = this;
 		var node = new NodeView();
 		node.addCustomDraw((gfx, x,y, ct)=>{
 			var saveDrawCentered = gfx.drawCentered;
 			gfx.drawCentered = false;
-			self.Draw(gfx, x, y, ct);
+			this.Draw(gfx, x, y, ct);
 			gfx.drawCentered = saveDrawCentered;
 		});
 		return node;

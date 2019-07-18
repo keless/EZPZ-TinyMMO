@@ -53,7 +53,6 @@ class GameSimDatabaseConnector {
         var entitySchemas = this.gameDB.entities
         if (entitySchemas) {
             entitySchemas.forEach((entitySchema)=>{
-                console.log("init entity")
                 gameSim.updateEntityFromJson(entitySchema)
             })
         }

@@ -1,31 +1,50 @@
-import { NodeView, CreateSimpleProgressBar }from '../clientEZPZ.js'
+import { NodeView, CreateSimpleProgressBar, Animation, FourPoleAnimation } from '../clientEZPZ.js'
+import ResourceProvider from '../../shared/EZPZ/ResourceProvider.js';
 
-export default class EntityView extends NodeView
+class EntityView extends NodeView
 {
 	constructor( entityModel, isPlayer ) {
 		super();
 		
-		var w = 300;
-		var h = 60;
-		this.setRect(w, h, "#000000");
+		var w = entityModel.bounds.x
+		var h = entityModel.bounds.y
+		//this.setRect(w, h, "#000000");
 		
 		this.pEntityModel = entityModel;
 
+		var avatarNode = new NodeView();
+		this.avatarAnim = new FourPoleAnimation();
+
+		var RP = ResourceProvider.instance
+		var json = RP.getJson("gfx/avatars/avatar.anim");
+		this.avatarAnim.LoadFromJson(json);
+		var race = entityModel.race;
+		//this.avatarAnim.QuickAttach("gfx/avatars/" + race + "_", ".sprite");
+		
+		
+		this.avatarAnim.QuickAttach( race + "_", ".sprite", ()=>{
+		  self.avatarNode.setAnim(self.avatarAnim);
+		  self.avatarNode.pixelated = true;
+		  self.avatarNode.scale = 2;
+		});
+		this.setAnim(this.avatarAnim);
+
+		this.addChild(avatarNode)
+		
+
 		var name = entityModel.name;
-		if(!isPlayer) {
-			var lvl = this.pEntityModel.getProperty("xp_level");
-			name += " lvl " + lvl;
-		}
+		var lvl = this.pEntityModel.getProperty("xp_level");
+		name += " lvl " + lvl;
 
 		var title = new NodeView();
-		title.setLabel( name, "20px Arial", "#FFFFFF" );
+		title.setLabel( name, "10px Arial", "#FFFFFF" );
 		title.pos.setVal(0, -h/4);
 		this.addChild(title);
 		
-		this.hpBar = CreateSimpleProgressBar("#11FF11", "#FF1111", 200, 30);
+		this.hpBar = CreateSimpleProgressBar("#11FF11", "#FF1111", 30, 10);
 		this.hpBar.pct = 0.7;
-		this.hpBar.setLabel(entityModel.hp_base, "16px Arial", "#FFFFFF");
-		this.hpBar.pos.y = 10;
+		this.hpBar.setLabel(entityModel.hp_base, "6px Arial", "#FFFFFF");
+		this.hpBar.pos.y = 22;
 		this.addChild(this.hpBar);
 
 		this.floatHeal = new NodeView();

@@ -1,0 +1,3 @@
+http://opengameart.org/content/lpc-house-insides
+
+Sharm did everything except the castle light sources, those were done by HughSpectrum. Please see the LPC guidelines for attribution and licensing: http://lpc.opengameart.org/

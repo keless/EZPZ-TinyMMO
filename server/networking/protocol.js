@@ -163,11 +163,9 @@ class ServerProtocol {
 
             // determine clientID from socket session
             var userId = socket.request.session.passport.user;
-            console.log("Your User ID is", userId);
-
             User.findOne({_id:userId}, (findErr, user)=>{
                 if (user) {
-                    console.log("Your User email is", user.email);
+                    console.log("connection from ", user.email, "uid:", userId);
 
                     // compare with database, then create a socketClient pair
                     var client = new SocketClient(socket, userId)

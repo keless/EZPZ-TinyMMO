@@ -1,12 +1,14 @@
-import { AppState, BaseStateModel, NodeView, Service, CastCommandTime, CastWorldModel } from '../clientEZPZ.js'
+import { AppState, BaseStateModel, NodeView, Service, CastCommandTime, CastWorldModel, TiledMap } from '../clientEZPZ.js'
 //import PlayerModel from '../../shared/model/PlayerModel.js'
 import GameSim from '../../shared/controller/GameSim.js'
 import BattleStateView from '../view/BattleView.js'
+import ResourceProvider from '../../shared/EZPZ/ResourceProvider.js';
+import ImpulseController from './ImpulseController.js'
 
 export default class BattleState extends AppState {
-	constructor(locationIdx, controlledEntityId) { 
+	constructor(params) { 
 		super();
-		this.model = new BattleStateModel(this, locationIdx, controlledEntityId);
+		this.model = new BattleStateModel(this, params.locationIdx, params.controlledEntityId);
 		this.view = new BattleStateView(this.model);
 	}
 
@@ -22,7 +24,26 @@ class BattleStateModel extends BaseStateModel {
 		this.controlledEntityId = controlledEntityId
 
 		this.gameSim = GameSim.instance
+		
+
+		var RP = ResourceProvider.instance
+		var levelJson = RP.getJson("gfx/levels/test.json")
+	
+		this.map = new TiledMap("gfx/levels/", 500, 500)
+		this.map.LoadFromJson(levelJson)
+		this.map.playerLayerName = "Terrain2"
+	
+		this.gameSim.ReadTiledMapPhysics(this.map)
+	
+		/* todo: spawn position code
+		var spawn = this.map.GetRandomSpawn() //xxx wIP
+		this.playerEntity.pos.setVal(spawn.x, spawn.y)
+		*/
+
+		this.playerImpulse = new ImpulseController()
+
 		this.playerEntity = this.gameSim.getEntityForId(this.controlledEntityId)
+		//this.gameSim.AddEntity(this.player.physicsEntity)
 
 		this.pState = state;
 		
@@ -53,6 +74,16 @@ class BattleStateModel extends BaseStateModel {
 
 		Service.Add("battleStateModel", this);
 	}
+
+	Update(ct, dt) {
+		this.playerEntity.physicsEntity.vel.setVec( this.playerImpulse.getVel() )
+	
+		this.mapPhysics.Update(ct, dt)
+	}
+	setPlayerImpulse(x,y) {
+		var testSpeed = 100;
+		this.player.physicsEntity.vel.setVal(x*testSpeed,y*testSpeed)
+	  }
 	
 	Destroy() {
 

@@ -1,18 +1,23 @@
 
 import {Service} from '../EZPZ/Service.js'
+import { arrayContains } from '../EZPZ/Utility.js'
 import {EntityModel, EntitySchema} from '../model/EntityModel.js'
+import { ICastPhysics } from '../EZPZ/castengine/CastWorldModel.js'
+import { Vec2D, Rect2D } from '../EZPZ/Vec2D.js'
 
 
 //xxx TODO: make this shared across client+server
-class GameSim {
+class GameSim extends ICastPhysics {
     constructor() {
-        console.log("xxx new gamesim created")
+        super() 
+        console.log("new GameSim created")
 
         // signals server side to write to database
         this.dirty = false
 
         this.gameTime = 0
         this.entities = []
+        this.pWallRects = [];
         
         Service.Add("gameSim", this)
     }
@@ -25,10 +30,42 @@ class GameSim {
         this.dirty = true
     }
 
-    update(ct, dt) {
-        //TODO: update loop
-        // perform physics
+    ReadTiledMapPhysics( tiledMap ) {
+        this.pWallRects = tiledMap.wallRects;
+    }
 
+    updateStep(ct, dt) {
+        //TODO: update loop
+
+        //step each physics entity forward
+        for(var eIdx = 0; eIdx < this.entities.length; eIdx++) {
+            var entity = this.entities[eIdx];
+
+            var stepVel = entity.vel.getScalarMult(dt);
+
+            //check collision before moving forward (assuming current position is not colliding)
+            var projected = entity.getArea();
+            projected.addVecOffset(stepVel);
+
+            var collisionFound = false;
+            var wall = new Rect2D();
+            for(var objIdx=0; objIdx<this.pWallRects.length; objIdx++) {
+                var wallObj = this.pWallRects[objIdx];
+                wall.setTL(wallObj.x, wallObj.y);
+                wall.setSize( wallObj.width, wallObj.height);
+
+                if(wall.isRectOverlapped(projected)) {
+                //collision detected
+                collisionFound = true;
+                break;
+                }
+            }
+
+            //move forward by velocity 
+            if (!collisionFound) {
+                entity.pos.addVec(stepVel);
+            }
+        }
         // perform AI
     }
 
@@ -38,7 +75,7 @@ class GameSim {
 
         //xxx todo: validate params
         entity.initNewCharacter(userId, name, race, charClass)
-        this.entities.push(entity)
+        this._addEntity(entity)
 
         this.setDirty()
 
@@ -52,14 +89,23 @@ class GameSim {
         if (entity) {
             entity.updateFromJson(entityJson)
         } else {
-            
             entity = new EntityModel()
             entity.fromWorldUpdateJson(entityJson)
-            this.entities.push(entity)
-            console.log("GameSim; update with new entity " + entity.owner +":"+ entity.uuid )
+            this._addEntity(entity)
+            console.log("GameSim: update with new entity " + entity.owner +":"+ entity.uuid )
         }
 
         this.setDirty()
+    }
+
+    _addEntity(entityModel) {
+        //debug: ensure entity is unique in entities
+        if (arrayContains(this.entities, entityModel)) {
+            console.error("GameSim: tried to insert entity that is already listed")
+            return;
+        }
+
+        this.entities.push(entityModel)
     }
 
     removeEntitiesById(entityIDs) {
@@ -104,6 +150,27 @@ class GameSim {
             }
         })
         return owned
+    }
+
+    // ICastPhysics implementation
+
+    // in: ICastEntity fromEntity, ICastEntity toEntity
+    // out: null or Vec2D distVec
+    GetVecBetween(fromEntity, toEntity) {
+        return toEntity.pos.getVecSub(fromEntity.pos);
+    }
+
+    // in: ICastEntity entity
+    // out: null or Vec2D pos
+    GetEntityPosition(entity) {
+        return toEntity.pos.clone();
+    }
+
+    // in: Vec2D p, float r, array[ICastEntity] ignoreEntities
+    // out: array<ICastEntity> entities
+    GetEntitiesInRadius(p, r, ignoreEntities) {
+        //xxx TODO
+        return null;
     }
 }
 

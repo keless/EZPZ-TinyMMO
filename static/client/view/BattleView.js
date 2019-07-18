@@ -1,5 +1,7 @@
-import { BaseStateView, NodeView, ButtonView, Graphics, CreateSimpleProgressBar } from '../clientEZPZ.js'
+import { BaseStateView, NodeView, ButtonView, Graphics, CreateSimpleProgressBar, Service, Animation } from '../clientEZPZ.js'
 import {BattleStateModel} from '../controller/BattleState.js'
+import {EntityView} from './EntityView.js'
+import ResourceProvider from '../../shared/EZPZ/ResourceProvider.js';
 
 export default class BattleStateView extends BaseStateView {
 	constructor( model ) {
@@ -7,7 +9,10 @@ export default class BattleStateView extends BaseStateView {
 		
 		this.pModel = model;
 
-		this.controlledEntity = null;
+		this.controlledEntity = this.pModel.playerEntity
+		this.avatarNode = null
+		//var playerEntityId = this.pModel.controlledEntityId
+		//var playerEntity = this.pModel.playerEntity
 		this.entityViews = []
 
 		/*
@@ -18,12 +23,13 @@ export default class BattleStateView extends BaseStateView {
 		this.abilityInfoView = null;
 		this.mapView = null;
 		*/
-		this.entityViews = [];
+
+		this.mapNode = this.pModel.map.CreateDrawNode();
+    this.rootView.addChild(this.mapNode)
 
     var screenSize = Graphics.ScreenSize;
 
 		//var loc = g_locations[this.pModel.locationIdx];
-
 
 		var navX = screenSize.x - 25;
 
@@ -80,8 +86,9 @@ export default class BattleStateView extends BaseStateView {
 		this.rootView.addChild(this.playerHud);
 		*/
 
-		var playerEntityId = this.pModel.controlledEntityId
-    this.createPlayerEntityView(playerEntity);
+		//var playerEntityId = this.pModel.controlledEntityId
+		//var playerEntity = this.pModel.playerEntity
+    //this.createPlayerEntityView(playerEntity);
 
 		/*
     playerEntity.addListener("update", this.onPlayerModelUpdate.bind(this));
@@ -105,20 +112,73 @@ export default class BattleStateView extends BaseStateView {
 		this.SetListener("btnCloseNoSkillsAlert", this.onHideNoSkillsAlert);
 
 		this.refreshXPBarView();
-    
+    	*/
 
 		this.enemyLayer = new NodeView();
 		this.rootView.addChild(this.enemyLayer);
 
 		this.progresslayer = new NodeView();
 		this.rootView.addChild(this.progresslayer);
-		*/
-		this.refreshEnemyEntityViews();
+		
+		this.refreshEntityViews();
 
 		this.topView = new NodeView();
 		this.rootView.addChild(this.topView);
 	}
+
 	
+	OnKeyDown(e, x, y) {
+		if (!this.avatarNode) { return }
+		var ct = 0;
+		//console.log("test keydown " + e.keyCode)
+		switch(e.keyCode) {
+		  case 'E'.charCodeAt(0):
+			this.avatarNode.setDirection(ct, 0);
+			this.avatarNode.animEvent(0, "walk");
+			this.pModel.playerImpulse.setUp(true);
+		  break;
+		  case 'D'.charCodeAt(0):
+			this.avatarNode.setDirection(ct, 2);
+			this.avatarNode.animEvent(0, "walk");
+			this.pModel.playerImpulse.setDown(true);
+		  break;
+		  case 'F'.charCodeAt(0):
+			this.avatarNode.setDirection(ct, 1);
+			this.avatarNode.animEvent(0, "walk");
+			this.pModel.playerImpulse.setRight(true);
+		  break;
+		  case 'S'.charCodeAt(0):
+			this.avatarNode.setDirection(ct, 3);
+			this.avatarNode.animEvent(0, "walk");
+			this.pModel.playerImpulse.setLeft(true);
+		  break;
+		}
+	}
+	
+	OnKeyUp(e, x, y) {
+		if (!this.avatarNode) { return }
+		var ct = 0;
+		switch(e.keyCode) {
+		  case 'E'.charCodeAt(0):
+			this.avatarNode.animEvent(ct, "idle");
+			this.pModel.playerImpulse.setUp(false);
+		  break;
+		  case 'D'.charCodeAt(0):
+			this.avatarNode.animEvent(ct, "idle");
+			this.pModel.playerImpulse.setDown(false);
+		  break;
+		  case 'F'.charCodeAt(0):
+			this.avatarNode.animEvent(ct, "idle");
+			this.pModel.playerImpulse.setRight(false);
+		  break;
+		  case 'S'.charCodeAt(0):
+			this.avatarNode.animEvent(ct, "idle");
+			this.pModel.playerImpulse.setLeft(false);
+		  break;
+		}
+	}
+	
+	/*
 	createPlayerEntityView(entityModel) 
 	{
 		var entView = new EntityView(entityModel, true);
@@ -128,7 +188,7 @@ export default class BattleStateView extends BaseStateView {
 
 		var avatar = new NodeView();
 		var avatarAnim = new Animation();
-		var rp = Service.Get("rp");
+		var rp = ResourceProvider.instance
 		var json = rp.getJson("gfx/avatars/avatar.anim");
 		avatarAnim.LoadFromJson(json);
 		var race = entityModel.race;
@@ -142,9 +202,9 @@ export default class BattleStateView extends BaseStateView {
 
 		this.abilityViews = [];
 		
-		this._rebuildAllAbilities(entityModel);
+		//this._rebuildAllAbilities(entityModel);
 	}
-/*
+
 	onBtnCloseAbilityView(e) {
 		this._hideAbilityInfoView();
 	}
@@ -288,7 +348,7 @@ export default class BattleStateView extends BaseStateView {
 	refreshEntityViews() {
 		this.removeAllEntityViews();
 
-    for(var i=1; i<this.pModel.gameSim.entities.length; i++ ) {
+    	for(var i=0; i<this.pModel.gameSim.entities.length; i++ ) {
 			this.createEntityView(this.pModel.gameSim.entities[i], i);
 		}
 	}
@@ -302,11 +362,16 @@ export default class BattleStateView extends BaseStateView {
 
 	createEntityView( entityModel, idx ) {
 		var entView = new EntityView(entityModel, false);
-    entView.pos.setVal(400, 180 + (idx*50))
+entView.pos.setVal(400, 180 + (idx*50)) ;console.log("xxx todo: dont hardcode offsets")
 		this.enemyLayer.addChild(entView);
 		this.entityViews.push(entView);
+
+		if (entityModel == this.controlledEntity) {
+			this.avatarNode = entView
+		}
 	}
 
+	/*
 	onBtnCloseSkills(e) {
 		if(this.skillsView == null) {
 			return;
@@ -403,6 +468,7 @@ export default class BattleStateView extends BaseStateView {
 		this.showRest(); 
 		this._updateAllAbilities();
 	}
+	*/
 
 	Destroy() {
 		var playerEntity = this.pModel.entities[0];

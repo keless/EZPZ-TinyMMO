@@ -8,33 +8,208 @@
     "fps":10
   },
   "sprites":{
-    "hero_idleN":{
+    "human_idleN":{
       "frames":[4, 5],
       "fps":2
     },
-    "hero_idleE":{
+    "human_idleE":{
       "frames":[2, 3],
       "fps":2
     },
-    "hero_idleS":{
+    "human_idleS":{
       "frames":[0, 1],
       "fps":2
     },
-    "hero_idleW":{
+    "human_idleW":{
       "frames":[6, 7],
       "fps":2
     },
-    "hero_walkN":{
+    "human_walkN":{
       "frames":[4, 5]
     },
-    "hero_walkE":{
+    "human_walkE":{
       "frames":[2, 3]
     },
-    "hero_walkS":{
+    "human_walkS":{
       "frames":[0, 1]
     },
-    "hero_walkW":{
+    "human_walkW":{
       "frames":[6, 7]
+    },
+
+    "centaur_idleN":{
+      "frames":[52, 53],
+      "fps":2
+    },
+    "centaur_idleE":{
+      "frames":[50, 51],
+      "fps":2
+    },
+    "centaur_idleS":{
+      "frames":[48, 49],
+      "fps":2
+    },
+    "centaur_idleW":{
+      "frames":[54, 55],
+      "fps":2
+    },
+    "centaur_walkN":{
+      "frames":[52, 53]
+    },
+    "centaur_walkE":{
+      "frames":[50, 51]
+    },
+    "centaur_walkS":{
+      "frames":[48, 49]
+    },
+    "centaur_walkW":{
+      "frames":[54, 55]
+    },
+
+    "goblin_idleN":{
+      "frames":[4, 5],
+      "fps":2
+    },
+    "goblin_idleE":{
+      "frames":[2, 3],
+      "fps":2
+    },
+    "goblin_idleS":{
+      "frames":[0, 1],
+      "fps":2
+    },
+    "goblin_idleW":{
+      "frames":[6, 7],
+      "fps":2
+    },
+    "goblin_walkN":{
+      "frames":[4, 5]
+    },
+    "goblin_walkE":{
+      "frames":[2, 3]
+    },
+    "goblin_walkS":{
+      "frames":[0, 1]
+    },
+    "goblin_walkW":{
+      "frames":[6, 7]
+    },
+
+   "dwarf_idleN":{
+      "frames":[4, 5],
+      "fps":2
+    },
+    "dwarf_idleE":{
+      "frames":[2, 3],
+      "fps":2
+    },
+    "dwarf_idleS":{
+      "frames":[0, 1],
+      "fps":2
+    },
+    "dwarf_idleW":{
+      "frames":[6, 7],
+      "fps":2
+    },
+    "dwarf_walkN":{
+      "frames":[4, 5]
+    },
+    "dwarf_walkE":{
+      "frames":[2, 3]
+    },
+    "dwarf_walkS":{
+      "frames":[0, 1]
+    },
+    "dwarf_walkW":{
+      "frames":[6, 7]
+    },
+
+    "gnome_idleN":{
+      "frames":[4, 5],
+      "fps":2
+    },
+    "gnome_idleE":{
+      "frames":[2, 3],
+      "fps":2
+    },
+    "gnome_idleS":{
+      "frames":[0, 1],
+      "fps":2
+    },
+    "gnome_idleW":{
+      "frames":[6, 7],
+      "fps":2
+    },
+    "gnome_walkN":{
+      "frames":[4, 5]
+    },
+    "gnome_walkE":{
+      "frames":[2, 3]
+    },
+    "gnome_walkS":{
+      "frames":[0, 1]
+    },
+    "gnome_walkW":{
+      "frames":[6, 7]
+    },
+
+    "orc_idleN":{
+      "frames":[20, 21],
+      "fps":2
+    },
+    "orc_idleE":{
+      "frames":[18, 19],
+      "fps":2
+    },
+    "orc_idleS":{
+      "frames":[16, 17],
+      "fps":2
+    },
+    "orc_idleW":{
+      "frames":[22, 23],
+      "fps":2
+    },
+    "orc_walkN":{
+      "frames":[20, 21]
+    },
+    "orc_walkE":{
+      "frames":[18, 19]
+    },
+    "orc_walkS":{
+      "frames":[16, 17]
+    },
+    "orc_walkW":{
+      "frames":[22, 23]
+    },
+
+    "elf_idleN":{
+      "frames":[36, 37],
+      "fps":2
+    },
+    "elf_idleE":{
+      "frames":[34, 35],
+      "fps":2
+    },
+    "elf_idleS":{
+      "frames":[32, 33],
+      "fps":2
+    },
+    "elf_idleW":{
+      "frames":[38, 39],
+      "fps":2
+    },
+    "elf_walkN":{
+      "frames":[36, 37]
+    },
+    "elf_walkE":{
+      "frames":[34, 35]
+    },
+    "elf_walkS":{
+      "frames":[32, 33]
+    },
+    "elf_walkW":{
+      "frames":[38, 39]
     }
+
   }
 }
