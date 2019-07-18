@@ -7,7 +7,7 @@ class ImpulseController {
 
         this.charId = controlledEntityId
         this.dir = new Vec2D()
-        this._speed = 200
+        this._speed = 200 //xxx get default from somewhere?
 
         this.up = false
         this.down = false

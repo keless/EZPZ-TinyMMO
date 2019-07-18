@@ -9,11 +9,14 @@ import {performance} from 'perf_hooks'
 
 var g_instance = null
 
+//xxx todo: refactor -- this isnt just about database (its more like the server-side analogy of ClientGame.js right now)
 class GameSimDatabaseConnector {
-    constructor( ){
+    constructor() {
+        this.verbose = true
+
         this.flagShutdown = false
-        this.updateFreq = 1000/30  // 30 fps
-        this.lastUpdate = performance.now()
+        this.updateFreqMS = 1000 / 30.0 // 30 fps
+        this.lastUpdateMS = performance.now()
         this.gameDB = null
         this.gameSim = GameSim.instance
     }
@@ -26,21 +29,27 @@ class GameSimDatabaseConnector {
         return g_instance
     }
 
+    _log(text) {
+        if (this.verbose) {
+            console.log(text)
+        }
+    }
+
     startupFromDB( fnCompletion ) {
-        console.log("startupFromDB")
+        this._log("startupFromDB")
         Game.findOne({}, (err, doc)=>{
             if (!err && doc) {
                 if (isArray(doc)) {
                     doc = doc[0]
                 }
     
-                console.log("loaded existing gameDB instance")
+                this._log("loaded existing gameDB instance")
                 this.gameDB = doc
     
                 var numEntities =   this.gameDB.entities.length
-                console.log(`loaded ${numEntities} entities`)
+                this._log(`loaded ${numEntities} entities`)
             } else {
-                console.log("Created new gameDB instance")
+                this._log("Created new gameDB instance")
                 this.gameDB = new Game({_id:'gameID'})
             }
 
@@ -53,7 +62,7 @@ class GameSimDatabaseConnector {
     }
 
     _initGameSimFromDB() {
-        console.log("initGameSimFromDB")
+        this._log("initGameSimFromDB")
         this.gameSim = new GameSim()
 
         var entitySchemas = this.gameDB.entities
@@ -67,7 +76,7 @@ class GameSimDatabaseConnector {
     }
 
     flushToDB() {
-        console.log("flushToDB")
+        this._log("flushToDB")
 
         var gameSim = this.gameSim
         if (!gameSim.dirty) {
@@ -77,7 +86,7 @@ class GameSimDatabaseConnector {
         // does this trigger re-saving the entire entity list every time? or is it smart enough to delta?
         this.gameDB.entities = []
         gameSim.entities.forEach((entity)=>{
-            console.log("get schema for object")
+            cthis._log("get schema for object")
             var schemaObject = {}
             entity.writeToSchema(schemaObject)
             this.gameDB.entities.push(schemaObject)
@@ -93,26 +102,34 @@ class GameSimDatabaseConnector {
     }
 
     update() {
-        var currDelta = performance.now() - this.lastUpdate
-        var numLoopsToPerform = (currDelta / this.updateFreq) + 1
+        var currentTimeMS = performance.now()
+        var currDeltaMS = currentTimeMS - this.lastUpdateMS
+        var numLoopsToPerform = Math.min((currDeltaMS / this.updateFreqMS), 1)
 
-        // perform update ticks
-        for (var i=0; i<numLoopsToPerform; i++) {
-            CastCommandTime.UpdateDelta(this.updateFreq)
-            //update game timer
-            this.gameSim.updateStep(CastCommandTime.Get(), this.updateFreq)
+        if (numLoopsToPerform > 2) {
+            this._log("WARN: performing many loops! " + numLoopsToPerform)
         }
 
-        //xxx todo: send world update
-        //console.log("broadcast world update ")
+        // perform update ticks
+        var updatePeriodS = this.updateFreqMS / 1000.0
+        for (var i=0; i<numLoopsToPerform; i++) {
+            CastCommandTime.UpdateDelta(updatePeriodS)
+            //update game timer
+            this.gameSim.updateStep(CastCommandTime.Get(), updatePeriodS)
+        }
+
+        this.lastUpdateMS = currentTimeMS
+
+        //xxx todo: decouple worldUpdate tick rate from gameSim tick rate
         var updateJson = this.gameSim.getWorldUpdate()
         ServerProtocol.instance.broadcast("worldUpdate", updateJson)
 
         // set up next update timer
         if (!this.flagShutdown) {
+            let timerPeriodMS = this.updateFreqMS
             setTimeout(() => {
                 this.update()
-            }, this.updateFreq);
+            }, timerPeriodMS);
         }
     }
 }

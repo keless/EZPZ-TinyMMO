@@ -73,6 +73,7 @@ class EntityView extends NodeView
 		//update any dynamic visuals based on model data
 		this.hpBar.pct = this.pEntityModel.hp_curr / this.pEntityModel.hp_base;
 		this.hpBar.updateLabel( this.pEntityModel.hp_curr + " / " + this.pEntityModel.hp_base);
+		this.pos.setVec( this.pEntityModel.pos )
 	}
 
 	onDamaged(e) {

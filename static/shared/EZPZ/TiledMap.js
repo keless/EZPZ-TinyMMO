@@ -30,15 +30,15 @@ export default class TiledMap {
 		this.physicsBodies = [];
 		
 		this.verbose = true;
-		this.debugShowBoxes = false;
 	}
 	
 	// called by ResourceProvider
-	LoadFromJson( dataJson ) {
+	LoadFromJson( dataJson, withoutGraphics ) {
 		var rp = ResourceProvider.instance
 		this.data = dataJson;
 
 		//pull tile sets
+		if (!withoutGraphics) {
 		for( var tilesetIdx=0; tilesetIdx < this.data.tilesets.length; tilesetIdx++) {
 			var tileSet =	this.data.tilesets[tilesetIdx];
 			var tileSprite = new Sprite(this.path);
@@ -49,6 +49,7 @@ export default class TiledMap {
 			
 			this.tileSets.push( tileSet );
 		}
+		}
 
 		//pull layer data
 		for( var layerIdx=0; layerIdx < this.data.layers.length; layerIdx++ ) {
@@ -58,7 +59,9 @@ export default class TiledMap {
 				this.imgLayers.push( layer );
 				
 				//preload image
+				if (!withoutGraphics) {
 				rp.loadImage(this.path + layer.image);
+				}
 			}
 			else if( layer.type == "tilelayer" ) {
 				//image layer
@@ -103,74 +106,6 @@ export default class TiledMap {
 		return -1;
 	}
 
-	Draw( gfx, offsetX, offsetY, ct ) {
-		if(!this.isLoaded) return;
-		
-		gfx.saveMatrix();
-		gfx.translate(offsetX, offsetY);
-
-		var rp = ResourceProvider.instance
-		for( var layerIdx=0; layerIdx < this.imgLayers.length; layerIdx++ ) {
-			var layer = this.data.layers[layerIdx];
-
-			//draw image layer
-			var layerImg = rp.getImage(this.path + layer.image);
-			if(layerImg) {
-				gfx.drawImage(layerImg, layer.x, layer.y);
-			}
-
-			if (layer.name == this.playerLayerName && this.fnDrawPlayerLayer) {
-				this.fnDrawPlayerLayer();
-			} 
-		}
-
-		
-		for( var layerIdx=0; layerIdx < this.tileLayers.length; layerIdx++ ) {
-			var tileLayer = this.tileLayers[layerIdx];
-			var width = tileLayer.width;
-			var height = tileLayer.height;
-
-			//console.log("draw tile layer " + layerIdx)
-			
-			for (var h = 0; h < height; h++) {
-				var row = (h * width);
-				for( var w = 0; w < width; w++) {
-					var gid = tileLayer.data[w + row];
-					var setIdx = this._tileSetIdxForGid(gid);
-					if (gid <= 0) continue;
-					var set = this.tileSets[setIdx];
-					var localId = gid - set.firstgid;
-
-					var tileW = this.tileSets[setIdx].tilewidth;
-					var tileH = this.tileSets[setIdx].tileheight;
-					var sprite = this.tileSets[setIdx].sprite;
-					sprite.drawFrame(gfx, w * tileW, h * tileH, localId);
-				}
-			}
-
-			if (tileLayer.name == this.playerLayerName && this.fnDrawPlayerLayer) {
-				this.fnDrawPlayerLayer(gfx, 0,0, ct);
-			} 
-		}
-		gfx.restoreMatrix();
-		
-		if(this.debugShowBoxes) {
-			//draw physics boxes
-			for( var objIdx=0; objIdx < this.groundRects.length; objIdx++ ) {
-					var object = this.groundRects[objIdx];
-					gfx.drawRect(offsetX + object.x, offsetY + object.y, object.width, object.height);
-			}
-			for( var objIdx=0; objIdx < this.wallRects.length; objIdx++ ) {
-					var object = this.wallRects[objIdx];
-					gfx.drawRect(offsetX + object.x, offsetY + object.y, object.width, object.height);
-			}
-			//draw spawn points
-			for( var objIdx=0; objIdx < this.spawnPts.length; objIdx++ ) {
-					var object = this.spawnPts[objIdx];
-					gfx.drawRect(offsetX + object.x, offsetY + object.y, object.width, object.height);
-			}
-		}
-	}
 	
 	/** fuzz pop (side scrolling) + Box code
 	AttachPhysics( physics ) {
@@ -228,17 +163,93 @@ export default class TiledMap {
 		
 		return this.spawnPts[idx];
 	}
+}
 
-	CreateDrawNode() {
-		var node = new NodeView();
-		node.addCustomDraw((gfx, x,y, ct)=>{
+class TiledMapNodeView extends NodeView {
+	constructor( tiledMap ) {
+		super()
+
+		this.tiledMap = tiledMap
+		this.debugShowBoxes = false
+
+		this.addCustomDraw((gfx, x, y, ct) => {
+			// always draw centered
 			var saveDrawCentered = gfx.drawCentered;
 			gfx.drawCentered = false;
-			this.Draw(gfx, x, y, ct);
+			this.DrawMap(gfx, x, y, ct);
 			gfx.drawCentered = saveDrawCentered;
 		});
-		return node;
 	}
- }
 
- export { TiledMap }
+
+	DrawMap(gfx, offsetX, offsetY, ct) {
+		if (!this.tiledMap.isLoaded) return;
+
+		gfx.saveMatrix();
+		gfx.translate(offsetX, offsetY);
+
+		var rp = ResourceProvider.instance
+		for (var layerIdx = 0; layerIdx < this.tiledMap.imgLayers.length; layerIdx++) {
+			var layer = this.tiledMap.data.layers[layerIdx];
+
+			//draw image layer
+			var layerImg = rp.getImage(this.tiledMap.path + layer.image);
+			if (layerImg) {
+				gfx.drawImage(layerImg, layer.x, layer.y);
+			}
+
+			if (layer.name == this.tiledMap.playerLayerName && this.tiledMap.fnDrawPlayerLayer) {
+				this.tiledMap.fnDrawPlayerLayer(gfx, 0, 0, ct);
+			}
+		}
+
+
+		for (var layerIdx = 0; layerIdx < this.tiledMap.tileLayers.length; layerIdx++) {
+			var tileLayer = this.tiledMap.tileLayers[layerIdx];
+			var width = tileLayer.width;
+			var height = tileLayer.height;
+
+			//console.log("draw tile layer " + layerIdx)
+
+			for (var h = 0; h < height; h++) {
+				var row = (h * width);
+				for (var w = 0; w < width; w++) {
+					var gid = tileLayer.data[w + row];
+					var setIdx = this.tiledMap._tileSetIdxForGid(gid);
+					if (gid <= 0) continue;
+					var set = this.tiledMap.tileSets[setIdx];
+					var localId = gid - set.firstgid;
+
+					var tileW = this.tiledMap.tileSets[setIdx].tilewidth;
+					var tileH = this.tiledMap.tileSets[setIdx].tileheight;
+					var sprite = this.tiledMap.tileSets[setIdx].sprite;
+					sprite.drawFrame(gfx, w * tileW, h * tileH, localId);
+				}
+			}
+
+			if (tileLayer.name == this.tiledMap.playerLayerName && this.tiledMap.fnDrawPlayerLayer) {
+				this.tiledMap.fnDrawPlayerLayer(gfx, 0, 0, ct);
+			}
+		}
+		gfx.restoreMatrix();
+
+		if (this.debugShowBoxes) {
+			//draw physics boxes
+			for (var objIdx = 0; objIdx < this.tiledMap.groundRects.length; objIdx++) {
+				var object = this.tiledMap.groundRects[objIdx];
+				gfx.drawRect(offsetX + object.x, offsetY + object.y, object.width, object.height);
+			}
+			for (var objIdx = 0; objIdx < this.tiledMap.wallRects.length; objIdx++) {
+				var object = this.tiledMap.wallRects[objIdx];
+				gfx.drawRect(offsetX + object.x, offsetY + object.y, object.width, object.height);
+			}
+			//draw spawn points
+			for (var objIdx = 0; objIdx < this.tiledMap.spawnPts.length; objIdx++) {
+				var object = this.tiledMap.spawnPts[objIdx];
+				gfx.drawRect(offsetX + object.x, offsetY + object.y, object.width, object.height);
+			}
+		}
+	}
+}
+
+export { TiledMap, TiledMapNodeView }

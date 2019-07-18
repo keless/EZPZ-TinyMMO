@@ -57,6 +57,8 @@ class EntityModel extends ICastEntity {
 	constructor() {
 		super();
 
+		this.verbose = true
+
 		this.eventBus = new EventBus("entityModel");
 		this.eventBus.verbose = false;
 
@@ -162,6 +164,12 @@ class EntityModel extends ICastEntity {
 		if (json.facing) {
 			this.facing = json.facing
 		}
+
+		if ( this.verbose && (this.vel.getMagSq() > 0) ) {
+			console.log("entity " + this.name + " moving (" + this.pos.x +","+ this.pos.y+")")
+		}
+
+		this.eventBus.dispatch("update");
 	}
 
 	_updateVecFromPartial(vec, json) {

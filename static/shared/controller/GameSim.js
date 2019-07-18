@@ -20,6 +20,9 @@ class GameSim extends ICastPhysics {
         this.gameTime = 0
         this.entities = []
         this.pWallRects = [];
+
+        //xxx todo: move tiled map here and separate graphics/data, and figure out how to load resources on server similar to client
+        this._todoTiledMap = null
         
         Service.Add("gameSim", this)
     }
@@ -73,7 +76,7 @@ class GameSim extends ICastPhysics {
 
         //xxx todo: check if character can accept (if dead dont move, etc)
         character.vel = dir.getUnitized().scalarMult(speed)
-
+        console.log("change "+character.name+" vel to " + character.vel.x + "," + character.vel.y)
     }
 
     updateStep(ct, dt) {
@@ -87,6 +90,10 @@ class GameSim extends ICastPhysics {
 
             //check collision before moving forward (assuming current position is not colliding)
             if (stepVel.nonZero()) {
+                
+                //this._log(`moving entity ${entity.name} with dt ${dt} step ${stepVel.x},${stepVel.y}`)
+                
+
                 var projected = entity.getArea();
                 projected.addVecOffset(stepVel);
     
@@ -119,6 +126,11 @@ class GameSim extends ICastPhysics {
 
         //xxx todo: validate params
         entity.initNewCharacter(userId, name, race, charClass)
+
+
+        this.tiledMap
+        GetRandomSpawn()
+
         this._addEntity(entity)
 
         this.setDirty()

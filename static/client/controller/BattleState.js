@@ -80,10 +80,6 @@ class BattleStateModel extends BaseStateModel {
 	
 		this.mapPhysics.Update(ct, dt)
 	}
-	setPlayerImpulse(x,y) {
-		var testSpeed = 100;
-		this.player.physicsEntity.vel.setVal(x*testSpeed,y*testSpeed)
-	  }
 	
 	Destroy() {
 

@@ -1,7 +1,8 @@
 import { BaseStateView, NodeView, ButtonView, Graphics, CreateSimpleProgressBar, Service, Animation } from '../clientEZPZ.js'
 import {BattleStateModel} from '../controller/BattleState.js'
 import {EntityView} from './EntityView.js'
-import ResourceProvider from '../../shared/EZPZ/ResourceProvider.js';
+import ResourceProvider from '../../shared/EZPZ/ResourceProvider.js'
+import { TiledMapNodeView, TiledMap } from '../../shared/EZPZ/TiledMap.js'
 
 export default class BattleStateView extends BaseStateView {
 	constructor( model ) {
@@ -24,7 +25,7 @@ export default class BattleStateView extends BaseStateView {
 		this.mapView = null;
 		*/
 
-		this.mapNode = this.pModel.map.CreateDrawNode();
+		this.mapNode = new TiledMapNodeView(this.pModel.map)
     this.rootView.addChild(this.mapNode)
 
     var screenSize = Graphics.ScreenSize;
@@ -472,9 +473,8 @@ entView.pos.setVal(400, 180 + (idx*50)) ;console.log("xxx todo: dont hardcode of
 
 	Destroy() {
 		var playerEntity = this.pModel.gameSim.entities[0];
-    playerEntity.removeListener("update", this.onPlayerModelUpdate.bind(this));
+    //playerEntity.removeListener("update", this.onPlayerModelUpdate.bind(this));
 		playerEntity.removeListener("castEnd", this.onPlayerModelAttack.bind(this));
-
 
 		this.pModel = null;
 		super.Destroy();
