@@ -12,6 +12,8 @@ class GameSim extends ICastPhysics {
         super() 
         console.log("new GameSim created")
 
+        this.verbose = true
+
         // signals server side to write to database
         this.dirty = false
 
@@ -26,12 +28,52 @@ class GameSim extends ICastPhysics {
         return Service.Get("gameSim")
     }
 
+    _log(text) {
+        if(this.verbose) {
+            console.log(text)
+        }
+    }
+
     setDirty() {
         this.dirty = true
     }
 
     ReadTiledMapPhysics( tiledMap ) {
         this.pWallRects = tiledMap.wallRects;
+    }
+
+    handlePlayerImpulse(playerID, data) {
+        if (!data.charID) {
+            this._log("error: cant apply impulse without charID")
+            return 
+        }
+        if(!data.hasOwnProperty("speed")) {
+            data.speed = 200 //xxx get default from char?
+        }
+        if(!data.hasOwnProperty("vecDir")) {
+            data.vecDir = {x:0, y:0}
+        } else {
+            if (!data.vecDir.hasOwnProperty("x")) {
+                data.vecDir.x = 0
+            }
+            if (!data.vecDir.hasOwnProperty("y")) {
+                data.vecDir.y = 0
+            }
+        }
+
+        //xxx TODO: handle time offset
+        var character = this.getEntityForId(data.charID)
+        if (character.owner != playerID) {
+            this._log("error: cant apply impulse to character from non-owner")
+            return
+        }
+
+        var dir = new Vec2D(data.vecDir.x, data.vecDir.y)
+        var speed = data.speed
+
+        //xxx todo: check if character can accept (if dead dont move, etc)
+        character.vel = dir.getUnitized().scalarMult(speed)
+
     }
 
     updateStep(ct, dt) {
@@ -44,26 +86,28 @@ class GameSim extends ICastPhysics {
             var stepVel = entity.vel.getScalarMult(dt);
 
             //check collision before moving forward (assuming current position is not colliding)
-            var projected = entity.getArea();
-            projected.addVecOffset(stepVel);
-
-            var collisionFound = false;
-            var wall = new Rect2D();
-            for(var objIdx=0; objIdx<this.pWallRects.length; objIdx++) {
-                var wallObj = this.pWallRects[objIdx];
-                wall.setTL(wallObj.x, wallObj.y);
-                wall.setSize( wallObj.width, wallObj.height);
-
-                if(wall.isRectOverlapped(projected)) {
-                //collision detected
-                collisionFound = true;
-                break;
+            if (stepVel.nonZero()) {
+                var projected = entity.getArea();
+                projected.addVecOffset(stepVel);
+    
+                var collisionFound = false;
+                var wall = new Rect2D();
+                for(var objIdx=0; objIdx<this.pWallRects.length; objIdx++) {
+                    var wallObj = this.pWallRects[objIdx];
+                    wall.setTL(wallObj.x, wallObj.y);
+                    wall.setSize( wallObj.width, wallObj.height);
+    
+                    if(wall.isRectOverlapped(projected)) {
+                    //collision detected
+                    collisionFound = true;
+                    break;
+                    }
                 }
-            }
-
-            //move forward by velocity 
-            if (!collisionFound) {
-                entity.pos.addVec(stepVel);
+    
+                //move forward by velocity 
+                if (!collisionFound) {
+                    entity.pos.addVec(stepVel);
+                }
             }
         }
         // perform AI

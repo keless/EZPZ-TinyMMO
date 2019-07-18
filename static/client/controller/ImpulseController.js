@@ -3,7 +3,9 @@ import { Vec2D } from '../../shared/EZPZ/Vec2D.js'
 import ClientProtocol from '../networking/clientProtocol.js'
 
 class ImpulseController {
-    constructor() {
+    constructor(controlledEntityId) {
+
+        this.charId = controlledEntityId
         this.dir = new Vec2D()
         this._speed = 200
 
@@ -58,7 +60,7 @@ class ImpulseController {
     }
     _sendUpdateToServer() {
         // Send new network update
-        ClientProtocol.instance.sendInputImpulseChange(this.dir, this.speed)
+        ClientProtocol.instance.sendInputImpulseChange(this.charId, this.dir, this.speed)
     }
 
     getVel() {

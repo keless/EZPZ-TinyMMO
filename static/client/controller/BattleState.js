@@ -40,7 +40,7 @@ class BattleStateModel extends BaseStateModel {
 		this.playerEntity.pos.setVal(spawn.x, spawn.y)
 		*/
 
-		this.playerImpulse = new ImpulseController()
+		this.playerImpulse = new ImpulseController(this.controlledEntityId)
 
 		this.playerEntity = this.gameSim.getEntityForId(this.controlledEntityId)
 		//this.gameSim.AddEntity(this.player.physicsEntity)

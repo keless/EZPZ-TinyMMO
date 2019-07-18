@@ -9,6 +9,10 @@ class ClientGame {
     return ClientGame.s_instance
   }
 
+  static get instance() {
+    return ClientGame.s_instance
+  }
+
   constructor() {
     this.uuid = uuidv4()
     this.currentUserID = null

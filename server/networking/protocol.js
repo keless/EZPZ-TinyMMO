@@ -98,6 +98,8 @@ class SocketClient {
         this._logVerbose("got player impulse")
         this._logVerbose(data)
         //xxx todo: apply this to next gameSim step
+        var gameSim = GameSim.instance
+        gameSim.handlePlayerImpulse(this.clientID, data)
 
         response({})
     }
@@ -155,7 +157,7 @@ class ServerProtocol {
         this.io = socketio
         this.socketClients = []
 
-        Service.Add("serverProtocol")
+        Service.Add("serverProtocol", this)
     }
 
     static get instance() {

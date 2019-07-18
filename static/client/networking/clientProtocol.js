@@ -55,7 +55,11 @@ export default class ClientProtocol {
         })
 
         this.socket.on("worldUpdate", (data)=> {
-            this._log("TODO: handle world update")
+            //this._log("TODO: handle world update")
+
+            //xxx WIP
+            ClientGame.instance.applyWorldUpdate(data)
+            
         })
     }
 
@@ -92,9 +96,9 @@ export default class ClientProtocol {
 
     // Update server with player direction+speed input change (ie: joystick status)
     // ackCB should contain no error
-    sendInputImpulseChange( vecDir, speed ) {
+    sendInputImpulseChange( charID, vecDir, speed ) {
         //this._log("send impulse change ") // + vecDir.x + "," + vecDir.y )
-        this.send("playerImpulse", { vecDir:vecDir.toJson(), speed:speed }, (data)=>{
+        this.send("playerImpulse", { charID:charID, vecDir:vecDir.toJson(), speed:speed }, (data)=>{
             if (data.error) {
                 this._log("error " + data.error)
             }

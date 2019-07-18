@@ -156,7 +156,22 @@ class EntityModel extends ICastEntity {
 
 	updateFromJson(json) {
 		//xxx todo; 
-		console.log("TODO: update entity from json")
+		//console.log("TODO: update entity from json")
+		this._updateVecFromPartial(this.pos, json.pos)
+		this._updateVecFromPartial(this.vel, json.vel)
+		if (json.facing) {
+			this.facing = json.facing
+		}
+	}
+
+	_updateVecFromPartial(vec, json) {
+		if (!json) { return }
+		if(json.x) {
+			vec.x = json.x
+		}
+		if(json.y) {
+			vec.y = json.y
+		}
 	}
 
 	initWithJson(json) {

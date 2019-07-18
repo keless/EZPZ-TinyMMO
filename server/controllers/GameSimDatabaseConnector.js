@@ -3,8 +3,9 @@ import {Game} from '../models/linvoGame.js'
 //import {EntityModel, EntitySchema} from '../../static/shared/model/EntityModel.js'
 import { isArray } from '../../static/shared/EZPZ/Utility.js'
 import GameSim from '../../static/shared/controller/GameSim.js'
-import { CastCommandTime } from '../../static/shared/EZPZ/castengine/CastWorldModel'
+import { CastCommandTime } from '../../static/shared/EZPZ/castengine/CastWorldModel.js'
 import ServerProtocol from '../networking/protocol.js';
+import {performance} from 'perf_hooks'
 
 var g_instance = null
 
@@ -53,6 +54,7 @@ class GameSimDatabaseConnector {
 
     _initGameSimFromDB() {
         console.log("initGameSimFromDB")
+        this.gameSim = new GameSim()
 
         var entitySchemas = this.gameDB.entities
         if (entitySchemas) {
@@ -60,6 +62,8 @@ class GameSimDatabaseConnector {
                 this.gameSim.updateEntityFromJson(entitySchema)
             })
         }
+
+        this.update()
     }
 
     flushToDB() {
@@ -100,7 +104,7 @@ class GameSimDatabaseConnector {
         }
 
         //xxx todo: send world update
-        console.log("broadcast world update ")
+        //console.log("broadcast world update ")
         var updateJson = this.gameSim.getWorldUpdate()
         ServerProtocol.instance.broadcast("worldUpdate", updateJson)
 

@@ -471,7 +471,7 @@ entView.pos.setVal(400, 180 + (idx*50)) ;console.log("xxx todo: dont hardcode of
 	*/
 
 	Destroy() {
-		var playerEntity = this.pModel.entities[0];
+		var playerEntity = this.pModel.gameSim.entities[0];
     playerEntity.removeListener("update", this.onPlayerModelUpdate.bind(this));
 		playerEntity.removeListener("castEnd", this.onPlayerModelAttack.bind(this));
 
