@@ -9,6 +9,10 @@ export default class ClientProtocol {
         Service.Add("protocol", this);
     }
     
+    static get instance() {
+        return Service.Get("protocol")
+    }
+
     _log(txt) {
         if (this.verbose) {
             console.log(txt)
@@ -37,9 +41,22 @@ export default class ClientProtocol {
             }
 
             EventBus.game.dispatch("serverConnect")
+
         })
 
-        //xxx WIP - add error handler
+        this.socket.on("disconnect", (reason)=>{
+            self._log("disconnect recieved with reason: " + reason)
+            setTimeout(() => { window.location.reload(true) }, 2000)
+        })
+        this.socket.on("error", (err)=>{
+            self._log("error recieved")
+            if (err) { console.log(err) }
+            setTimeout(() => { window.location.reload(true) }, 2000)
+        })
+
+        this.socket.on("worldUpdate", (data)=> {
+
+        })
     }
 
     closeConnection() {
@@ -72,4 +89,13 @@ export default class ClientProtocol {
         this._log("request delete character")
         this.send("deleteCharacter", { uuid:uuid }, ackCB)
     }
+
+    // Update server with player direction+speed input change (ie: joystick status)
+    // ackCB should contain no error
+    sendInputImpulseChange( vecDir, speed ) {
+        this._log("send impulse change " + vecDir.x + "," + vecDir.y )
+        this.send("playerImpulse", { vecDir:vecDir, speed:speed }, ackCB )
+    }
 }
+
+export { ClientProtocol }

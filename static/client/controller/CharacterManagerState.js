@@ -1,6 +1,7 @@
-import { AppState, NodeView, BaseStateView, Service, Graphics, ResourceProvider, ButtonView, arrayContains, FourPoleAnimation } from '../clientEZPZ.js'
+import { AppState, NodeView, BaseStateView, Graphics, ResourceProvider, Service, ButtonView, arrayContains, FourPoleAnimation } from '../clientEZPZ.js'
 import {g_races, g_classes} from '../../shared/data/abilities.js'
 import {g_locations} from '../../shared/data/locations.js'
+import { ClientProtocol } from '../networking/clientProtocol.js'
 import { ClientGame } from './ClientGame.js'
 
 export default class CharacterManagerState extends AppState {
@@ -24,7 +25,7 @@ export default class CharacterManagerState extends AppState {
 class CharacterSelectStateView extends BaseStateView {
 	constructor(state) {
 		super();
-		var RP = Service.Get("rp");
+    var RP = ResourceProvider.instance
 		var sprBtnBlue = RP.getSprite("gfx/ui/btn_blue.sprite");
     var screenSize = Graphics.ScreenSize;
 		
@@ -34,8 +35,6 @@ class CharacterSelectStateView extends BaseStateView {
     lblTitle.setLabel("Select Character", "20px Arial", "#000000");
     lblTitle.pos.setVal(screenSize.x/2,100);
     this.rootView.addChild(lblTitle);
-
-    var sd = Service.Get("sd");
 
     var cols = 3; var rows = 3;
     var xSpace = screenSize.x/(cols+1); 
@@ -86,7 +85,7 @@ class CharacterSelectStateView extends BaseStateView {
           //show avatar
           var avatar = new NodeView();
           var avatarAnim = new FourPoleAnimation();
-          var rp = Service.Get("rp");
+          var rp = ResourceProvider.instance
           var json = rp.getJson("gfx/avatars/avatar.anim");
           avatarAnim.LoadFromJson(json);
           avatarAnim.QuickAttach(race+"_", ".sprite");
@@ -118,7 +117,7 @@ class CharacterSelectStateView extends BaseStateView {
       console.log("delete character " + e.idx)
       var charId = playerOwned[e.idx].uuid
 
-      var clientProtocol = Service.Get("protocol")
+      var clientProtocol = ClientProtocol.instance
       clientProtocol.requestDeleteCharacter( charId, (data) => {
         console.log("ackRequestDeleteCharacter with data " + data)
   
@@ -162,7 +161,7 @@ class CharacterCreationStateView extends BaseStateView {
 		super();
     this.state = state;
     this.idx = idx;
-		var RP = Service.Get("rp");
+    var RP = ResourceProvider.instance
 		var sprBtnBlue = RP.getSprite("gfx/ui/btn_blue.sprite");
 
     var screenSize = Graphics.ScreenSize;
@@ -282,7 +281,7 @@ class CharacterCreationStateView extends BaseStateView {
       }
     }
 
-    var clientProtocol = Service.Get("protocol")
+    var clientProtocol = ClientProtocol.instance
     clientProtocol.requestCreateCharacter( name, selectedRace, selectedClass, (data) => {
       console.log("ackRequestCreateCharacter with data " + data)
 
