@@ -1,6 +1,7 @@
 import { Vec2D } from '../../shared/EZPZ/Vec2D.js'
-
+import { CastCommandTime } from '../../shared/EZPZ/castengine/CastWorldModel.js'
 import ClientProtocol from '../networking/clientProtocol.js'
+
 
 class ImpulseController {
     constructor(controlledEntityId) {
@@ -60,7 +61,8 @@ class ImpulseController {
     }
     _sendUpdateToServer() {
         // Send new network update
-        ClientProtocol.instance.sendInputImpulseChange(this.charId, this.dir, this.speed)
+        var gameTime = CastCommandTime.Get()
+        ClientProtocol.instance.sendInputImpulseChange(this.charId, this.dir, this.speed, gameTime)
     }
 
     getVel() {

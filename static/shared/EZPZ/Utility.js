@@ -219,6 +219,19 @@ export function CreateSimpleProgressBar( strColor, strBgColor, w, h ) {
   return bar;
 }
 
-export default { 
-  getRand, radToDeg, isString, isArray, arrayContains, getJSON, CreateSimpleProgressBar
+export class SlidingWindowBuffer extends Array {
+  constructor( slidingBufferCapacity = 5, ...items ) {
+    super(items)
+    this.slidingBufferCapacity = slidingBufferCapacity
+  }
+
+  push( obj ) {
+    super.push(obj)
+
+    if (this.length > this.slidingBufferCapacity ) {
+      this.slice(0, 1) // remove the oldest object from the buffer
+    }
+  }
 }
+
+export default getRand

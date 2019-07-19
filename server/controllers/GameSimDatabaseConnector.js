@@ -1,7 +1,7 @@
 
 import {Game} from '../models/linvoGame.js'
 //import {EntityModel, EntitySchema} from '../../static/shared/model/EntityModel.js'
-import { isArray } from '../../static/shared/EZPZ/Utility.js'
+import { isArray, SlidingWindowBuffer } from '../../static/shared/EZPZ/Utility.js'
 import GameSim from '../../static/shared/controller/GameSim.js'
 import { CastCommandTime } from '../../static/shared/EZPZ/castengine/CastWorldModel.js'
 import ServerProtocol from '../networking/protocol.js';
@@ -19,6 +19,9 @@ class GameSimDatabaseConnector {
         this.lastUpdateMS = performance.now()
         this.gameDB = null
         this.gameSim = GameSim.instance
+
+        this.worldUpdateIdx = 0
+        this.worldUpdateBuffer = new SlidingWindowBuffer(10)
     }
 
     static get instance() {
@@ -75,7 +78,7 @@ class GameSimDatabaseConnector {
         this.update()
     }
 
-    flushToDB() {
+    flushToDB(cb) {
         this._log("flushToDB")
 
         var gameSim = this.gameSim
@@ -86,7 +89,7 @@ class GameSimDatabaseConnector {
         // does this trigger re-saving the entire entity list every time? or is it smart enough to delta?
         this.gameDB.entities = []
         gameSim.entities.forEach((entity)=>{
-            cthis._log("get schema for object")
+            this._log("get schema for object")
             var schemaObject = {}
             entity.writeToSchema(schemaObject)
             this.gameDB.entities.push(schemaObject)
@@ -97,6 +100,9 @@ class GameSimDatabaseConnector {
                 console.log("Write error")
             } else {
                 console.log("game saved ")
+            }
+            if (cb) {
+                cb(err)
             }
         })
     }
@@ -122,7 +128,9 @@ class GameSimDatabaseConnector {
 
         //xxx todo: decouple worldUpdate tick rate from gameSim tick rate
         var updateJson = this.gameSim.getWorldUpdate()
+        updateJson.worldUpdateIdx = this.worldUpdateIdx++
         ServerProtocol.instance.broadcast("worldUpdate", updateJson)
+        this.worldUpdateBuffer.push(updateJson)
 
         // set up next update timer
         if (!this.flagShutdown) {
