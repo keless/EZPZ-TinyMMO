@@ -204,32 +204,6 @@ export default class BattleStateView extends BaseStateView {
 	}
 	
 	/*
-	createPlayerEntityView(entityModel) 
-	{
-		var entView = new EntityView(entityModel, true);
-		entView.pos.setVal(150, 150);
-		this.rootView.addChild(entView);
-		this.playerView = entView;
-
-		var avatar = new NodeView();
-		var avatarAnim = new Animation();
-		var rp = ResourceProvider.instance
-		var json = rp.getJson("gfx/avatars/avatar.anim");
-		avatarAnim.LoadFromJson(json);
-		var race = entityModel.race;
-		avatarAnim.QuickAttach("gfx/avatars/"+race+"_", ".sprite");
-		avatar.setAnim(avatarAnim);
-		avatar.pos.x = -120;
-		avatar.scale = 4;
-		avatar.pixelated = true;
-		entView.addChild(avatar);
-		this.playerView.avatar = avatar;
-
-		this.abilityViews = [];
-		
-		//this._rebuildAllAbilities(entityModel);
-	}
-
 	onBtnCloseAbilityView(e) {
 		this._hideAbilityInfoView();
 	}
@@ -356,7 +330,7 @@ export default class BattleStateView extends BaseStateView {
 	*/
 
 	onEntitySpawned(e) {
-		//if(this.pModel.entities.length <= 1) return; //just the player
+		//xxx dont recreate ALL views just to add a new one
 		this.refreshEntityViews();
 	}
 	onEntityRemoved(e) {
@@ -373,7 +347,7 @@ export default class BattleStateView extends BaseStateView {
 	refreshEntityViews() {
 		this.removeAllEntityViews();
 
-    	for(var i=0; i<this.pModel.gameSim.entities.length; i++ ) {
+    for(var i=0; i<this.pModel.gameSim.entities.length; i++ ) {
 			this.createEntityView(this.pModel.gameSim.entities[i], i);
 		}
 	}

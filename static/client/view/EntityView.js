@@ -7,9 +7,9 @@ class EntityView extends NodeView
 	constructor( entityModel, isPlayer ) {
 		super();
 		
-		var w = entityModel.bounds.x
-		var h = entityModel.bounds.y
-		//this.setRect(w, h, "#000000");
+		var w = entityModel.bounds.w
+		var h = entityModel.bounds.h
+		this.setRect(w, h, "#000000");
 		
 		this.pEntityModel = entityModel;
 
@@ -32,7 +32,7 @@ class EntityView extends NodeView
 		});
 		//this.setAnim(this.avatarAnim);
 
-		this.addChild(avatarNode)
+		//xxx this.addChild(avatarNode)
 		
 
 		var name = entityModel.name;
@@ -42,21 +42,21 @@ class EntityView extends NodeView
 		var title = new NodeView();
 		title.setLabel( name, "10px Arial", "#FFFFFF" );
 		title.pos.setVal(0, -h/4);
-		this.addChild(title);
+		//this.addChild(title);
 		
 		this.hpBar = CreateSimpleProgressBar("#11FF11", "#FF1111", 30, 10);
 		this.hpBar.pct = 0.7;
 		this.hpBar.setLabel(entityModel.hp_base, "6px Arial", "#FFFFFF");
 		this.hpBar.pos.y = 22;
-		this.addChild(this.hpBar);
+		//this.addChild(this.hpBar);
 
 		this.floatHeal = new NodeView();
 		this.floatHeal.setLabelWithOutline("", "12px Arial", "#00FF00", "#FFFFFF", 3);
-		this.hpBar.addChild(this.floatHeal);
+		//this.hpBar.addChild(this.floatHeal);
 
 		this.floatText = new NodeView();
 		this.floatText.setLabelWithOutline("", "12px Arial", "#FF0000", "#FFFFFF", 3);
-		this.hpBar.addChild(this.floatText);
+		//this.hpBar.addChild(this.floatText);
 
 		this.pEntityModel.addListener("update", this.updateFromModel.bind(this));
 		this.pEntityModel.addListener("damaged", this.onDamaged.bind(this));
