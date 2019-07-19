@@ -2,9 +2,6 @@ import ICastEntity from '../EZPZ/castengine/CastEntity.js'
 import CastTarget from '../EZPZ/castengine/CastTarget.js'
 import Vec2D, { Rect2D } from '../EZPZ/Vec2D.js'
 import EventBus from '../EZPZ/EventBus.js'
-
-//import uuid from 'uuid'
-//const uuidv4 = uuid.v4
 import uuidv4 from '../../shared/EZPZ/ext/uuid.js'
 
 // Note, this should match with FourPoleAnimation directions to render correctly (or we'll need to transform it for use with animations)

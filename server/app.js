@@ -8,16 +8,6 @@ import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-/*
-const path = require('path')
-const linvoDB = require('linvodb3')
-const express = require('express')
-const expressLayouts = require('express-ejs-layouts')
-const passport = require('passport');
-const flash = require('connect-flash');
-const session = require('express-session');
-*/
-import _ from './serverEZPZ.js'
 import path from 'path'
 import linvoDB from 'linvodb3'
 import express from 'express'
@@ -40,7 +30,6 @@ if (COMPILE_CLIENT_SCRIPTS) {
 linvoDB.dbPath = process.cwd() + "/db"
 
 // Passport Config
-//require('./config/passport')(passport);
 import configurePassport from './config/passport.js'
 configurePassport(passport)
 
@@ -82,8 +71,6 @@ app.use(function(req, res, next) {
 // Routes
 import indexRouter from './routes/index.js'
 import userRouter from './routes/user.js'
-//app.use('/', require('./routes/index'))
-//app.use('/user', require('./routes/user'))
 app.use('/', indexRouter)
 app.use('/user', userRouter)
 app.use('/static', express.static(path.join(__dirname, '../static')))
@@ -93,7 +80,6 @@ app.use('/data', express.static(path.join(__dirname, '../static/shared/data')))
 app.use('/gfx', express.static(path.join(__dirname, '../static/gfx')))
 
 // Initialize socket protocol
-//const { ServerProtocol } = require('./networking/protocol.js')
 import ServerProtocol from './networking/protocol.js'
 import http from 'http'
 import socketIO from 'socket.io'
@@ -121,6 +107,7 @@ gameSimDatabaseConnector.startupFromDB((err)=>{
   })
 })
 
+// Set up exit handling
 function exitHandler(options, exitCode) {
   gameSimDatabaseConnector.flushToDB( (err)=>{
     if (options.cleanup) console.log('clean');
@@ -129,31 +116,15 @@ function exitHandler(options, exitCode) {
   })
 }
 
-//do something when app is closing
-
-
 function setExitHandlerFor( signal, params ) {
   params.signal = signal
   process.on(signal, exitHandler.bind(null, params));
 }
-
 //setExitHandlerFor('exit', { cleanup: true })
 setExitHandlerFor('SIGINT', { exit: true })
 setExitHandlerFor('SIGUSR1', { exit: true })
 setExitHandlerFor('SIGUSR2', { exit: true })
 setExitHandlerFor('uncaughtException', { exit: true })
-
-//process.on('exit', exitHandler.bind(null, { cleanup: true }));
-
-//catches ctrl+c event
-//process.on('SIGINT', exitHandler.bind(null, { exit: true }));
-
-// catches "kill pid" (for example: nodemon restart)
-//process.on('SIGUSR1', exitHandler.bind(null, { exit: true }));
-//process.on('SIGUSR2', exitHandler.bind(null, { exit: true }));
-
-//catches uncaught exceptions
-//process.on('uncaughtException', exitHandler.bind(null, { exit: true }));
 
 /* debug 
 const User = require('./models/linvoUser')
