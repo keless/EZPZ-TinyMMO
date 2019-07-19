@@ -4,6 +4,7 @@ import { arrayContains } from '../EZPZ/Utility.js'
 import {EntityModel, EntitySchema} from '../model/EntityModel.js'
 import { ICastPhysics } from '../EZPZ/castengine/CastWorldModel.js'
 import { Vec2D, Rect2D } from '../EZPZ/Vec2D.js'
+import TiledMap from '../EZPZ/TiledMap.js';
 
 
 //xxx TODO: make this shared across client+server
@@ -22,7 +23,10 @@ class GameSim extends ICastPhysics {
         this.pWallRects = [];
 
         //xxx todo: move tiled map here and separate graphics/data, and figure out how to load resources on server similar to client
-        this._todoTiledMap = null
+        this.map = new TiledMap("gfx/levels/", 500, 500)
+        this.map.playerLayerName = "Terrain2"
+		//this.map.LoadFromJson(levelJson)
+		
         
         Service.Add("gameSim", this)
     }
@@ -41,8 +45,9 @@ class GameSim extends ICastPhysics {
         this.dirty = true
     }
 
-    ReadTiledMapPhysics( tiledMap ) {
-        this.pWallRects = tiledMap.wallRects;
+    LoadMapFromJson(json, withoutGraphics) {
+        this.map.LoadFromJson(json, withoutGraphics)
+        this.pWallRects = this.map.wallRects;
     }
 
     handlePlayerImpulse(playerID, data) {

@@ -25,10 +25,27 @@ export default class BattleStateView extends BaseStateView {
 		this.mapView = null;
 		*/
 
-		this.mapNode = new TiledMapNodeView(this.pModel.map)
-    this.rootView.addChild(this.mapNode)
+		this.mapNode = new TiledMapNodeView(this.pModel.gameSim.map)
+		this.rootView.addChild(this.mapNode)
+		
+		this.mapNode.fnDrawPlayerLayer = (gfx, x,y, ct)=>{
+			//var a = self.pModel.player.physicsEntity.getArea();
+			//gfx.drawRect(x + a.x, y + a.y, a.w, a.h)
+	  
+			this.entityViews.forEach((entityView)=>{
+				entityView.Draw(gfx, x,y, ct);
+			})
 
-    var screenSize = Graphics.ScreenSize;
+			/*
+			var modelPos = self.pModel.player.physicsEntity.pos;
+			self.avatarNode.pos.setVec(modelPos);
+			self.avatarNode.Draw(gfx, x,y, ct);
+			*/
+	  
+			//this.particleSystem.draw(gfx, x,y, ct)
+		  }
+
+    	var screenSize = Graphics.ScreenSize;
 
 		//var loc = g_locations[this.pModel.locationIdx];
 
@@ -370,13 +387,16 @@ export default class BattleStateView extends BaseStateView {
 
 	createEntityView( entityModel, idx ) {
 		var entView = new EntityView(entityModel, false);
-entView.pos.setVal(400, 180 + (idx*50)) ;console.log("xxx todo: dont hardcode offsets")
-		this.enemyLayer.addChild(entView);
-		this.entityViews.push(entView);
+//entView.pos.setVal(400, 180 + (idx*50)) ;console.log("xxx todo: dont hardcode offsets")
+		
 
 		if (entityModel == this.controlledEntity) {
 			this.avatarNode = entView
+		} else {
+//this.enemyLayer.addChild(entView);
 		}
+
+		this.entityViews.push(entView);
 	}
 
 	/*

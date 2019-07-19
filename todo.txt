@@ -1,0 +1,20 @@
+
+WIP:
+* load data files (abilities, items, gfx/levels/tiledMap.json ) on server
+* load tiledMap on server
+* implement map physics on server
+
+TODO:
+* send full world update to clients on connect
+* send incremental world updates
+* optimize: minify update packets (deltas per object-property)
+* do partial catch ups if an incremental update is missed by a client
+* retroactively apply user inputs to server
+
+* eventually: get cast engine working 
+* eventually: figure out automatic NAT translation / sharing server invites
+
+Completed:
+
+* no-sql no-setup database
+* user registration

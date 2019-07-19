@@ -170,7 +170,9 @@ class TiledMapNodeView extends NodeView {
 		super()
 
 		this.tiledMap = tiledMap
-		this.debugShowBoxes = false
+		this.debugShowBoxes = true
+
+		this.fnDrawPlayerLayer = function(gfx, x, y, ct){}
 
 		this.addCustomDraw((gfx, x, y, ct) => {
 			// always draw centered
@@ -180,7 +182,6 @@ class TiledMapNodeView extends NodeView {
 			gfx.drawCentered = saveDrawCentered;
 		});
 	}
-
 
 	DrawMap(gfx, offsetX, offsetY, ct) {
 		if (!this.tiledMap.isLoaded) return;
@@ -198,8 +199,8 @@ class TiledMapNodeView extends NodeView {
 				gfx.drawImage(layerImg, layer.x, layer.y);
 			}
 
-			if (layer.name == this.tiledMap.playerLayerName && this.tiledMap.fnDrawPlayerLayer) {
-				this.tiledMap.fnDrawPlayerLayer(gfx, 0, 0, ct);
+			if (layer.name == this.tiledMap.playerLayerName && this.fnDrawPlayerLayer) {
+				this.fnDrawPlayerLayer(gfx, 0, 0, ct);
 			}
 		}
 
@@ -227,8 +228,8 @@ class TiledMapNodeView extends NodeView {
 				}
 			}
 
-			if (tileLayer.name == this.tiledMap.playerLayerName && this.tiledMap.fnDrawPlayerLayer) {
-				this.tiledMap.fnDrawPlayerLayer(gfx, 0, 0, ct);
+			if (tileLayer.name == this.tiledMap.playerLayerName && this.fnDrawPlayerLayer) {
+				this.fnDrawPlayerLayer(gfx, 0, 0, ct);
 			}
 		}
 		gfx.restoreMatrix();

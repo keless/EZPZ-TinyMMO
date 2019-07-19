@@ -1,4 +1,4 @@
-
+import fs from 'fs'
 import {Game} from '../models/linvoGame.js'
 //import {EntityModel, EntitySchema} from '../../static/shared/model/EntityModel.js'
 import { isArray, SlidingWindowBuffer } from '../../static/shared/EZPZ/Utility.js'
@@ -67,6 +67,14 @@ class GameSimDatabaseConnector {
     _initGameSimFromDB() {
         this._log("initGameSimFromDB")
         this.gameSim = new GameSim()
+        
+        //load json
+        console.log("read raw data")
+        let rawdata = fs.readFileSync('./static/gfx/levels/test.json');
+        console.log("parse as json")
+        let levelJson = JSON.parse(rawdata);
+        console.log("load map from json")
+        this.gameSim.LoadMapFromJson(levelJson, true)
 
         var entitySchemas = this.gameDB.entities
         if (entitySchemas) {

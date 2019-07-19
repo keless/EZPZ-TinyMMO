@@ -25,15 +25,16 @@ class BattleStateModel extends BaseStateModel {
 
 		this.gameSim = GameSim.instance
 		
-
 		var RP = ResourceProvider.instance
 		var levelJson = RP.getJson("gfx/levels/test.json")
 	
+		this.gameSim.LoadMapFromJson(levelJson, false)
+		/*
 		this.map = new TiledMap("gfx/levels/", 500, 500)
 		this.map.LoadFromJson(levelJson)
 		this.map.playerLayerName = "Terrain2"
-	
 		this.gameSim.ReadTiledMapPhysics(this.map)
+		*/
 	
 		/* todo: spawn position code
 		var spawn = this.map.GetRandomSpawn() //xxx wIP
@@ -76,9 +77,9 @@ class BattleStateModel extends BaseStateModel {
 	}
 
 	Update(ct, dt) {
-		this.playerEntity.physicsEntity.vel.setVec( this.playerImpulse.getVel() )
+		//this.playerEntity.physicsEntity.vel.setVec( this.playerImpulse.getVel() )
 	
-		this.mapPhysics.Update(ct, dt)
+		//xxx this.gameSim.updateStep(ct, dt)
 	}
 	
 	Destroy() {

@@ -70,5 +70,19 @@ export function formatMoneyString(money) {
     mS = mS - mG*100;
     var mP = ~~(mG / 100);
     mG = mG - mP*100;
-    return (mP+"p "+mG+"g "+mS+"s "+mC+"c");
+    var result = []
+    if (mP > 0) {
+      result.push(mP+"p")
+    }
+    if (mG > 0) {
+      result.push(mG+"g")
+    }
+    if (mS > 0) {
+      result.push(mS+"s")
+    }
+    if (mC > 0 || result.length == 0) {
+      result.push(mC+"c")
+    }
+    return result.join(" ")
+    //return (mP+"p "+mG+"g "+mS+"s "+mC+"c");
 }
