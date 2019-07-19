@@ -128,12 +128,13 @@ class EntityModel extends ICastEntity {
 		//xxx todo: inventory
 		//xxx todo: abilities
 	}
-	_copyAttribute(from, to, attrib, defaultValue) {
-		defaultValue = defaultValue || to[attrib]
-		to[attrib] = from[attrib] || defaultValue
+	_copyAttribute(from, to, attrib) {
+		if (from.hasOwnProperty(attrib)) {
+			to[attrib] = from[attrib]
+		}
 	}
 
-	writeToSchema(schemaModel) {
+	writeToSchema(schemaModel = {}) {
 		for (var i=0; i<EntityModelAttributes.length; i++) {
 			this._copyAttribute(this, schemaModel, EntityModelAttributes[i])
 		}
@@ -159,12 +160,12 @@ class EntityModel extends ICastEntity {
 		//console.log("TODO: update entity from json")
 		this._updateVecFromPartial(this.pos, json.pos)
 		this._updateVecFromPartial(this.vel, json.vel)
-		if (json.facing) {
+		if (json.hasOwnProperty("facing") ) {
 			this.facing = json.facing
 		}
 
-		if ( this.verbose && (this.vel.getMagSq() > 0) ) {
-			console.log("entity " + this.name + " moving (" + this.pos.x +","+ this.pos.y+")")
+		if ( this.verbose && (this.vel.getMagSq() > 0)) {
+			console.log("entity " + this.name + " moving (" + this.pos.x +","+ this.pos.y+") facing " + this.facing)
 		}
 
 		this.eventBus.dispatch("update")
@@ -172,14 +173,15 @@ class EntityModel extends ICastEntity {
 
 	_updateVecFromPartial(vec, json) {
 		if (!json) { return }
-		if(json.x) {
+		if (json.hasOwnProperty('x')) {
 			vec.x = json.x
 		}
-		if(json.y) {
+		if (json.hasOwnProperty('y')) {
 			vec.y = json.y
 		}
 	}
 
+	/*
 	initWithJson(json) {
 		this.uuid = json["uuid"] || "none"
 		this.name = json["name"] || "No Name";
@@ -256,6 +258,7 @@ class EntityModel extends ICastEntity {
 		};
 		return json;
 	}
+	*/
 
 	Destroy() {
 		super.Destroy();

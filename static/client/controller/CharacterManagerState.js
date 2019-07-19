@@ -52,7 +52,7 @@ class CharacterSelectStateView extends BaseStateView {
         var idx = (x+y*rows);
         var json = null //sd.load("char"+idx, null);
         if (idx < playerOwned.length) {
-          json = playerOwned[idx].toJson()
+          json = playerOwned[idx].writeToSchema()
         }
         var text = "<New>";
         var race = "";
@@ -72,7 +72,7 @@ class CharacterSelectStateView extends BaseStateView {
         if(!isNew) {
           //show level
           var lblLevel = new NodeView();
-          lblLevel.setLabel("Lvl " + json.stats.xp_level, "10px Arial", "#000000" );
+          lblLevel.setLabel("Lvl " + json.xp_level, "10px Arial", "#000000" );
           lblLevel.pos.setVal(bx - 30, by + 25);
           this.rootView.addChild(lblLevel);
 

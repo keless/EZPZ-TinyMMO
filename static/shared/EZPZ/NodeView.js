@@ -244,7 +244,7 @@ export default class NodeView extends BaseListener {
 	get worldTransform() {
 		var transform = { scale:this.scale, rot:this.rotation, pos:this.pos.clone() }
 		if (this.parent) {
-			// TODO: apply scale/rot to local pos before adding
+			// apply scale/rot to local pos before adding
 			var pTransform = this.parent.worldTransform
 			transform.scale += pTransform.scale
 			transform.rot += pTransform.rot

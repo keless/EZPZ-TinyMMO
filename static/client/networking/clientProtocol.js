@@ -101,6 +101,7 @@ export default class ClientProtocol {
     // ackCB should contain no error
     sendInputImpulseChange( charID, vecDir, speed, facing, gameTime ) {
         //this._log("send impulse change ") // + vecDir.x + "," + vecDir.y )
+        console.log("send facing " + facing)
         this.send("playerImpulse", { charID:charID, vecDir:vecDir.toJson(), speed:speed, facing:facing, gameTime:gameTime }, (data)=>{
             if (data.error) {
                 this._log("error " + data.error)

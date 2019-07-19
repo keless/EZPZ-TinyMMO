@@ -159,7 +159,7 @@ class GameSim extends ICastPhysics {
         //2) else create new from json
         var entity = this.getEntityForId(entityJson.uuid)
         if (entity) {
-            entity.fromWorldUpdateJson(entityJson)
+            entity.updateFromJson(entityJson)
         } else {
             entity = new EntityModel()
             entity.fromWorldUpdateJson(entityJson)

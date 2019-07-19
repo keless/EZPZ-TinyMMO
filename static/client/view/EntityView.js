@@ -24,12 +24,13 @@ class EntityView extends NodeView
 		
 		
 		this.avatarAnim.QuickAttach( race + "_", ".sprite", ()=>{
+			console.log("stuff")
 			this.avatarNode = avatarNode
-		  this.avatarNode.setAnim(self.avatarAnim);
+		  this.avatarNode.setAnim(this.avatarAnim);
 		  this.avatarNode.pixelated = true;
 		  this.avatarNode.scale = 2;
 		});
-		this.setAnim(this.avatarAnim);
+		//this.setAnim(this.avatarAnim);
 
 		this.addChild(avatarNode)
 		
@@ -80,6 +81,12 @@ class EntityView extends NodeView
 		if (this.avatarNode) {
 			var ct = CastCommandTime.Get()
 			this.avatarNode.setDirection(ct, this.pEntityModel.facing);
+		}
+	}
+
+	setDirection(ct, dir) {
+		if(this.avatarNode) {
+			this.avatarNode.setDirection(ct, dir)
 		}
 	}
 

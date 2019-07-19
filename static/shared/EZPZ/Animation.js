@@ -30,7 +30,7 @@ class Animation {
 	
 	//For each state $s try to AttachSprite( $s, baseName + $s + extName )
 	QuickAttach( baseName, extName, fnOnComplete ) {
-		var RP = Service.Get("rp");
+		var RP = ResourceProvider.instance
 		var self = this;
 		var imgsDownloading = Object.keys(this.graph).length
 		for( var state in this.graph ) {
@@ -135,7 +135,6 @@ class AnimationInstance {
 	getCurrentSprite() {
 		return this.drawSprite;
 	}
-	
 }
 
 /**
@@ -149,60 +148,39 @@ class FourPoleAnimation extends Animation {
 	static get DIR_S() { return 2 }
 	static get DIR_W() { return 3 }
 
+	get directions() {
+		return ["N", "E", "S", "W", ""]
+	}
+
 	constructor() {
-		super();
-		this.directions = ["N", "E", "S", "W"];
+		super()
 	}
 
 	QuickAttach(baseName, extName, fnOnComplete) {
-		var RP = Service.Get("rp");
-		var self = this;
-		var imgsDownloading = 0;
-		var finishedProcessing = false
-		for( var state in this.graph ) {
-			(function(stateName){
-				//try to get the sprite without direction added
-				if (RP.hasSprite(baseName + stateName + extName)) {
-					imgsDownloading++
-					RP.getSprite( baseName + stateName + extName, function(e){
-						//console.log("got sprite for state " + stateName);
-						var sprite = e.res;
-						if(sprite) {
-							self.AttachSprite(stateName, sprite);
-							imgsDownloading--;
-							
-							if(fnOnComplete && imgsDownloading == 0 && finishedProcessing) {
-								fnOnComplete();
-							}
-						}
-					});
-				}
+		var RP = ResourceProvider.instance
 
-				//try to get the sprite with direction added
-				for( var dirIdx in self.directions ) {
-					(function(dIdx){
-						var dir = self.directions[dIdx];
-						
-						if (RP.hasSprite(baseName + stateName + dir + extName)) {
-							imgsDownloading++
-							RP.getSprite( baseName + stateName + dir + extName, function(e){
-								var sprite = e.res;
-								if(sprite) {
-									self.AttachSprite(stateName + dir, sprite);
-									imgsDownloading--;
-									
-									if(fnOnComplete && imgsDownloading == 0 && finishedProcessing) {
-										fnOnComplete();
-									}
-								}
-							});
-						}
-					}(dirIdx));
+		var thingsToLoad = []
+
+		for(var state in this.graph) {
+			this.directions.forEach((dir)=>{
+				if (RP.hasSprite(baseName + state + dir + extName)) {
+					thingsToLoad.push({ spriteName: (baseName + state + dir + extName), stateName: state + dir })
 				}
-				
-			}(state));
+			})
 		}
-		finishedProcessing = true
+
+		var processing = thingsToLoad.length
+
+		thingsToLoad.forEach((thing)=>{
+			RP.getSprite( thing.spriteName, (e)=>{
+				this.AttachSprite( thing.stateName, e.res )
+
+				processing--
+				if (fnOnComplete && processing == 0) {
+					fnOnComplete()
+				}
+			})
+		})
 	}
 
 	CreateInstance() {

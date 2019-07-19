@@ -30,12 +30,16 @@ class ClientGame {
   }
 
   applyWorldUpdate( worldUpdateJson ) {
-    console.log("todo: apply world update")
     if (worldUpdateJson.entities) {
-      console.log("todo: update with entities")
-      console.log(worldUpdateJson.entities)
+      //console.log("todo: update with entities")
+      //console.log(worldUpdateJson.entities)
+      
 
       worldUpdateJson.entities.forEach((entityJson)=>{
+        if (entityJson.facing == 0) {
+          console.log("got UP facing state")
+        }
+
         this.gameSim.updateEntityFromJson(entityJson)
       })
     }
