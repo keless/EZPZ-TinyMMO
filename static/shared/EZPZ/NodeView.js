@@ -7,7 +7,9 @@ import {isString} from './Utility.js'
 
 //scene node heirarchy of sprites/animations
 export default class NodeView extends BaseListener {
-	static canSerializeNodeViews = false
+	static get canSerializeNodeViews() { 
+		return false
+	}
 
 	constructor() {
 		super();

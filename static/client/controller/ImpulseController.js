@@ -8,6 +8,7 @@ class ImpulseController {
 
         this.charId = controlledEntityId
         this.dir = new Vec2D()
+        this.facing = 0
         this._speed = 200 //xxx get default from somewhere?
 
         this.up = false
@@ -22,6 +23,10 @@ class ImpulseController {
     set speed(val) {
         this._speed = val
         this._sendUpdateToServer()
+    }
+
+    setFacing( val ) {
+        this.facing = val
     }
 
     setUp( val ) {
@@ -62,7 +67,7 @@ class ImpulseController {
     _sendUpdateToServer() {
         // Send new network update
         var gameTime = CastCommandTime.Get()
-        ClientProtocol.instance.sendInputImpulseChange(this.charId, this.dir, this.speed, gameTime)
+        ClientProtocol.instance.sendInputImpulseChange(this.charId, this.dir, this.speed, this.facing, gameTime)
     }
 
     getVel() {

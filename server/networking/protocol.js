@@ -123,8 +123,8 @@ class SocketClient {
 
 
     _logProtocol(message) {
-        let blacklist = [ "playerImpulse" ]
-        if (!blacklist.includes(message)) {
+        let logIgnore = [ "playerImpulse" ]
+        if (!logIgnore.includes(message)) {
             this._log("Protocol: handle " + message)
         }
     }

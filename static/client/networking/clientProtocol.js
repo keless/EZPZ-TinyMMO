@@ -30,7 +30,7 @@ export default class ClientProtocol {
             self._log("connected to server")
 
             if (data) {
-                var clientGame = ClientGame.Get()
+                var clientGame = ClientGame.instance
                 if (data.userId) {
                     clientGame.setUserID(data.userId)
                 }
@@ -99,9 +99,9 @@ export default class ClientProtocol {
     // vecDir should be the direction of movement (will be unitized on server before multiplied by speed)
     // gameTime should be the gameTime the player input happened (so it can be applied retroactively on server) 
     // ackCB should contain no error
-    sendInputImpulseChange( charID, vecDir, speed, gameTime ) {
+    sendInputImpulseChange( charID, vecDir, speed, facing, gameTime ) {
         //this._log("send impulse change ") // + vecDir.x + "," + vecDir.y )
-        this.send("playerImpulse", { charID:charID, vecDir:vecDir.toJson(), speed:speed, gameTime:gameTime }, (data)=>{
+        this.send("playerImpulse", { charID:charID, vecDir:vecDir.toJson(), speed:speed, facing:facing, gameTime:gameTime }, (data)=>{
             if (data.error) {
                 this._log("error " + data.error)
             }

@@ -3,12 +3,8 @@ import {uuidv4} from '../clientEZPZ.js'
 import EntityModel from '../../shared/model/EntityModel.js';
 import GameSim from '../../shared/controller/GameSim.js'
 
-class ClientGame {
-  static s_instance = new ClientGame()
-  static Get() { 
-    return ClientGame.s_instance
-  }
 
+class ClientGame {
   static get instance() {
     return ClientGame.s_instance
   }
@@ -45,6 +41,9 @@ class ClientGame {
     }
   }
 }
+
+//xxx todo: move to Service and initialize clientGame explicitly somewhere
+ClientGame.s_instance = new ClientGame()
 
 export default ClientGame
 export { ClientGame }

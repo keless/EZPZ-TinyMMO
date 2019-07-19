@@ -151,6 +151,7 @@ class EntityModel extends ICastEntity {
 	}
 	fromWorldUpdateJson(json) {
 		this.initWithSchema(json)
+		this.eventBus.dispatch("update")
 	}
 
 	updateFromJson(json) {
@@ -166,7 +167,7 @@ class EntityModel extends ICastEntity {
 			console.log("entity " + this.name + " moving (" + this.pos.x +","+ this.pos.y+")")
 		}
 
-		this.eventBus.dispatch("update");
+		this.eventBus.dispatch("update")
 	}
 
 	_updateVecFromPartial(vec, json) {

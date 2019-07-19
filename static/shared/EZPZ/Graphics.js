@@ -2,26 +2,43 @@ import Service from './Service.js'
 import {Vec2D, Rect2D} from './Vec2D.js'
 
 class Graphics {
-	static areSpritesCentered = false
-	static useTextHeightHack = false
-
-	static get ScreenSize() {
-		return Service.Get("gfx").getSize();
-	}
-
 	constructor( strCanvasName ) {
 		this.canvas = document.getElementById(strCanvasName);
 		this.fillStyle = "#FF0000";
 		this.strokeStyle = "#FFFFFF";
 		this.strokeSize = 1;
 		this.font = "30px Arial";
+
+		this.useTextHack = false
 		
 		this.ctx = this.canvas.getContext("2d");
-		this.drawCentered = Graphics.areSpritesCentered;
-		this.useTextHeightHack = Graphics.useTextHeightHack;
+		this.drawCentered = false;
+		this.useTextHeightHack = false;
 		this.verbose = false;
 		
 		Service.Add("gfx", this);
+	}
+
+	static get instance() {
+		return Service.Get("gfx")
+	}
+
+	static get areSpritesCentered() {
+		return Graphics.instance.drawCentered
+	}
+	static set areSpritesCentered(value) {
+		Graphics.instance.drawCentered = value
+	}
+	 
+	static get useTextHeightHack() {
+		return Graphics.instance.useTextHeightHack
+	}
+	static set useTextHeightHack(value) {
+		Graphics.instance.useTextHeightHack = value
+	}
+
+	static get ScreenSize() {
+		return Graphics.instance.getSize();
 	}
 	
 	getWidth() {

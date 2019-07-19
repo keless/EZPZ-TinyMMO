@@ -137,21 +137,25 @@ export default class BattleStateView extends BaseStateView {
 			this.avatarNode.setDirection(ct, 0);
 			this.avatarNode.animEvent(0, "walk");
 			this.pModel.playerImpulse.setUp(true);
+			this.pModel.playerImpulse.setFacing(0);
 		  break;
 		  case 'D'.charCodeAt(0):
 			this.avatarNode.setDirection(ct, 2);
 			this.avatarNode.animEvent(0, "walk");
 			this.pModel.playerImpulse.setDown(true);
+			this.pModel.playerImpulse.setFacing(2);
 		  break;
 		  case 'F'.charCodeAt(0):
 			this.avatarNode.setDirection(ct, 1);
 			this.avatarNode.animEvent(0, "walk");
 			this.pModel.playerImpulse.setRight(true);
+			this.pModel.playerImpulse.setFacing(1);
 		  break;
 		  case 'S'.charCodeAt(0):
 			this.avatarNode.setDirection(ct, 3);
 			this.avatarNode.animEvent(0, "walk");
 			this.pModel.playerImpulse.setLeft(true);
+			this.pModel.playerImpulse.setFacing(3);
 		  break;
 		}
 	}

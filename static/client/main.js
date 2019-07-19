@@ -8,18 +8,17 @@ import {ClientGame} from './controller/ClientGame.js'
 
 var bShowDebug = false;
 
-// Config
-Graphics.areSpritesCentered = true
-
-
 var game_create = function()
 {
 	var app = new Application("KinderQuest", "content");
 	window.app = app;
 
+	// Config
+	Graphics.areSpritesCentered = true
+
 	// Initialize networking protocol
 	new ClientProtocol()
-	var clientGame = ClientGame.Get()
+	var clientGame = ClientGame.instance
 	console.log("create client game " + clientGame.uuid)
 
 	// Initialize global listeners

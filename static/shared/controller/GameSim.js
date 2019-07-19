@@ -73,6 +73,9 @@ class GameSim extends ICastPhysics {
 
         var dir = new Vec2D(data.vecDir.x, data.vecDir.y)
         var speed = data.speed
+        if (data.hasOwnProperty("facing")) {
+            character.facing = data.facing
+        }
 
         //xxx todo: check if character can accept (if dead dont move, etc)
         character.vel = dir.getUnitized().scalarMult(speed)
@@ -156,7 +159,7 @@ class GameSim extends ICastPhysics {
         //2) else create new from json
         var entity = this.getEntityForId(entityJson.uuid)
         if (entity) {
-            entity.updateFromJson(entityJson)
+            entity.fromWorldUpdateJson(entityJson)
         } else {
             entity = new EntityModel()
             entity.fromWorldUpdateJson(entityJson)

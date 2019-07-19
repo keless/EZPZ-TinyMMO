@@ -1,5 +1,6 @@
 import { NodeView, CreateSimpleProgressBar, Animation, FourPoleAnimation } from '../clientEZPZ.js'
 import ResourceProvider from '../../shared/EZPZ/ResourceProvider.js';
+import { CastCommandTime } from '../../shared/EZPZ/castengine/CastWorldModel.js';
 
 class EntityView extends NodeView
 {
@@ -23,9 +24,10 @@ class EntityView extends NodeView
 		
 		
 		this.avatarAnim.QuickAttach( race + "_", ".sprite", ()=>{
-		  self.avatarNode.setAnim(self.avatarAnim);
-		  self.avatarNode.pixelated = true;
-		  self.avatarNode.scale = 2;
+			this.avatarNode = avatarNode
+		  this.avatarNode.setAnim(self.avatarAnim);
+		  this.avatarNode.pixelated = true;
+		  this.avatarNode.scale = 2;
 		});
 		this.setAnim(this.avatarAnim);
 
@@ -74,6 +76,11 @@ class EntityView extends NodeView
 		this.hpBar.pct = this.pEntityModel.hp_curr / this.pEntityModel.hp_base;
 		this.hpBar.updateLabel( this.pEntityModel.hp_curr + " / " + this.pEntityModel.hp_base);
 		this.pos.setVec( this.pEntityModel.pos )
+
+		if (this.avatarNode) {
+			var ct = CastCommandTime.Get()
+			this.avatarNode.setDirection(ct, this.pEntityModel.facing);
+		}
 	}
 
 	onDamaged(e) {

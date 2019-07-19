@@ -44,7 +44,7 @@ class CharacterSelectStateView extends BaseStateView {
     var yStart = 300;
 
     //get list of player owned characters
-    var clientGame = ClientGame.Get()
+    var clientGame = ClientGame.instance
     var playerOwned = clientGame.getEntitiesForCurrentPlayer()
 
     for(var y=0; y<rows; y++) {
@@ -111,7 +111,7 @@ class CharacterSelectStateView extends BaseStateView {
   onBtnDel(e) {
     if(confirm('Are you sure?')) {
 
-      var clientGame = ClientGame.Get()
+      var clientGame = ClientGame.instance
       var playerOwned = clientGame.getEntitiesForCurrentPlayer()
 
       console.log("delete character " + e.idx)
@@ -142,7 +142,7 @@ class CharacterSelectStateView extends BaseStateView {
       //load char and go to game
       console.log("WIP load known character " + e.idx)
 
-      var clientGame = ClientGame.Get()
+      var clientGame = ClientGame.instance
       var playerOwned = clientGame.getEntitiesForCurrentPlayer()
       var charId = playerOwned[e.idx].uuid
       var locIdx = 0 //not currently worried about location yet
@@ -289,7 +289,7 @@ class CharacterCreationStateView extends BaseStateView {
       if (data.entities) {
         //world update should have our new character in it
         console.log("got world update after creating char")
-        var clientGame = ClientGame.Get()
+        var clientGame = ClientGame.instance
         clientGame.applyWorldUpdate( data )
       }
 
