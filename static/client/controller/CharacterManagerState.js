@@ -1,7 +1,7 @@
 import { AppState, NodeView, BaseStateView, Graphics, ResourceProvider, Service, ButtonView, arrayContains, FourPoleAnimation } from '../clientEZPZ.js'
 import {g_races, g_classes} from '../../shared/data/abilities.js'
 import {g_locations} from '../../shared/data/locations.js'
-import { ClientProtocol } from '../networking/clientProtocol.js'
+import { ClientProtocol } from '../networking/ClientProtocol.js'
 import { ClientGame } from './ClientGame.js'
 
 export default class CharacterManagerState extends AppState {

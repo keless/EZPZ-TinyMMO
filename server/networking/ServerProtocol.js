@@ -16,6 +16,7 @@ class SocketClient {
         this._addUserMessageHandler('createCharacter', this.onCreateCharacter)
         this._addUserMessageHandler('deleteCharacter', this.onDeleteCharacter)
         this._addUserMessageHandler('playerImpulse', this.onPlayerImpulse)
+        this._addUserMessageHandler('fullWorldUpdate', this.onFullWorldUpdate)
     }
 
     emit(message, data) {
@@ -35,7 +36,7 @@ class SocketClient {
 
     /// Expect: { name:String, race:String, charClass:String }
     /// Response: { worldUpdate:WorldUpdate }
-    onCreateCharacter(err, data, response) {
+    onCreateCharacter(data, response) {
         //create character for user
         var userId = this.clientID
 
@@ -67,7 +68,7 @@ class SocketClient {
 
     /// Expect: { uuid:String }
     /// Response: { entitiesRemoved:[uuid] }
-    onDeleteCharacter(err, data, response) {
+    onDeleteCharacter(data, response) {
         var userId = this.clientID
         var charId= data.uuid
 
@@ -91,9 +92,9 @@ class SocketClient {
         }
     }
 
-    /// Expect: { { vecDir: Vec2D.jsonObject, speed:Number } }
+    /// Expect: { vecDir: Vec2D.jsonObject, speed:Number }
     /// Response: { } //empty object (for now)
-    onPlayerImpulse(err, data, response) {
+    onPlayerImpulse(data, response) {
 
         this._logVerbose("got player impulse")
         this._logVerbose(data)
@@ -102,6 +103,23 @@ class SocketClient {
         gameSim.handlePlayerImpulse(this.clientID, data)
 
         response({})
+    }
+
+    /// Expect: { updateIdx:Number [-1 to n] }
+    ///  if updateIdx is -1, the latest worldUpdate is returned
+    ///  if updateIdx represents a worldUpdate that server doesnt have, latest worldUpdate is returned
+    /// Response: { fullWorldUpdateJsonObject }
+    onFullWorldUpdate(data, response) {
+
+        var worldUpdateIdx = -1
+        if (data.hasOwnProperty("updateIdx")) {
+            worldUpdateIdx = data.updateIdx
+        }
+        //xxx WIP
+        var gameController = GameSimDatabaseConnector.instance
+        var fullWorldUpdate = gameController.getFullWorldUpdateByIdx(worldUpdateIdx)
+
+        response(fullWorldUpdate)
     }
 
     /// @param entityIDs is an array of uuids
@@ -132,7 +150,7 @@ class SocketClient {
     /// adds a socket message handler that expects to come from a valid user
     /// will find socketClient in our stored list, or create a new entry if none exists
     /// will disconnect socket if no valid Passport session
-    /// @param callback  func(err, data, response)
+    /// @param callback  func(data, response)
     _addUserMessageHandler(message, callback) {
         this._logVerbose("add message handler for " + message)
         this.socket.on(message, (data, response) => {
@@ -146,7 +164,7 @@ class SocketClient {
                 return
             }
 
-            callback.bind(this)(null, data, response)
+            callback.bind(this)(data, response)
         })
     }
 }
@@ -206,7 +224,7 @@ class ServerProtocol {
                     worldUpdate.addEntities(entitiesForPlayer)
                     
 
-                    client.emit("connected", { userId: userId, worldUpdate: worldUpdate.getPayloadJson() })
+                    client.emit("connected", { userId: userId, ownedEntities: worldUpdate.getPayloadJson() })
                 } else {
                     console.warn("socket connected with passport session, but no registered user " + findErr)
                 }

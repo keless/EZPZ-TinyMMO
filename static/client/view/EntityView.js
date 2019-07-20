@@ -25,9 +25,9 @@ class EntityView extends NodeView
 		
 		this.avatarAnim.QuickAttach( race + "_", ".sprite", ()=>{
 			this.avatarNode = avatarNode
-		  this.avatarNode.setAnim(this.avatarAnim);
-		  this.avatarNode.pixelated = true;
-			//this.avatarNode.scale = 2;
+		  	this.avatarNode.setAnim(this.avatarAnim)
+		  	this.avatarNode.pixelated = true
+			this.avatarNode.scale = 2
 			this.addChild(avatarNode)
 		});
 

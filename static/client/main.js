@@ -1,5 +1,5 @@
 import { Application, Service, EventBus, Graphics, LoadingState } from './clientEZPZ.js'
-import ClientProtocol from './networking/clientProtocol.js'
+import ClientProtocol from './networking/ClientProtocol.js'
 import ConnectingState from './controller/ConnectingState.js'
 import LocationState from './controller/LocationState.js'
 import BattleState from './controller/BattleState.js'
@@ -90,6 +90,7 @@ var game_create = function()
 			"gfx/avatars/avatar.anim",
 			"gfx/avatars/avatars.spb",
 			"gfx/levels/test.json",
+			"gfx/levels/test2.json",
 			"gfx/levels/terrain.png"
 			];
 	stateController.gotoState("loading", [resources, "connecting"]); 

@@ -1,6 +1,6 @@
 import { Vec2D } from '../../shared/EZPZ/Vec2D.js'
 import { CastCommandTime } from '../../shared/EZPZ/castengine/CastWorldModel.js'
-import ClientProtocol from '../networking/clientProtocol.js'
+import ClientProtocol from '../networking/ClientProtocol.js'
 
 
 class ImpulseController {

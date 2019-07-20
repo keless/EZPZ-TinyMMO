@@ -232,6 +232,13 @@ export class SlidingWindowBuffer extends Array {
       this.slice(0, 1) // remove the oldest object from the buffer
     }
   }
+
+  getLast() {
+    if (this.length == 0) {
+      return null
+    }
+    return this[ this.length - 1 ]
+  }
 }
 
 export default getRand

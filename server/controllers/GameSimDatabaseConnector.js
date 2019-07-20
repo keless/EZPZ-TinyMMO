@@ -4,7 +4,7 @@ import {Game} from '../models/linvoGame.js'
 import { isArray, SlidingWindowBuffer } from '../../static/shared/EZPZ/Utility.js'
 import GameSim from '../../static/shared/controller/GameSim.js'
 import { CastCommandTime } from '../../static/shared/EZPZ/castengine/CastWorldModel.js'
-import ServerProtocol from '../networking/protocol.js';
+import ServerProtocol from '../networking/ServerProtocol.js';
 import {performance} from 'perf_hooks'
 
 var g_instance = null
@@ -69,11 +69,8 @@ class GameSimDatabaseConnector {
         this.gameSim = new GameSim()
         
         //load json
-        console.log("read raw data")
-        let rawdata = fs.readFileSync('./static/gfx/levels/test.json');
-        console.log("parse as json")
+        let rawdata = fs.readFileSync('./static/gfx/levels/test2.json');
         let levelJson = JSON.parse(rawdata);
-        console.log("load map from json")
         this.gameSim.LoadMapFromJson(levelJson, true)
 
         var entitySchemas = this.gameDB.entities
@@ -137,8 +134,11 @@ class GameSimDatabaseConnector {
         //xxx todo: decouple worldUpdate tick rate from gameSim tick rate
         var updateJson = this.gameSim.getWorldUpdate()
         updateJson.worldUpdateIdx = this.worldUpdateIdx++
-        ServerProtocol.instance.broadcast("worldUpdate", updateJson)
+        
         this.worldUpdateBuffer.push(updateJson)
+
+        //xxx WIP - todo; send deltas using fossil-delta
+        ServerProtocol.instance.broadcast("worldUpdate", updateJson)
 
         // set up next update timer
         if (!this.flagShutdown) {
@@ -147,6 +147,24 @@ class GameSimDatabaseConnector {
                 this.update()
             }, timerPeriodMS);
         }
+    }
+
+    // if idx == -1, returns latest
+    // if idx is not found in buffer, returns latest
+    getFullWorldUpdateByIdx(idx) {
+        var update = this.worldUpdateBuffer.getLast()
+
+        if (idx != -1  &&  update.worldUpdateIdx != idx) {
+            var searchResult = this.worldUpdateBuffer.find((e)=>{
+                return e.worldUpdateIdx == idx
+            })
+
+            if (searchResult) {
+                update = searchResult
+            }
+        }
+
+        return update
     }
 }
 

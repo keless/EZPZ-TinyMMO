@@ -2,7 +2,7 @@
 import {Service} from '../EZPZ/Service.js'
 import { arrayContains } from '../EZPZ/Utility.js'
 import {EntityModel, EntitySchema} from '../model/EntityModel.js'
-import { ICastPhysics } from '../EZPZ/castengine/CastWorldModel.js'
+import { ICastPhysics, CastCommandTime } from '../EZPZ/castengine/CastWorldModel.js'
 import { Vec2D, Rect2D } from '../EZPZ/Vec2D.js'
 import TiledMap from '../EZPZ/TiledMap.js';
 
@@ -18,7 +18,6 @@ class GameSim extends ICastPhysics {
         // signals server side to write to database
         this.dirty = false
 
-        this.gameTime = 0
         this.entities = []
         this.pWallRects = [];
 
@@ -87,7 +86,6 @@ class GameSim extends ICastPhysics {
     }
 
     updateStep(ct, dt) {
-        this.gameTime = ct
 
         //step each physics entity forward
         for(var eIdx = 0; eIdx < this.entities.length; eIdx++) {
@@ -154,7 +152,7 @@ class GameSim extends ICastPhysics {
 
     getWorldUpdate() {
         var updateJson = {}
-        updateJson.gameTime = this.gameTime
+        updateJson.gameTime = CastCommandTime.Get()
         
         var entities = []
         this.entities.forEach((entity)=>{

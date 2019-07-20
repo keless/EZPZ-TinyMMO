@@ -80,7 +80,7 @@ app.use('/data', express.static(path.join(__dirname, '../static/shared/data')))
 app.use('/gfx', express.static(path.join(__dirname, '../static/gfx')))
 
 // Initialize socket protocol
-import ServerProtocol from './networking/protocol.js'
+import ServerProtocol from './networking/ServerProtocol.js'
 import http from 'http'
 import socketIO from 'socket.io'
 var serv = http.Server(app)

@@ -34,9 +34,10 @@ export default class ClientProtocol {
                 if (data.userId) {
                     clientGame.setUserID(data.userId)
                 }
-                if (data.worldUpdate) {
-                    var worldUpdate = data.worldUpdate
-                    clientGame.applyWorldUpdate(worldUpdate)
+                if (data.ownedEntities) {
+                    //var worldUpdate = data.worldUpdate
+                    //clientGame.applyWorldUpdate(worldUpdate)
+                    clientGame.updateOwnedEntities(data.ownedEntities)
                 }
             }
 
@@ -57,9 +58,13 @@ export default class ClientProtocol {
         this.socket.on("worldUpdate", (data)=> {
             //this._log("TODO: handle world update")
 
-            //xxx WIP
+            //xxx WIP - handle delta
             ClientGame.instance.applyWorldUpdate(data)
             
+        })
+
+        this.socket.on("fullWorldUpdate", (data)=> {
+            ClientGame.instance.applyWorldUpdate(data)
         })
     }
 

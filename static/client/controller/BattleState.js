@@ -26,7 +26,7 @@ class BattleStateModel extends BaseStateModel {
 		this.gameSim = GameSim.instance
 		
 		var RP = ResourceProvider.instance
-		var levelJson = RP.getJson("gfx/levels/test.json")
+		var levelJson = RP.getJson("gfx/levels/test2.json")
 	
 		this.gameSim.LoadMapFromJson(levelJson, false)
 		/*
