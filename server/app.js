@@ -91,8 +91,8 @@ io.use((socket, next)=> {
 var protocol = new ServerProtocol(io)
 
 // Start game simulation
-import GameSimDatabaseConnector from './controllers/GameSimDatabaseConnector.js'
-var gameSimDatabaseConnector = GameSimDatabaseConnector.instance
+import ServerGameController from './controllers/ServerGameController.js'
+var gameSimDatabaseConnector = ServerGameController.instance
 
 gameSimDatabaseConnector.startupFromDB((err)=>{
   if (err) {

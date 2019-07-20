@@ -170,7 +170,7 @@ class TiledMapNodeView extends NodeView {
 		super()
 
 		this.tiledMap = tiledMap
-		this.debugShowBoxes = true
+		this.debugShowBoxes = false
 
 		this.fnDrawPlayerLayer = function(gfx, x, y, ct){}
 

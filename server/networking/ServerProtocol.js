@@ -2,7 +2,7 @@ import GameSim from '../../static/shared/controller/GameSim.js'
 import User from '../models/linvoUser.js'
 import Service from '../../static/shared/EZPZ/Service.js'
 import WorldUpdateModel from '../../static/shared/model/WorldUpdateModel.js'
-import GameSimDatabaseConnector from '../controllers/GameSimDatabaseConnector.js'
+import ServerGameController from '../controllers/ServerGameController.js'
 
 
 class SocketClient {
@@ -59,7 +59,7 @@ class SocketClient {
     
             response( this._getWorldUpdateForEntityIDs([entityID]) )
 
-            GameSimDatabaseConnector.instance.flushToDB()
+            ServerGameController.instance.flushToDB()
         } else {
             this._log("could not create character")
             response({error:"could not create character"})
@@ -88,7 +88,7 @@ class SocketClient {
             gameSim.removeEntitiesById([charId])
             response({entitiesRemoved:[charId]})
 
-            GameSimDatabaseConnector.instance.flushToDB()
+            ServerGameController.instance.flushToDB()
         }
     }
 
@@ -116,7 +116,7 @@ class SocketClient {
             worldUpdateIdx = data.updateIdx
         }
         //xxx WIP
-        var gameController = GameSimDatabaseConnector.instance
+        var gameController = ServerGameController.instance
         var fullWorldUpdate = gameController.getFullWorldUpdateByIdx(worldUpdateIdx)
 
         response(fullWorldUpdate)

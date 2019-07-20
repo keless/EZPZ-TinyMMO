@@ -6,17 +6,22 @@ import GameSim from '../../static/shared/controller/GameSim.js'
 import { CastCommandTime } from '../../static/shared/EZPZ/castengine/CastWorldModel.js'
 import ServerProtocol from '../networking/ServerProtocol.js';
 import {performance} from 'perf_hooks'
+import fossilDelta from 'fossil-delta'
 
 var g_instance = null
 
 //xxx todo: refactor -- this isnt just about database (its more like the server-side analogy of ClientGame.js right now)
-class GameSimDatabaseConnector {
+class ServerGameController {
     constructor() {
         this.verbose = true
 
         this.flagShutdown = false
         this.updateFreqMS = 1000 / 30.0 // 30 fps
         this.lastUpdateMS = performance.now()
+
+        this.worldUpdateFreqMS = 1000 / 15.0 // 15 updates per second
+        this.lastWorldUpdateMS = performance.now()
+
         this.gameDB = null
         this.gameSim = GameSim.instance
 
@@ -26,7 +31,7 @@ class GameSimDatabaseConnector {
 
     static get instance() {
         if (!g_instance) {
-            g_instance = new GameSimDatabaseConnector()
+            g_instance = new ServerGameController()
         }
 
         return g_instance
@@ -131,15 +136,11 @@ class GameSimDatabaseConnector {
 
         this.lastUpdateMS = currentTimeMS
 
-        //xxx todo: decouple worldUpdate tick rate from gameSim tick rate
-        var updateJson = this.gameSim.getWorldUpdate()
-        updateJson.worldUpdateIdx = this.worldUpdateIdx++
+        if (currentTimeMS - this.lastWorldUpdateMS > this.worldUpdateFreqMS) {
+            this.sendWorldUpdateDelta()
+            this.lastWorldUpdateMS = currentTimeMS
+        }
         
-        this.worldUpdateBuffer.push(updateJson)
-
-        //xxx WIP - todo; send deltas using fossil-delta
-        ServerProtocol.instance.broadcast("worldUpdate", updateJson)
-
         // set up next update timer
         if (!this.flagShutdown) {
             let timerPeriodMS = this.updateFreqMS
@@ -147,6 +148,37 @@ class GameSimDatabaseConnector {
                 this.update()
             }, timerPeriodMS);
         }
+    }
+
+    sendWorldUpdateDelta() {
+        //xxx todo: decouple worldUpdate tick rate from gameSim tick rate
+        var worldUpdateJson = this.gameSim.getWorldUpdate()
+        worldUpdateJson.worldUpdateIdx = this.worldUpdateIdx++
+        
+        var previousWorldUpdateJson = this.worldUpdateBuffer.getLast()
+        this.worldUpdateBuffer.push(worldUpdateJson)
+
+        var delta = null
+        if (previousWorldUpdateJson) {
+            delta = {}
+            var u1str = JSON.stringify(previousWorldUpdateJson)
+            var u2str = JSON.stringify(worldUpdateJson)
+            //generate a delta
+            var encoder = new TextEncoder()
+            var byteArrayDelta = fossilDelta.create(encoder.encode(u1str), encoder.encode(u2str))
+            delta.fossil = byteArrayDelta
+        }
+
+        var sendObj = {}
+        if (delta != null) {
+            sendObj.fullWorldUpdate = worldUpdateJson //todo; Remove this when deltas work
+            sendObj.deltaWorldUpdate  = delta
+        } else {
+            sendObj.fullWorldUpdate = worldUpdateJson
+        }
+
+        //xxx WIP - todo; send deltas using fossil-delta
+        ServerProtocol.instance.broadcast("worldUpdate", sendObj)
     }
 
     // if idx == -1, returns latest
@@ -168,4 +200,4 @@ class GameSimDatabaseConnector {
     }
 }
 
-export default GameSimDatabaseConnector
+export default ServerGameController

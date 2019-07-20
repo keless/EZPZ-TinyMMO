@@ -1,5 +1,7 @@
 
 WIP:
+* decouple world update broadcasts from game sim update ticks
+* generate and send world update deltas, next to full world updates (not using them yet)
 
 BUGS:
 - server ticking game time about 2x faster than clients 
@@ -13,6 +15,8 @@ TODO:
 
 * eventually: get cast engine working 
 * eventually: figure out automatic NAT translation / sharing server invites
+* eventually: plug-in content addition system
+* eventually: template based random quest generation
 
 Completed:
 

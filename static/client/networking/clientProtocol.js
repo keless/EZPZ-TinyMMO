@@ -59,7 +59,7 @@ export default class ClientProtocol {
             //this._log("TODO: handle world update")
 
             //xxx WIP - handle delta
-            ClientGame.instance.applyWorldUpdate(data)
+            ClientGame.instance.applyWorldUpdate(data.fullWorldUpdate)
             
         })
 
