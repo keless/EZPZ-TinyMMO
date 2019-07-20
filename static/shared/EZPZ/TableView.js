@@ -147,7 +147,7 @@ export default class TableView extends NodeView {
 		y -= this.m_scrollOffsetY;
 		
 		var off = 0;
-		if (this.sizeToFit && this.m_cells.length > 0) { //xxx WIP
+		if (this.sizeToFit && this.m_cells.length > 0) { //WIP
 			if (this.direction == TableView.VERTICAL) {
 				off -= this.m_cells[0].getHeight();
 			} else {

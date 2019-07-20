@@ -1037,7 +1037,6 @@
     },
 
     render: function() {
-      //xxx play nice
       // override render so it doesnt go immediately
     },
     /**
@@ -1045,7 +1044,6 @@
      * and if a main canvas is provided, draws it all onto that.
      * @return {CanvasInput}
      */
-    //xxx play nice
     // inefficient, but we're redrawing every frame for now
     renderNow: function(x, y) {
       var self = this,
@@ -1062,7 +1060,6 @@
       }
 
       // clear the canvas
-//xxx play nice 
 //ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
       // setup the box shadow
@@ -1173,7 +1170,6 @@
 
         // draw to the visible canvas
         if (self._ctx) {
- //xxx play nice
  //         self._ctx.clearRect(self._x, self._y, ctx.canvas.width, ctx.canvas.height);
           self._ctx.drawImage(self._renderCanvas, x, y);
         }
@@ -1323,7 +1319,6 @@
 
       // clear the main canvas
       if (self._ctx) {
- //xxx play nice
  //       self._ctx.clearRect(self._x, self._y, oldW, oldH);
       }
     },
@@ -1364,7 +1359,6 @@
      * @return {Boolean}   True if it is over the input box.
      */
     _overInput: function(x, y) {
-      //xxx play nice
       var self = this,
         xLeft = x >= self.vecPos.x + self._extraX,
         xRight = x <= self.vecPos.x + self._extraX + self._width + self._padding * 2,
@@ -1402,13 +1396,11 @@
         totalW = 0,
         pos = text.length;
 
-      //xxx play nice
       //if (x - (self._x + self._extraX) < self._textWidth(text)) {
       if (x - (self.vecPos.x + self._extraX) < self._textWidth(text)) {
         // loop through each character to identify the position
         for (var i=0; i<text.length; i++) {
           totalW += self._textWidth(text[i]);
-          //xxx play nice
           //if (totalW >= x - (self._x + self._extraX)) {
           if (totalW >= x - (self.vecPos.x + self._extraX)) {
             pos = i;

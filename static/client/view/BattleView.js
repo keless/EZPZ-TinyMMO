@@ -31,9 +31,16 @@ export default class BattleStateView extends BaseStateView {
 		this.mapNode.fnDrawPlayerLayer = (gfx, x,y, ct)=>{
 			//var a = self.pModel.player.physicsEntity.getArea();
 			//gfx.drawRect(x + a.x, y + a.y, a.w, a.h)
-	  
+
+
 			this.entityViews.forEach((entityView)=>{
 				entityView.Draw(gfx, x,y, ct);
+
+				var color = "#0000FF"
+				gfx.drawRectEx(entityView.pos.x, entityView.pos.y, 3, 3, color) 
+				//gfx.drawRectEx(object.x + object.width, object.y, 3, 3, color) 
+				//gfx.drawRectEx(object.x, object.y + object.height, 3, 3, color) 
+				//gfx.drawRectEx(object.x + object.width, object.y + object.height, 3, 3, color) 
 			})
 
 			/*
@@ -176,7 +183,11 @@ export default class BattleStateView extends BaseStateView {
 			this.avatarNode.animEvent(0, "walk");
 			this.pModel.playerImpulse.setFacing(3);
 			this.pModel.playerImpulse.setLeft(true);
-		  break;
+			break;
+			
+			case 'M'.charCodeAt(0): 
+			console.log(this.avatarNode.pos.toJson())
+			break;
 		}
 	}
 	
@@ -330,7 +341,7 @@ export default class BattleStateView extends BaseStateView {
 	*/
 
 	onEntitySpawned(e) {
-		//xxx dont recreate ALL views just to add a new one
+		//xxx TODO: dont recreate ALL views just to add a new one
 		this.refreshEntityViews();
 	}
 	onEntityRemoved(e) {
@@ -361,13 +372,9 @@ export default class BattleStateView extends BaseStateView {
 
 	createEntityView( entityModel, idx ) {
 		var entView = new EntityView(entityModel, false);
-//entView.pos.setVal(400, 180 + (idx*50)) ;console.log("xxx todo: dont hardcode offsets")
-		
 
 		if (entityModel == this.controlledEntity) {
 			this.avatarNode = entView
-		} else {
-//this.enemyLayer.addChild(entView);
 		}
 
 		this.entityViews.push(entView);

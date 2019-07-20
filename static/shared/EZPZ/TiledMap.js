@@ -176,15 +176,17 @@ class TiledMapNodeView extends NodeView {
 
 		this.addCustomDraw((gfx, x, y, ct) => {
 			// always draw centered
-			var saveDrawCentered = gfx.drawCentered;
-			gfx.drawCentered = false;
+
 			this.DrawMap(gfx, x, y, ct);
-			gfx.drawCentered = saveDrawCentered;
+			
 		});
 	}
 
 	DrawMap(gfx, offsetX, offsetY, ct) {
 		if (!this.tiledMap.isLoaded) return;
+
+		//var saveDrawCentered = gfx.drawCentered;
+		//gfx.drawCentered = false;
 
 		gfx.saveMatrix();
 		gfx.translate(offsetX, offsetY);
@@ -200,7 +202,9 @@ class TiledMapNodeView extends NodeView {
 			}
 
 			if (layer.name == this.tiledMap.playerLayerName && this.fnDrawPlayerLayer) {
+				//gfx.drawCentered = saveDrawCentered
 				this.fnDrawPlayerLayer(gfx, 0, 0, ct);
+				//gfx.drawCentered = false
 			}
 		}
 
@@ -229,27 +233,52 @@ class TiledMapNodeView extends NodeView {
 			}
 
 			if (tileLayer.name == this.tiledMap.playerLayerName && this.fnDrawPlayerLayer) {
+				//gfx.drawCentered = saveDrawCentered
 				this.fnDrawPlayerLayer(gfx, 0, 0, ct);
+				//gfx.drawCentered = false
 			}
 		}
-		gfx.restoreMatrix();
+		
 
 		if (this.debugShowBoxes) {
 			//draw physics boxes
 			for (var objIdx = 0; objIdx < this.tiledMap.groundRects.length; objIdx++) {
 				var object = this.tiledMap.groundRects[objIdx];
-				gfx.drawRect(offsetX + object.x, offsetY + object.y, object.width, object.height);
+				gfx.drawRect(object.x, object.y, object.width, object.height);
+
+				var color = "#FFFFFF"
+				gfx.drawRectEx(object.x, object.y, 3, 3, color) 
+				gfx.drawRectEx(object.x - object.width/2, object.y - object.height/2, 3, 3, color)
+				gfx.drawRectEx(object.x - object.width/2, object.y + object.height/2, 3, 3, color)
+				gfx.drawRectEx(object.x + object.width/2, object.y + object.height/2, 3, 3, color)
+				gfx.drawRectEx(object.x + object.width/2, object.y - object.height/2, 3, 3, color)
 			}
 			for (var objIdx = 0; objIdx < this.tiledMap.wallRects.length; objIdx++) {
 				var object = this.tiledMap.wallRects[objIdx];
-				gfx.drawRect(offsetX + object.x, offsetY + object.y, object.width, object.height);
+				gfx.drawRect(object.x, object.y, object.width, object.height);
+
+				var color = "#00FF00"
+				gfx.drawRectEx(object.x, object.y, 3, 3, color) 
+				gfx.drawRectEx(object.x - object.width/2, object.y - object.height/2, 3, 3, color)
+				gfx.drawRectEx(object.x - object.width/2, object.y + object.height/2, 3, 3, color)
+				gfx.drawRectEx(object.x + object.width/2, object.y + object.height/2, 3, 3, color)
+				gfx.drawRectEx(object.x + object.width/2, object.y - object.height/2, 3, 3, color)
 			}
 			//draw spawn points
 			for (var objIdx = 0; objIdx < this.tiledMap.spawnPts.length; objIdx++) {
 				var object = this.tiledMap.spawnPts[objIdx];
-				gfx.drawRect(offsetX + object.x, offsetY + object.y, object.width, object.height);
+				gfx.drawRect(object.x, object.y, object.width, object.height);
+
+				var color = "#0000FF"
+				gfx.drawRectEx(object.x, object.y, 3, 3, color) 
+				gfx.drawRectEx(object.x - object.width/2, object.y - object.height/2, 3, 3, color)
+				gfx.drawRectEx(object.x - object.width/2, object.y + object.height/2, 3, 3, color)
+				gfx.drawRectEx(object.x + object.width/2, object.y + object.height/2, 3, 3, color)
+				gfx.drawRectEx(object.x + object.width/2, object.y - object.height/2, 3, 3, color)
 			}
 		}
+		gfx.restoreMatrix();
+		//gfx.drawCentered = saveDrawCentered;
 	}
 }
 

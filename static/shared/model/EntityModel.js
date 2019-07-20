@@ -97,13 +97,14 @@ class EntityModel extends ICastEntity {
 
 		this.pos = new Vec2D();
 		this.vel = new Vec2D();
-		this.bounds = new Rect2D(50,50)
+		this.bounds = new Rect2D(0,0, 50,50)
 		this.facing = Facing.RIGHT;
 	}
 
 	getArea() {
 		var area = this.bounds.clone();
-		area.addVecOffset(this.pos);
+		//area.addVecOffset(this.pos);
+		area.setVecCenter(this.pos)
 		return area;
 	}
 

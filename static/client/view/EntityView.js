@@ -9,7 +9,7 @@ class EntityView extends NodeView
 		
 		var w = entityModel.bounds.w
 		var h = entityModel.bounds.h
-		this.setRect(w, h, "#000000");
+		//this.setRect(w, h, "#000000");
 		
 		this.pEntityModel = entityModel;
 
@@ -24,16 +24,12 @@ class EntityView extends NodeView
 		
 		
 		this.avatarAnim.QuickAttach( race + "_", ".sprite", ()=>{
-			console.log("stuff")
 			this.avatarNode = avatarNode
 		  this.avatarNode.setAnim(this.avatarAnim);
 		  this.avatarNode.pixelated = true;
-		  this.avatarNode.scale = 2;
+			//this.avatarNode.scale = 2;
+			this.addChild(avatarNode)
 		});
-		//this.setAnim(this.avatarAnim);
-
-		//xxx this.addChild(avatarNode)
-		
 
 		var name = entityModel.name;
 		var lvl = this.pEntityModel.getProperty("xp_level");

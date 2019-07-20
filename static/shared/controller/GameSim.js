@@ -96,20 +96,27 @@ class GameSim extends ICastPhysics {
             var stepVel = entity.vel.getScalarMult(dt);
 
             //check collision before moving forward (assuming current position is not colliding)
-            if (stepVel.nonZero()) {
+            if (stepVel.nonZero() || true) {
                 
                 //this._log(`moving entity ${entity.name} with dt ${dt} step ${stepVel.x},${stepVel.y}`)
                 
 
                 var projected = entity.getArea();
                 projected.addVecOffset(stepVel);
+
+                //wall at:  pos 480,416  size  32x64  ctr 464,384
+                //player stopped at TL 426,370
+                // expected TL 473, 403
+                //466 - 426 = 40
+                //403 - 370 = 33 
     
                 var collisionFound = false;
                 var wall = new Rect2D();
                 for(var objIdx=0; objIdx<this.pWallRects.length; objIdx++) {
                     var wallObj = this.pWallRects[objIdx];
-                    wall.setTL(wallObj.x, wallObj.y);
+                    //wall.setTL(wallObj.x, wallObj.y);
                     wall.setSize( wallObj.width, wallObj.height);
+                    wall.setCenter(wallObj.x, wallObj.y)
     
                     if(wall.isRectOverlapped(projected)) {
                     //collision detected
