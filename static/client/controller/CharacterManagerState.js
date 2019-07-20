@@ -290,7 +290,8 @@ class CharacterCreationStateView extends BaseStateView {
         //world update should have our new character in it
         console.log("got world update after creating char")
         var clientGame = ClientGame.instance
-        clientGame.applyWorldUpdate( data )
+        //clientGame.applyWorldUpdate( data )
+        clientGame.updateOwnedEntities(data)
       }
 
       //xxx todo: jump into game once character is created

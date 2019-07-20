@@ -2,7 +2,7 @@
 WIP:
 
 BUGS:
-- graphics offset of players vs physics
+- server ticking game time about 2x faster than clients 
 
 TODO:
 * send full world update to clients on connect
@@ -16,6 +16,8 @@ TODO:
 
 Completed:
 
+- FIXED: deleting characters response client not updating list properly
+- FIXED: graphics offset of players vs physics
 * load data files (abilities, items, gfx/levels/tiledMap.json ) on server
 * load tiledMap on server
 * implement map physics on server
