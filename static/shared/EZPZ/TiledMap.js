@@ -65,7 +65,7 @@ export default class TiledMap {
 			}
 			else if( layer.type == "tilelayer" ) {
 				//image layer
-				console.log("add tile layer")
+				//console.log("add tile layer")
 				this.tileLayers.push( layer );
 			}
 			else if( layer.type == "objectgroup" && layer.name == "ground") {

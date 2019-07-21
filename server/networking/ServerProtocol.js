@@ -237,7 +237,10 @@ class ServerProtocol {
     }
 
     broadcast(message, data) {
-        this.io.sockets.emit(message, data)
+        this.io.sockets.binary(false).emit(message, data)
+    }
+    broadcastWithBinary(message, data) {
+        this.io.sockets.binary(true).emit(message, data)
     }
 }
 

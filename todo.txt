@@ -1,16 +1,13 @@
 
 WIP:
-* un-delta world updates and use them
 
+- refactor world update network code out of servergamecontroller into serverprotocol
 
 BUGS:
 - server ticking game time about 2x faster than clients 
 
 TODO:
-* send full world update to clients on connect
-* send incremental world updates
-* optimize: minify update packets (deltas per object-property)
-* do partial catch ups if an incremental update is missed by a client
+* optimize: do partial catch ups if an incremental update is missed by a client
 * retroactively apply user inputs to server
 
 * eventually: get cast engine working 
@@ -19,7 +16,9 @@ TODO:
 * eventually: template based random quest generation
 
 Completed:
-
+* send incremental world updates
+* un-delta world updates and use them
+* send full world update to clients on connect
 * generate and send world update deltas, next to full world updates (not using them yet)
 * decouple world update broadcasts from game sim update ticks
 - FIXED: deleting characters response client not updating list properly

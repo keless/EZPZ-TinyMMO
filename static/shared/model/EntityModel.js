@@ -165,9 +165,10 @@ class EntityModel extends ICastEntity {
 			this.facing = json.facing
 		}
 
+		/*
 		if ( this.verbose && (this.vel.getMagSq() > 0)) {
 			console.log("entity " + this.name + " moving (" + this.pos.x +","+ this.pos.y+") facing " + this.facing)
-		}
+		}*/
 
 		this.eventBus.dispatch("update")
 	}

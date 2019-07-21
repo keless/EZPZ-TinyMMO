@@ -171,7 +171,7 @@ class ServerGameController {
             var enc2 = encoder.encode(u2str)
             var pf_delta = performance.now()
             var byteArrayDelta = fossilDelta.create(enc1, enc2)
-            delta.fossil = byteArrayDelta
+            delta = byteArrayDelta
 
             var pf_finish = performance.now()
 
@@ -192,7 +192,6 @@ class ServerGameController {
 
         var sendObj = {}
         if (delta != null) {
-            sendObj.fullWorldUpdate = worldUpdateJson //xxx todo: Remove this when deltas work
             sendObj.deltaWorldUpdate  = delta
             sendObj.deltaWorldUpdateIdx = worldUpdateJson.worldUpdateIdx
         } else {
@@ -200,7 +199,7 @@ class ServerGameController {
         }
 
         //xxx WIP - todo; send deltas using fossil-delta
-        ServerProtocol.instance.broadcast("worldUpdate", sendObj)
+        ServerProtocol.instance.broadcastWithBinary("worldUpdate", sendObj)
     }
 
     // if idx == -1, returns latest

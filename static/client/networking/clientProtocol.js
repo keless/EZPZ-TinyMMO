@@ -4,6 +4,7 @@ import ClientGameController from '../controller/ClientGameController.js'
 export default class ClientProtocol {
     constructor() { 
         this.verbose = true
+        this.extraVerbose = false
         this.socket = null
 
         this.worldUpdateBuffer = new SlidingWindowBuffer(10)
@@ -17,6 +18,11 @@ export default class ClientProtocol {
 
     _log(txt) {
         if (this.verbose) {
+            console.log(txt)
+        }
+    }
+    _logVerbose(txt) {
+        if (this.extraVerbose) {
             console.log(txt)
         }
     }
@@ -67,7 +73,7 @@ export default class ClientProtocol {
                     this._log(`got a delta idx(${deltaIdx}) but missing previous worldUpdate, request full update`)
                     //request full update
                     this.requestFullWorldUpdate()
-                    return
+                    return //guard
                 }
 
                 //xxx todo: only store encoded world updates so we dont have to keep doing this?
@@ -75,11 +81,11 @@ export default class ClientProtocol {
                 var strUpdate = JSON.stringify(prevUpdate)
                 var encoded = encoder.encode(strUpdate)
 
-                //try catch 
+                // xxx TODO: try catch 
                 var fullEncoded = fossilDelta.apply(encoded, delta)
 
                 var decoder = new TextDecoder()
-                var strFullUpdate = decoder.decode(fullEncoded)
+                var strFullUpdate = decoder.decode(new Uint8Array(fullEncoded))
                 var fullWorldUpdateJson = JSON.parse(strFullUpdate)
 
                 if (fullWorldUpdateJson.worldUpdateIdx != deltaIdx) {
@@ -88,13 +94,13 @@ export default class ClientProtocol {
                     this.requestFullWorldUpdate()
                     return
                 } else {
-                    this._log("got deltaWorldUpdate, succesfully applied patch and extracted full world update!")
+                    this._logVerbose("got deltaWorldUpdate, succesfully applied patch and extracted full world update!")
                     this.worldUpdateBuffer.push(fullWorldUpdateJson)
                     ClientGameController.instance.applyWorldUpdate(fullWorldUpdateJson)
                 }
 
             } else if (data.hasOwnProperty("fullWorldUpdate")) {
-                // backup, used for testing
+                // The first update a server sends cant be a delta, so it'll be sent as fullWorldUpdate instead
                 ClientGameController.instance.applyWorldUpdate(data.fullWorldUpdate)
             }
         })
@@ -111,6 +117,11 @@ export default class ClientProtocol {
 
             ClientGameController.instance.applyWorldUpdate(data)
         })
+    }
+
+    _acceptFullWorldUpdate(fullWorldUpdateJson) {
+        this.worldUpdateBuffer.push(fullWorldUpdateJson)
+        ClientGameController.instance.applyWorldUpdate(fullWorldUpdateJson)
     }
 
     // returns null if not found in buffer
@@ -176,11 +187,14 @@ export default class ClientProtocol {
 
     // Ask server to send us a fullWorldUpdate for the latest, so we'll completely reset our state and catch up
     // Only call this if we're starting a new session and have no world updates, or we dropped an update and need to catch up
-    // ackCB should contain no error
+    // ackCB should contain a full world update
     requestFullWorldUpdate() {
         this.send("requestFullWorldUpdate", {}, (data)=>{
             if(data.error) {
                 this._log("error " + data.error)
+            } else {
+                this._log("got full world update #" + data.worldUpdateIdx)
+                this._acceptFullWorldUpdate(data)
             }
         })
     }
