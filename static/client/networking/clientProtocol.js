@@ -1,10 +1,12 @@
-import { Service, EventBus } from '../clientEZPZ.js'
-import ClientGame from '../controller/ClientGame.js';
+import { Service, EventBus, SlidingWindowBuffer } from '../clientEZPZ.js'
+import ClientGameController from '../controller/ClientGameController.js'
 
 export default class ClientProtocol {
     constructor() { 
         this.verbose = true
         this.socket = null
+
+        this.worldUpdateBuffer = new SlidingWindowBuffer(10)
         
         Service.Add("protocol", this);
     }
@@ -30,13 +32,11 @@ export default class ClientProtocol {
             self._log("connected to server")
 
             if (data) {
-                var clientGame = ClientGame.instance
+                var clientGame = ClientGameController.instance
                 if (data.userId) {
                     clientGame.setUserID(data.userId)
                 }
                 if (data.ownedEntities) {
-                    //var worldUpdate = data.worldUpdate
-                    //clientGame.applyWorldUpdate(worldUpdate)
                     clientGame.updateOwnedEntities(data.ownedEntities)
                 }
             }
@@ -56,16 +56,78 @@ export default class ClientProtocol {
         })
 
         this.socket.on("worldUpdate", (data)=> {
-            //this._log("TODO: handle world update")
+            //this._log("handle world update")
 
-            //xxx WIP - handle delta
-            ClientGame.instance.applyWorldUpdate(data.fullWorldUpdate)
-            
+            if (data.hasOwnProperty("deltaWorldUpdate")) {
+                //xxx WIP: attempt to apply patch and use it
+                var delta = data.deltaWorldUpdate
+                var deltaIdx = data.deltaWorldUpdateIdx
+                var prevUpdate = this._getWorldUpdateForIdx(deltaIdx - 1)
+                if (!prevUpdate) {
+                    this._log(`got a delta idx(${deltaIdx}) but missing previous worldUpdate, request full update`)
+                    //request full update
+                    this.requestFullWorldUpdate()
+                    return
+                }
+
+                //xxx todo: only store encoded world updates so we dont have to keep doing this?
+                var encoder = new TextEncoder()
+                var strUpdate = JSON.stringify(prevUpdate)
+                var encoded = encoder.encode(strUpdate)
+
+                //try catch 
+                var fullEncoded = fossilDelta.apply(encoded, delta)
+
+                var decoder = new TextDecoder()
+                var strFullUpdate = decoder.decode(fullEncoded)
+                var fullWorldUpdateJson = JSON.parse(strFullUpdate)
+
+                if (fullWorldUpdateJson.worldUpdateIdx != deltaIdx) {
+                    this._log("WARN: what trickery is this? world update idx does not match delta idx")
+                    //request full update
+                    this.requestFullWorldUpdate()
+                    return
+                } else {
+                    this._log("got deltaWorldUpdate, succesfully applied patch and extracted full world update!")
+                    this.worldUpdateBuffer.push(fullWorldUpdateJson)
+                    ClientGameController.instance.applyWorldUpdate(fullWorldUpdateJson)
+                }
+
+            } else if (data.hasOwnProperty("fullWorldUpdate")) {
+                // backup, used for testing
+                ClientGameController.instance.applyWorldUpdate(data.fullWorldUpdate)
+            }
         })
 
         this.socket.on("fullWorldUpdate", (data)=> {
-            ClientGame.instance.applyWorldUpdate(data)
+            var updateIdx = data.worldUpdateIdx
+            var latestIdx = this._getLatestWorldUpdateIdx()
+            if (updateIdx <= latestIdx) {
+                console.log("WARN: got outdated fullWorldUpdate, ignoring")
+                return
+            } else {
+                this.worldUpdateBuffer.push(data)
+            }
+
+            ClientGameController.instance.applyWorldUpdate(data)
         })
+    }
+
+    // returns null if not found in buffer
+    _getWorldUpdateForIdx(idx) {
+        return this.worldUpdateBuffer.find((update)=>{
+            return update.worldUpdateIdx == idx
+        })
+    }
+
+    // return -1 if no updates received ever
+    _getLatestWorldUpdateIdx() {
+        var latestWorldUpdate = this.worldUpdateBuffer.getLatest()
+        if (latestWorldUpdate) {
+            return latestWorldUpdate.worldUpdateIdx
+        } else {
+            return -1
+        }
     }
 
     closeConnection() {
@@ -105,13 +167,22 @@ export default class ClientProtocol {
     // gameTime should be the gameTime the player input happened (so it can be applied retroactively on server) 
     // ackCB should contain no error
     sendInputImpulseChange( charID, vecDir, speed, facing, gameTime ) {
-        //this._log("send impulse change ") // + vecDir.x + "," + vecDir.y )
-        console.log("send facing " + facing)
         this.send("playerImpulse", { charID:charID, vecDir:vecDir.toJson(), speed:speed, facing:facing, gameTime:gameTime }, (data)=>{
             if (data.error) {
                 this._log("error " + data.error)
             }
         } )
+    }
+
+    // Ask server to send us a fullWorldUpdate for the latest, so we'll completely reset our state and catch up
+    // Only call this if we're starting a new session and have no world updates, or we dropped an update and need to catch up
+    // ackCB should contain no error
+    requestFullWorldUpdate() {
+        this.send("requestFullWorldUpdate", {}, (data)=>{
+            if(data.error) {
+                this._log("error " + data.error)
+            }
+        })
     }
 }
 

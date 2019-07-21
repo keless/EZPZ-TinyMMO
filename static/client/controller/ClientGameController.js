@@ -5,9 +5,9 @@ import GameSim from '../../shared/controller/GameSim.js'
 import { CastCommandTime } from '../../shared/EZPZ/castengine/CastWorldModel.js';
 
 
-class ClientGame {
+class ClientGameController {
   static get instance() {
-    return ClientGame.s_instance
+    return ClientGameController.s_instance
   }
 
   constructor() {
@@ -72,7 +72,7 @@ class ClientGame {
 }
 
 //xxx todo: move to Service and initialize clientGame explicitly somewhere
-ClientGame.s_instance = new ClientGame()
+ClientGameController.s_instance = new ClientGameController()
 
-export default ClientGame
-export { ClientGame }
+export default ClientGameController
+export { ClientGameController }

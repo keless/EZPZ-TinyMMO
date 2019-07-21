@@ -2,7 +2,7 @@ import { AppState, NodeView, BaseStateView, Graphics, ResourceProvider, Service,
 import {g_races, g_classes} from '../../shared/data/abilities.js'
 import {g_locations} from '../../shared/data/locations.js'
 import { ClientProtocol } from '../networking/ClientProtocol.js'
-import { ClientGame } from './ClientGame.js'
+import { ClientGameController } from './ClientGameController.js'
 
 export default class CharacterManagerState extends AppState {
 	constructor() { 
@@ -44,7 +44,7 @@ class CharacterSelectStateView extends BaseStateView {
     var yStart = 300;
 
     //get list of player owned characters
-    var clientGame = ClientGame.instance
+    var clientGame = ClientGameController.instance
     var playerOwned = clientGame.getEntitiesForCurrentPlayer()
 
     for(var y=0; y<rows; y++) {
@@ -111,7 +111,7 @@ class CharacterSelectStateView extends BaseStateView {
   onBtnDel(e) {
     if(confirm('Are you sure?')) {
 
-      var clientGame = ClientGame.instance
+      var clientGame = ClientGameController.instance
       var playerOwned = clientGame.getEntitiesForCurrentPlayer()
 
       console.log("delete character " + e.idx)
@@ -142,7 +142,7 @@ class CharacterSelectStateView extends BaseStateView {
       //load char and go to game
       console.log("WIP load known character " + e.idx)
 
-      var clientGame = ClientGame.instance
+      var clientGame = ClientGameController.instance
       var playerOwned = clientGame.getEntitiesForCurrentPlayer()
       var charId = playerOwned[e.idx].uuid
       var locIdx = 0 //not currently worried about location yet
@@ -289,14 +289,14 @@ class CharacterCreationStateView extends BaseStateView {
       if (data.entities) {
         //world update should have our new character in it
         console.log("got world update after creating char")
-        var clientGame = ClientGame.instance
-        //clientGame.applyWorldUpdate( data )
+        var clientGame = ClientGameController.instance
         clientGame.updateOwnedEntities(data)
       }
 
       //xxx todo: jump into game once character is created
       // jump back to selection screen
-      Service.Get("state").gotoState("manager");
+      //xxx WIP
+      //Service.Get("state").gotoState("manager");
     })
   }
 }

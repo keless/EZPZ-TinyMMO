@@ -4,7 +4,7 @@ import ConnectingState from './controller/ConnectingState.js'
 import LocationState from './controller/LocationState.js'
 import BattleState from './controller/BattleState.js'
 import CharacterManagerState from './controller/CharacterManagerState.js'
-import {ClientGame} from './controller/ClientGame.js'
+import {ClientGameController} from './controller/ClientGameController.js'
 
 var bShowDebug = false;
 
@@ -18,7 +18,7 @@ var game_create = function()
 
 	// Initialize networking protocol
 	new ClientProtocol()
-	var clientGame = ClientGame.instance
+	var clientGame = ClientGameController.instance
 	console.log("create client game " + clientGame.uuid)
 
 	// Initialize global listeners

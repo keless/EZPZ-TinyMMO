@@ -16,7 +16,7 @@ class SocketClient {
         this._addUserMessageHandler('createCharacter', this.onCreateCharacter)
         this._addUserMessageHandler('deleteCharacter', this.onDeleteCharacter)
         this._addUserMessageHandler('playerImpulse', this.onPlayerImpulse)
-        this._addUserMessageHandler('fullWorldUpdate', this.onFullWorldUpdate)
+        this._addUserMessageHandler('requestFullWorldUpdate', this.onRequestFullWorldUpdate)
     }
 
     emit(message, data) {
@@ -105,17 +105,17 @@ class SocketClient {
         response({})
     }
 
-    /// Expect: { updateIdx:Number [-1 to n] }
-    ///  if updateIdx is -1, the latest worldUpdate is returned
+    /// Expect: { updateIdx:optional Number [-1 to n] }
+    ///  if updateIdx is -1 or not present, the latest worldUpdate is returned
     ///  if updateIdx represents a worldUpdate that server doesnt have, latest worldUpdate is returned
     /// Response: { fullWorldUpdateJsonObject }
-    onFullWorldUpdate(data, response) {
+    onRequestFullWorldUpdate(data, response) {
 
         var worldUpdateIdx = -1
-        if (data.hasOwnProperty("updateIdx")) {
+        if (data && data.hasOwnProperty("updateIdx")) {
             worldUpdateIdx = data.updateIdx
         }
-        //xxx WIP
+ 
         var gameController = ServerGameController.instance
         var fullWorldUpdate = gameController.getFullWorldUpdateByIdx(worldUpdateIdx)
 
@@ -162,6 +162,10 @@ class SocketClient {
 
                 response("invalid client", data)
                 return
+            }
+
+            if (data === 'undefined') {
+                data = {} //xxx todo: fix bug where this doesnt handle messages that dont send data?
             }
 
             callback.bind(this)(data, response)

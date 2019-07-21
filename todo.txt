@@ -1,7 +1,7 @@
 
 WIP:
-* decouple world update broadcasts from game sim update ticks
-* generate and send world update deltas, next to full world updates (not using them yet)
+* un-delta world updates and use them
+
 
 BUGS:
 - server ticking game time about 2x faster than clients 
@@ -20,6 +20,8 @@ TODO:
 
 Completed:
 
+* generate and send world update deltas, next to full world updates (not using them yet)
+* decouple world update broadcasts from game sim update ticks
 - FIXED: deleting characters response client not updating list properly
 - FIXED: graphics offset of players vs physics
 * load data files (abilities, items, gfx/levels/tiledMap.json ) on server

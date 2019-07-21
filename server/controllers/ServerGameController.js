@@ -10,7 +10,6 @@ import fossilDelta from 'fossil-delta'
 
 var g_instance = null
 
-//xxx todo: refactor -- this isnt just about database (its more like the server-side analogy of ClientGame.js right now)
 class ServerGameController {
     constructor() {
         this.verbose = true
@@ -151,28 +150,51 @@ class ServerGameController {
     }
 
     sendWorldUpdateDelta() {
-        //xxx todo: decouple worldUpdate tick rate from gameSim tick rate
         var worldUpdateJson = this.gameSim.getWorldUpdate()
         worldUpdateJson.worldUpdateIdx = this.worldUpdateIdx++
         
+        //xxx todo: refactor: move this into ServerProtocol.js
         var previousWorldUpdateJson = this.worldUpdateBuffer.getLast()
         this.worldUpdateBuffer.push(worldUpdateJson)
 
         var delta = null
         if (previousWorldUpdateJson) {
+            // record time it takes to generate deltas for later optimization
+            var pf_start = performance.now()
             delta = {}
             var u1str = JSON.stringify(previousWorldUpdateJson)
             var u2str = JSON.stringify(worldUpdateJson)
+            var pf_str = performance.now()
             //generate a delta
             var encoder = new TextEncoder()
-            var byteArrayDelta = fossilDelta.create(encoder.encode(u1str), encoder.encode(u2str))
+            var enc1 = encoder.encode(u1str)
+            var enc2 = encoder.encode(u2str)
+            var pf_delta = performance.now()
+            var byteArrayDelta = fossilDelta.create(enc1, enc2)
             delta.fossil = byteArrayDelta
+
+            var pf_finish = performance.now()
+
+            /*
+            var pf_processTotal = pf_finish - pf_start
+            var pf_stringifyTotal = pf_str - pf_start
+            var pf_encoderTotal = pf_delta - pf_str
+            var pf_fossilDeltaTotal = pf_finish - pf_delta
+            console.log(`wu tot:${pf_processTotal.toFixed(4)} str:${pf_stringifyTotal.toFixed(4)} enc:${pf_encoderTotal.toFixed(4)} dt:${pf_fossilDeltaTotal.toFixed(4)} `)
+            // with 1 entity (lol), avg 0.06MS  0.023ms strings, 0.011ms encoding, 0.026ms delta
+            
+            var size_worldUpdate = enc2.length
+            var size_delta = byteArrayDelta.length
+            console.log(`wu ${size_worldUpdate} compressed to ${size_delta} - ratio ${((size_delta/size_worldUpdate)*100).toFixed(2)}%`)
+            // with 6 entities only 1 moving (lol), avg world update size 2020 bytes, compressed to 50 bytes, compression ratio 98%
+            */
         }
 
         var sendObj = {}
         if (delta != null) {
-            sendObj.fullWorldUpdate = worldUpdateJson //todo; Remove this when deltas work
+            sendObj.fullWorldUpdate = worldUpdateJson //xxx todo: Remove this when deltas work
             sendObj.deltaWorldUpdate  = delta
+            sendObj.deltaWorldUpdateIdx = worldUpdateJson.worldUpdateIdx
         } else {
             sendObj.fullWorldUpdate = worldUpdateJson
         }
@@ -186,7 +208,7 @@ class ServerGameController {
     getFullWorldUpdateByIdx(idx) {
         var update = this.worldUpdateBuffer.getLast()
 
-        if (idx != -1  &&  update.worldUpdateIdx != idx) {
+        if ((idx != -1) && (update.worldUpdateIdx != idx)) {
             var searchResult = this.worldUpdateBuffer.find((e)=>{
                 return e.worldUpdateIdx == idx
             })

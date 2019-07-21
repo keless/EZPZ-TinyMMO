@@ -27,19 +27,7 @@ class BattleStateModel extends BaseStateModel {
 		
 		var RP = ResourceProvider.instance
 		var levelJson = RP.getJson("gfx/levels/test2.json")
-	
 		this.gameSim.LoadMapFromJson(levelJson, false)
-		/*
-		this.map = new TiledMap("gfx/levels/", 500, 500)
-		this.map.LoadFromJson(levelJson)
-		this.map.playerLayerName = "Terrain2"
-		this.gameSim.ReadTiledMapPhysics(this.map)
-		*/
-	
-		/* todo: spawn position code
-		var spawn = this.map.GetRandomSpawn() //xxx wIP
-		this.playerEntity.pos.setVal(spawn.x, spawn.y)
-		*/
 
 		this.playerImpulse = new ImpulseController(this.controlledEntityId)
 
