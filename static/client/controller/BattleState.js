@@ -63,12 +63,6 @@ class BattleStateModel extends BaseStateModel {
 
 		Service.Add("battleStateModel", this);
 	}
-
-	Update(ct, dt) {
-		//this.playerEntity.physicsEntity.vel.setVec( this.playerImpulse.getVel() )
-	
-		//xxx this.gameSim.updateStep(ct, dt)
-	}
 	
 	Destroy() {
 

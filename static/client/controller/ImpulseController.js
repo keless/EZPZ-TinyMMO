@@ -1,6 +1,7 @@
 import { Vec2D } from '../../shared/EZPZ/Vec2D.js'
 import { CastCommandTime } from '../../shared/EZPZ/castengine/CastWorldModel.js'
 import ClientProtocol from '../networking/ClientProtocol.js'
+import GameSim from '../../shared/controller/GameSim.js';
 
 
 class ImpulseController {
@@ -61,6 +62,9 @@ class ImpulseController {
         var x = (this.left ? -1 : (this.right ? 1 : 0))
         var y = (this.up ? -1 : (this.down ? 1 : 0))
         this.dir.setVal(x, y)
+
+        var entity = GameSim.instance.getEntityForId(this.charId)
+        entity.vel.setVec(this.getVel())
 
         this._sendUpdateToServer()
     }

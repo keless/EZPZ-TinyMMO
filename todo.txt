@@ -3,11 +3,13 @@ WIP:
 
 BUGS:
 - server ticking game time about 2x faster than clients 
-- client side fps is low, maybe because its not updating fast enough? see above 
+
 
 TODO:
-* optimize: do partial catch ups if an incremental update is missed by a client
 * retroactively apply user inputs to server
+* implement actions + animations for characters (attack, death, etc)
+* optimize: do partial catch ups if an incremental update is missed by a client
+
 
 * eventually: get cast engine working 
 * eventually: figure out automatic NAT translation / sharing server invites
@@ -15,6 +17,7 @@ TODO:
 * eventually: template based random quest generation
 
 Completed:
+- FIXED: client side fps is low (Views were not being updated as often as Models)
 * added updates per second counter to client in BattleView
 - FIXED: SlidingWindowBuffer not respecting capacity limit
 - FIXED: character names are not required to be unique

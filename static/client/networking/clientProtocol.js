@@ -7,6 +7,8 @@ export default class ClientProtocol {
         this.extraVerbose = false
         this.socket = null
 
+        this.dbgIgnoreServerWorldUpdates = false
+
         this.worldUpdateBuffer = new SlidingWindowBuffer(10)
         
         Service.Add("protocol", this);
@@ -92,11 +94,10 @@ export default class ClientProtocol {
                     this._log("WARN: what trickery is this? world update idx does not match delta idx")
                     //request full update
                     this.requestFullWorldUpdate()
-                    return
+                    return //guard
                 } else {
                     this._logVerbose("got deltaWorldUpdate, succesfully applied patch and extracted full world update!")
-                    this.worldUpdateBuffer.push(fullWorldUpdateJson)
-                    ClientGameController.instance.applyWorldUpdate(fullWorldUpdateJson)
+                    this._acceptFullWorldUpdate(fullWorldUpdateJson)
                 }
 
             } else if (data.hasOwnProperty("fullWorldUpdate")) {
@@ -110,16 +111,18 @@ export default class ClientProtocol {
             var latestIdx = this._getLatestWorldUpdateIdx()
             if (updateIdx <= latestIdx) {
                 console.log("WARN: got outdated fullWorldUpdate, ignoring")
-                return
-            } else {
-                this.worldUpdateBuffer.push(data)
+                return //guard
             }
 
-            ClientGameController.instance.applyWorldUpdate(data)
+            this._acceptFullWorldUpdate(data)
         })
     }
 
     _acceptFullWorldUpdate(fullWorldUpdateJson) {
+        if (this.dbgIgnoreServerWorldUpdates) {
+            return
+        }
+
         this.worldUpdateBuffer.push(fullWorldUpdateJson)
         ClientGameController.instance.applyWorldUpdate(fullWorldUpdateJson)
     }

@@ -99,7 +99,7 @@ class GameSim extends ICastPhysics {
             var stepVel = entity.vel.getScalarMult(dt);
 
             //check collision before moving forward (assuming current position is not colliding)
-            if (stepVel.nonZero() || true) {
+            if (stepVel.nonZero()) {
                 
                 //this._log(`moving entity ${entity.name} with dt ${dt} step ${stepVel.x},${stepVel.y}`)
                 
@@ -131,12 +131,15 @@ class GameSim extends ICastPhysics {
                 //move forward by velocity 
                 if (!collisionFound) {
                     entity.pos.addVec(stepVel);
+
+                    // we modified the entity, so let listeners know
+                    entity.dispatch("update")
                 }
             }
         }
         // perform AI
 
-        EventBus.game.dispatch("gameSimUpdate")
+        EventBus.game.dispatch("gameSimUpdate", true)
     }
 
     getGameUpdatesPerSecond() {

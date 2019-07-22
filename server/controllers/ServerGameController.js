@@ -13,9 +13,7 @@ var g_instance = null
 class ServerGameController {
     constructor() {
         this.verbose = true
-
-        EventBus.game.verbose = false
-
+        
         this.flagShutdown = false
         this.updateFreqMS = 1000 / 30.0 // 30 fps
         this.lastUpdateMS = performance.now()
