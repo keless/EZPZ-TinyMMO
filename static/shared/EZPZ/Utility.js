@@ -1,6 +1,7 @@
 //#include js/framework/EventDispatcher
 import { Vec2D, Rect2D } from './Vec2D.js'
 import { NodeView } from './NodeView.js'
+import EventBus from './EventBus.js'
 
 //random int (min-inclusive, max-inclusive)
 export function getRand(min, max) {
@@ -143,10 +144,21 @@ export function CreateSimplePopup( strMsg, strBtnLabel, okEvt, bus )
   area.y -= btn.size.y;
   var label = new NodeView();
   label.setLabel( strMsg, "24px Arial", "rgb(0,0,0)", true);
-  label.pos.y = area.y;
   pop.addChild(label);
 
   return pop;
+}
+
+export function CreateSimpleDismissPopup( strMsg, strBtnLabel ) {
+  var evtName = "evt_" + strMsg
+  var popup = CreateSimplePopup(strMsg, strBtnLabel, evtName, EventBus.ui)
+  var errorPopupDismissal = null
+  errorPopupDismissal = function (e) { 
+    popup.removeFromParent()
+    EventBus.ui.removeListener(evtName, this)
+  }
+  EventBus.ui.addListener(evtName, errorPopupDismissal)
+  return popup
 }
 
 //slides up and down

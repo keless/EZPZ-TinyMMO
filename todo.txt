@@ -1,10 +1,9 @@
 
 WIP:
 
-- refactor world update network code out of servergamecontroller into serverprotocol
-
 BUGS:
 - server ticking game time about 2x faster than clients 
+- client side fps is low, maybe because its not updating fast enough? see above 
 
 TODO:
 * optimize: do partial catch ups if an incremental update is missed by a client
@@ -16,6 +15,8 @@ TODO:
 * eventually: template based random quest generation
 
 Completed:
+- FIXED: character names are not required to be unique
+- ENG: refactor world update network code out of servergamecontroller into serverprotocol
 * send incremental world updates
 * un-delta world updates and use them
 * send full world update to clients on connect

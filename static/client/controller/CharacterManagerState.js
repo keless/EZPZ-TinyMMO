@@ -1,4 +1,4 @@
-import { AppState, NodeView, BaseStateView, Graphics, ResourceProvider, Service, ButtonView, arrayContains, FourPoleAnimation } from '../clientEZPZ.js'
+import { AppState, NodeView, BaseStateView, Graphics, ResourceProvider, Service, ButtonView, arrayContains, FourPoleAnimation, CreateSimpleDismissPopup } from '../clientEZPZ.js'
 import {g_races, g_classes} from '../../shared/data/abilities.js'
 import {g_locations} from '../../shared/data/locations.js'
 import { ClientProtocol } from '../networking/ClientProtocol.js'
@@ -137,21 +137,15 @@ class CharacterSelectStateView extends BaseStateView {
       this.state.gotoCreationView(e.idx);
     }else {
 
-      //xxx TODO: get character data from server
-
       //load char and go to game
-      console.log("WIP load known character " + e.idx)
+      console.log("load known character " + e.idx)
 
       var clientGame = ClientGameController.instance
       var playerOwned = clientGame.getEntitiesForCurrentPlayer()
       var charId = playerOwned[e.idx].uuid
-      var locIdx = 0 //not currently worried about location yet
+      var locIdx = 0 //not currently worried about location yet //xxx todo: implement locations
 
-      //PlayerModel.Load("char"+e.idx);
-
-      //Service.Get("state").gotoState("location", PlayerModel.Get().locationIdx);
       Service.Get("state").gotoState("battle", {locationIdx:locIdx, controlledEntityId:charId});
-      
     }
 	}
 }
@@ -170,7 +164,6 @@ class CharacterCreationStateView extends BaseStateView {
 		btnCancel.pos.setVal(150, 150);
 		this.rootView.addChild(btnCancel);
 		
-    //todo creation view
 
     this.name = "Leeroy";
     this.selectedClassIdx = 0;
@@ -270,7 +263,8 @@ class CharacterCreationStateView extends BaseStateView {
       return
     }
 
-    var locIdx = 0;
+    /*
+    var locIdx = 0
     for(var i=0; i<g_locations.length; i++) {
       var locJson = g_locations[i];
       if("raceStart" in locJson) {
@@ -280,10 +274,21 @@ class CharacterCreationStateView extends BaseStateView {
         }
       }
     }
+    */
 
     var clientProtocol = ClientProtocol.instance
     clientProtocol.requestCreateCharacter( name, selectedRace, selectedClass, (data) => {
       console.log("ackRequestCreateCharacter with data " + data)
+
+      if (data.error) {
+        console.log(data.error)
+        // show error message on screen
+        var popup = CreateSimpleDismissPopup(data.error, "Ok")
+        popup.pos.setVec(this.rootView.getVecCenter())
+        this.rootView.addChild(popup)
+
+        return
+      }
 
       console.log(data)
       if (data.entities) {

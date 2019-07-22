@@ -214,6 +214,12 @@ class GameSim extends ICastPhysics {
         })
     }
 
+    getEntityForName(name) {
+        return this.entities.find((entity)=>{
+            return entity.name == name
+        })
+    }
+
     getEntityIDsForOwner(ownerId) {
         var entityIDs = []
         this.entities.forEach((entity)=>{

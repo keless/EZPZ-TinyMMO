@@ -729,6 +729,9 @@ export default class NodeView extends BaseListener {
 	getHeight() {
 		return this.size.y;
 	}
+	getVecCenter() {
+		return this.pos.getVecAdd( this.size.getScalarMult(0.5) )
+	}
 	
 	//node heirarchy functions
 	addChild( child ) {
