@@ -89,6 +89,7 @@ class ServerGameController {
 
         var gameSim = this.gameSim
         if (!gameSim.dirty) {
+            if (cb) { cb(null); }
             return  // no changes to flush
         }
 

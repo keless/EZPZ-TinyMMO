@@ -24,7 +24,7 @@ edit SERVER_PORT in app.js
 edit SHARED_SECRET in app.js
 
 To Run Server:
-$> node ./server/app.js
+$> node --experimental-modules ./server/app.js
 
 Connect:
 Open browser to localhost:<your SERVER_PORT here>
