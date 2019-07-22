@@ -237,7 +237,7 @@ class ServerProtocol {
                     
                     //return player's characters
                     var gameSim = Service.Get("gameSim")
-                    var entitiesForPlayer = gameSim.getEntitiesForOwner(userId) //xxx WIP
+                    var entitiesForPlayer = gameSim.getEntitiesForOwner(userId)
 
                     var worldUpdate = new WorldUpdateModel()
                     worldUpdate.addEntities(entitiesForPlayer)

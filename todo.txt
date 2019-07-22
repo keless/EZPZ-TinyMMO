@@ -1,12 +1,15 @@
 
 WIP:
 
+
+
 BUGS:
-- server ticking game time about 2x faster than clients 
 
 
 TODO:
+* on character creation; go directly to gameplay with new character on create success
 * retroactively apply user inputs to server
+* apply time deltas to server world upates on client before accepting them (reduce rubberbanding)
 * implement actions + animations for characters (attack, death, etc)
 * optimize: do partial catch ups if an incremental update is missed by a client
 
@@ -17,6 +20,7 @@ TODO:
 * eventually: template based random quest generation
 
 Completed:
+- FIXED: server ticking game time too slow
 - FIXED: client side fps is low (Views were not being updated as often as Models)
 * added updates per second counter to client in BattleView
 - FIXED: SlidingWindowBuffer not respecting capacity limit

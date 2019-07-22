@@ -116,7 +116,7 @@ class ServerGameController {
     update() {
         var currentTimeMS = performance.now()
         var currDeltaMS = currentTimeMS - this.lastUpdateMS
-        var numLoopsToPerform = Math.min((currDeltaMS / this.updateFreqMS), 1)
+        var numLoopsToPerform = Math.max((currDeltaMS / this.updateFreqMS), 1)
 
         if (numLoopsToPerform > 2) {
             this._log("WARN: performing many loops! " + numLoopsToPerform)

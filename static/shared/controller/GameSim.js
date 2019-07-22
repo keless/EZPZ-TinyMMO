@@ -203,6 +203,25 @@ class GameSim extends ICastPhysics {
         this.setDirty()
     }
 
+
+    updateEntityFromJsonWithFFD(entityJson, fastForwardDelta) {
+        //1) see if entity already exists, if so update it
+        //2) else create new from json
+        var entity = this.getEntityForId(entityJson.uuid)
+        if (entity) {
+            entity.updateFromJson(entityJson)
+        } else {
+            entity = new EntityModel()
+            entity.fromWorldUpdateJson(entityJson)
+            this._addEntity(entity)
+            console.log("GameSim: update with new entity " + entity.owner + ":" + entity.uuid)
+        }
+
+//xxx WIP
+
+        this.setDirty()
+    }
+
     _addEntity(entityModel) {
         //debug: ensure entity is unique in entities
         if (arrayContains(this.entities, entityModel)) {

@@ -299,9 +299,8 @@ class CharacterCreationStateView extends BaseStateView {
       }
 
       //xxx todo: jump into game once character is created
-      // jump back to selection screen
-      //xxx WIP
-      //Service.Get("state").gotoState("manager");
+      //Service.Get("state").gotoState("battle", { locationIdx: locIdx, controlledEntityId: newCharID });
+      Service.Get("state").gotoState("manager");
     })
   }
 }

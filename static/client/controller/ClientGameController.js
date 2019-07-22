@@ -50,25 +50,42 @@ class ClientGameController {
     }
 
     var currentGameTime = CastCommandTime.Get()
-    if (worldUpdateJson.gameTime < currentGameTime) {
-      console.log("WARN: world update is behind our own simulation, what to do?")
+    if (worldUpdateJson.gameTime < currentGameTime) {      
+      this._retroactivelyApplyServerWorldUpdate(worldUpdateJson)
+    } else {
+      this._catchUpToServerWorldUpdate(worldUpdateJson)
     }
       
     this.latestKnownWorldUpdateIdx = worldUpdateJson.worldUpdateIdx
-    
+  }
 
-    
+  _catchUpToServerWorldUpdate(worldUpdateJson) {
+    CastCommandTime.Set(worldUpdateJson.gameTime)
 
     if (worldUpdateJson.entities) {
       //console.log(worldUpdateJson.entities)
-      
-      worldUpdateJson.entities.forEach((entityJson)=>{
+
+      worldUpdateJson.entities.forEach((entityJson) => {
         this.gameSim.updateEntityFromJson(entityJson)
       })
     }
-
-    
   }
+
+  _retroactivelyApplyServerWorldUpdate(worldUpdateJson) {
+    var currentGameTime = CastCommandTime.Get()
+    var delta = currentGameTime - worldUpdateJson.gameTime
+    console.log(`WARN: world update is behind ${delta.toFixed(4)}`)
+
+    if (worldUpdateJson.entities) {
+      //fast forward velocity->position
+
+      worldUpdateJson.entities.forEach((entityJson) => {
+        //this.gameSim.updateEntityFromJson(entityJson)
+        this.gameSim.updateEntityFromJsonWithFFD(entityJson, delta)
+      })
+    }
+  }
+
 }
 
 //xxx todo: move to Service and initialize clientGame explicitly somewhere
