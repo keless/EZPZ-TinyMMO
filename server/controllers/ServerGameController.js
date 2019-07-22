@@ -6,12 +6,15 @@ import GameSim from '../../static/shared/controller/GameSim.js'
 import { CastCommandTime } from '../../static/shared/EZPZ/castengine/CastWorldModel.js'
 import ServerProtocol from '../networking/ServerProtocol.js';
 import {performance} from 'perf_hooks'
+import { EventBus } from '../../static/shared/EZPZ/EventBus.js'
 
 var g_instance = null
 
 class ServerGameController {
     constructor() {
         this.verbose = true
+
+        EventBus.game.verbose = false
 
         this.flagShutdown = false
         this.updateFreqMS = 1000 / 30.0 // 30 fps

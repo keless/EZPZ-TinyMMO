@@ -1,10 +1,11 @@
 
 import {Service} from '../EZPZ/Service.js'
-import { arrayContains } from '../EZPZ/Utility.js'
+import { arrayContains, SlidingWindowBuffer } from '../EZPZ/Utility.js'
 import {EntityModel, EntitySchema} from '../model/EntityModel.js'
 import { ICastPhysics, CastCommandTime } from '../EZPZ/castengine/CastWorldModel.js'
 import { Vec2D, Rect2D } from '../EZPZ/Vec2D.js'
 import TiledMap from '../EZPZ/TiledMap.js';
+import EventBus from '../EZPZ/EventBus.js';
 
 
 //xxx TODO: make this shared across client+server
@@ -25,7 +26,10 @@ class GameSim extends ICastPhysics {
         this.map = new TiledMap("gfx/levels/", 500, 500)
         this.map.playerLayerName = "Terrain2"
 		//this.map.LoadFromJson(levelJson)
-		
+        
+        //tracks how often updates happen in real time (NOTE: not game time)
+        this.updateTimes = new SlidingWindowBuffer(60)
+
         
         Service.Add("gameSim", this)
     }
@@ -86,6 +90,7 @@ class GameSim extends ICastPhysics {
     }
 
     updateStep(ct, dt) {
+        this.updateTimes.push(Date.now())
 
         //step each physics entity forward
         for(var eIdx = 0; eIdx < this.entities.length; eIdx++) {
@@ -130,6 +135,21 @@ class GameSim extends ICastPhysics {
             }
         }
         // perform AI
+
+        EventBus.game.dispatch("gameSimUpdate")
+    }
+
+    getGameUpdatesPerSecond() {
+        if (this.updateTimes.length < 2) {
+            return 0
+        }
+
+        var start = this.updateTimes[0]
+        var end = this.updateTimes.getLast()
+        var period = end - start
+        var samples = this.updateTimes.length
+        var updatesPerMS = samples / period
+        return updatesPerMS * 1000
     }
 
     /// @return entityID if succesful, or null otherwise

@@ -241,7 +241,7 @@ export class SlidingWindowBuffer extends Array {
     super.push(obj)
 
     if (this.length > this.slidingBufferCapacity ) {
-      this.slice(0, 1) // remove the oldest object from the buffer
+      this.shift() // remove the oldest object from the buffer
     }
   }
 

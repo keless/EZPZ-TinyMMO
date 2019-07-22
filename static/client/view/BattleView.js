@@ -1,8 +1,9 @@
-import { BaseStateView, NodeView, ButtonView, Graphics, CreateSimpleProgressBar, Service, Animation } from '../clientEZPZ.js'
+import { BaseStateView, NodeView, ButtonView, Graphics, CreateSimpleProgressBar, Service, Animation, EventBus } from '../clientEZPZ.js'
 import {BattleStateModel} from '../controller/BattleState.js'
 import {EntityView} from './EntityView.js'
 import ResourceProvider from '../../shared/EZPZ/ResourceProvider.js'
 import { TiledMapNodeView, TiledMap } from '../../shared/EZPZ/TiledMap.js'
+import GameSim from '../../shared/controller/GameSim.js';
 
 export default class BattleStateView extends BaseStateView {
 	constructor( model ) {
@@ -36,24 +37,15 @@ export default class BattleStateView extends BaseStateView {
 			this.entityViews.forEach((entityView)=>{
 				entityView.Draw(gfx, x,y, ct);
 
+				/*
 				var color = "#0000FF"
 				gfx.drawRectEx(entityView.pos.x, entityView.pos.y, 3, 3, color) 
-				//gfx.drawRectEx(object.x + object.width, object.y, 3, 3, color) 
-				//gfx.drawRectEx(object.x, object.y + object.height, 3, 3, color) 
-				//gfx.drawRectEx(object.x + object.width, object.y + object.height, 3, 3, color) 
+				*/
 			})
 
-			/*
-			var modelPos = self.pModel.player.physicsEntity.pos;
-			self.avatarNode.pos.setVec(modelPos);
-			self.avatarNode.Draw(gfx, x,y, ct);
-			*/
-	  
-			//this.particleSystem.draw(gfx, x,y, ct)
-		  }
+		}
 
-    	var screenSize = Graphics.ScreenSize;
-
+    var screenSize = Graphics.ScreenSize;
 		//var loc = g_locations[this.pModel.locationIdx];
 
 		var navX = screenSize.x - 25;
@@ -82,6 +74,16 @@ export default class BattleStateView extends BaseStateView {
 		this.btnSkills.pos.setVal(navX - 100, 75);
 		this.rootView.addChild(this.btnSkills);
 		//this.SetListener("btnSkills", this.onBtnSkills);
+
+		this.fpsMeter = new NodeView()
+		this.fpsMeter.setLabel("000 u/s", "16px Arial")
+		this.fpsMeter.pos.setVal(navX - 150, 75)
+
+		this.SetListener("gameSimUpdate", (e)=>{
+			var gameSim = GameSim.instance
+			this.fpsMeter.updateLabel( gameSim.getGameUpdatesPerSecond().toFixed(2) + " u/s")
+		}, EventBus.game)
+		this.rootView.addChild(this.fpsMeter)
 
 		/*
 		var playerEntity = this.pModel.entities[0];
