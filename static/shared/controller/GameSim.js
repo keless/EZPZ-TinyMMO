@@ -2,24 +2,29 @@
 import {Service} from '../EZPZ/Service.js'
 import { arrayContains, SlidingWindowBuffer } from '../EZPZ/Utility.js'
 import {EntityModel, EntitySchema} from '../model/EntityModel.js'
-import { ICastPhysics, CastCommandTime } from '../EZPZ/castengine/CastWorldModel.js'
+import { ICastPhysics, CastCommandTime, CastWorldModel } from '../EZPZ/castengine/CastWorldModel.js'
 import { Vec2D, Rect2D } from '../EZPZ/Vec2D.js'
 import TiledMap from '../EZPZ/TiledMap.js';
 import EventBus from '../EZPZ/EventBus.js';
 
 
 //xxx TODO: make this shared across client+server
-class GameSim extends ICastPhysics {
-    constructor() {
+class GameSim extends CastWorldModel {
+    constructor( isServer = false ) {
         super() 
         console.log("new GameSim created")
 
         this.verbose = true
+        this.isServer = isServer
+
+        // We're both the CastWorldModel and the ICastPhysics
+        this.castPhysics = new GameSimCastPhysics()
+        this.setPhysicsInterface(this.castPhysics)
 
         // signals server side to write to database
         this.dirty = false
 
-        this.entities = []
+        this.entities = [] //xxx todo; get rid of this, since CastWorldModel has m_entities
         this.pWallRects = [];
 
         //xxx todo: move tiled map here and separate graphics/data, and figure out how to load resources on server similar to client
@@ -156,7 +161,13 @@ class GameSim extends ICastPhysics {
     }
 
     /// @return entityID if succesful, or null otherwise
+    // CALL ON SERVER ONLY
     createCharacterForUser(userId, name, race, charClass) {
+        if (!this.isServer) {
+            this._log("WARN: called createCharacterForUser on client -- this is server only")
+            return //guard
+        }
+
         var entity = new EntityModel()
 
         //xxx todo: validate params
@@ -173,7 +184,14 @@ class GameSim extends ICastPhysics {
         return entity.uuid
     }
 
+    // Serialize the world 
+    // CALL ON SERVER ONLY
     getWorldUpdate() {
+        if (!this.isServer) {
+            this._log("WARN: called getWorldUpdate on client -- this is server only")
+            return //guard
+        }
+
         var updateJson = {}
         updateJson.gameTime = CastCommandTime.Get()
         
@@ -204,7 +222,13 @@ class GameSim extends ICastPhysics {
     }
 
 
+    // CLIENT ONLY  
     updateEntityFromJsonWithFFD(entityJson, fastForwardDelta) {
+        if (this.isServer) {
+            this._log("WARN: called updateEntityFromJsonWithFFD on server -- this is client only")
+            return //guard
+        }
+
         //1) see if entity already exists, if so update it
         //2) else create new from json
         var entity = this.getEntityForId(entityJson.uuid)
@@ -218,6 +242,7 @@ class GameSim extends ICastPhysics {
         }
 
 //xxx WIP
+        //we want to age the entity by fastForwardDelta but we probably need to run a full update() to do this
 
         this.setDirty()
     }
@@ -281,7 +306,9 @@ class GameSim extends ICastPhysics {
         })
         return owned
     }
+}
 
+class GameSimCastPhysics extends ICastPhysics  {
     // ICastPhysics implementation
 
     // in: ICastEntity fromEntity, ICastEntity toEntity
@@ -293,14 +320,32 @@ class GameSim extends ICastPhysics {
     // in: ICastEntity entity
     // out: null or Vec2D pos
     GetEntityPosition(entity) {
-        return toEntity.pos.clone();
+        return entity.pos.clone();
     }
 
     // in: Vec2D p, float r, array[ICastEntity] ignoreEntities
     // out: array<ICastEntity> entities
     GetEntitiesInRadius(p, r, ignoreEntities) {
-        //xxx TODO
-        return null;
+        var gameSim = GameSim.instance
+
+        //xxx todo: actually test this code
+        var rSq = r * r
+
+        var results = gameSim.m_entities.reduce(function(accumArray, entity, i) {
+            if (ignoreEntities.includes(entity)) {
+                return accumArray //skip this entity
+            }
+
+            var deltaSq = entity.pos.getVecSub(p).getMagSq()
+            
+            if (deltaSq < rSq) {
+                accumArray.push(entity);
+            }
+                
+            return accumArray
+        }, []);
+
+        return results;
     }
 }
 
