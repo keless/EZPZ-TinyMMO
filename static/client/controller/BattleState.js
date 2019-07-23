@@ -24,8 +24,7 @@ class BattleStateModel extends BaseStateModel {
 		this.controlledEntityId = controlledEntityId
 
 		this.gameSim = GameSim.instance
-		
-		//xxx todo: refactor loading tiledMap into ClientGameController (like server)
+
 		var RP = ResourceProvider.instance
 		var levelJson = RP.getJson("gfx/levels/test2.json")
 		this.gameSim.LoadMapFromJson(levelJson, false)
@@ -36,6 +35,8 @@ class BattleStateModel extends BaseStateModel {
 		this.pState = state;
 		
 		this.controllers = [];
+
+
 
 		//xxx get rid of this, making GameSim the castWorldModel
 		//this.castWorldModel = CastWorldModel.Get();

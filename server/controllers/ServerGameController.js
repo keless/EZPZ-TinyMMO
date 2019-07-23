@@ -72,7 +72,7 @@ class ServerGameController {
         //load json
         let rawdata = fs.readFileSync('./static/gfx/levels/test2.json');
         let levelJson = JSON.parse(rawdata);
-        this.gameSim.LoadMapFromJson(levelJson, true)
+        this.gameSim.LoadMapFromJson(levelJson)
 
         var entitySchemas = this.gameDB.entities
         if (entitySchemas) {

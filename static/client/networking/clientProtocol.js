@@ -67,7 +67,7 @@ export default class ClientProtocol {
             //this._log("handle world update")
 
             if (data.hasOwnProperty("deltaWorldUpdate")) {
-                //xxx WIP: attempt to apply patch and use it
+                // attempt to apply patch and use it
                 var delta = data.deltaWorldUpdate
                 var deltaIdx = data.deltaWorldUpdateIdx
                 var prevUpdate = this._getWorldUpdateForIdx(deltaIdx - 1)

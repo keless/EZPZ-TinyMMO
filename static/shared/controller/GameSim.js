@@ -27,7 +27,7 @@ class GameSim extends CastWorldModel {
         this.entities = [] //xxx todo; get rid of this, since CastWorldModel has m_entities
         this.pWallRects = [];
 
-        //xxx todo: move tiled map here and separate graphics/data, and figure out how to load resources on server similar to client
+        
         this.map = new TiledMap("gfx/levels/", 500, 500)
         this.map.playerLayerName = "Terrain2"
 		//this.map.LoadFromJson(levelJson)
@@ -53,7 +53,8 @@ class GameSim extends CastWorldModel {
         this.dirty = true
     }
 
-    LoadMapFromJson(json, withoutGraphics) {
+    LoadMapFromJson(json) {
+        var withoutGraphics = this.isServer
         this.map.LoadFromJson(json, withoutGraphics)
         this.pWallRects = this.map.wallRects;
     }
@@ -173,9 +174,10 @@ class GameSim extends CastWorldModel {
         //xxx todo: validate params
         entity.initNewCharacter(userId, name, race, charClass)
 
-        //xxx todo: choose initial position from spawn points
-        //this.tiledMap
-        //GetRandomSpawn()
+        //choose initial position from spawn points
+        var spawnBlob = this.map.GetRandomSpawn() 
+        entity.pos.setVal(spawnBlob.x, spawnBlob.y)
+
 
         this._addEntity(entity)
 
@@ -217,32 +219,6 @@ class GameSim extends CastWorldModel {
             this._addEntity(entity)
             console.log("GameSim: update with new entity " + entity.owner +":"+ entity.uuid )
         }
-
-        this.setDirty()
-    }
-
-
-    // CLIENT ONLY  
-    updateEntityFromJsonWithFFD(entityJson, fastForwardDelta) {
-        if (this.isServer) {
-            this._log("WARN: called updateEntityFromJsonWithFFD on server -- this is client only")
-            return //guard
-        }
-
-        //1) see if entity already exists, if so update it
-        //2) else create new from json
-        var entity = this.getEntityForId(entityJson.uuid)
-        if (entity) {
-            entity.updateFromJson(entityJson)
-        } else {
-            entity = new EntityModel()
-            entity.fromWorldUpdateJson(entityJson)
-            this._addEntity(entity)
-            console.log("GameSim: update with new entity " + entity.owner + ":" + entity.uuid)
-        }
-
-//xxx WIP
-        //we want to age the entity by fastForwardDelta but we probably need to run a full update() to do this
 
         this.setDirty()
     }

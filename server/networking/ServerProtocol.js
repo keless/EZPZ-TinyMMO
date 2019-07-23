@@ -111,6 +111,7 @@ class SocketClient {
 
         this._logVerbose("got player impulse")
         this._logVerbose(data)
+
         //xxx todo: apply this to next gameSim step
         var gameSim = GameSim.instance
         gameSim.handlePlayerImpulse(this.clientID, data)
@@ -203,7 +204,7 @@ class ServerProtocol {
     }
 
     getSocketClientForUserID(userId) {
-        //xxx todo: use lookup hash
+        //xxx todo: use lookup hash?
         this.socketClients.find((sc)=> {
             return sc.clientID == userId
         })
@@ -267,7 +268,6 @@ class ServerProtocol {
         var worldUpdateJson = gameSim.getWorldUpdate()
         worldUpdateJson.worldUpdateIdx = this.worldUpdateIdx++
 
-        //xxx todo: refactor: move this into ServerProtocol.js
         var previousWorldUpdateJson = this.worldUpdateBuffer.getLast()
         this.worldUpdateBuffer.push(worldUpdateJson)
 
@@ -312,7 +312,6 @@ class ServerProtocol {
             sendObj.fullWorldUpdate = worldUpdateJson
         }
 
-        //xxx WIP - todo; send deltas using fossil-delta
         ServerProtocol.instance.broadcastWithBinary("worldUpdate", sendObj)
     }
 

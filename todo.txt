@@ -1,7 +1,7 @@
 
 WIP:
 
-* SERVER: create characters on map spawn point
+
 
 BUGS:
 
@@ -21,6 +21,7 @@ TODO:
 * eventually: template based random quest generation
 
 Completed:
+* SERVER: create characters on map spawn point
 * CLIENT: apply time deltas to server world updates on client before accepting them (reduce rubberbanding)
 * CLIENT: make back button return to character select screen
 * CLIENT: on character creation; go directly to gameplay with new character on create success

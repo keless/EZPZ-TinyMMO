@@ -18,6 +18,7 @@ var game_create = function()
 
 	// Initialize networking protocol
 	new ClientProtocol()
+	new ClientGameController()
 	var clientGame = ClientGameController.instance
 	console.log("create client game " + clientGame.uuid)
 
