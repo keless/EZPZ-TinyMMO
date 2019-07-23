@@ -1,15 +1,16 @@
 
 WIP:
 
-
+* SERVER: create characters on map spawn point
 
 BUGS:
 
 
 TODO:
+* make GameSim the CastWorldModel
+* SERVER: retroactively apply user inputs on server (fix snapping when changing direction)
+* ART: make sure sprites are closer to their borders in the direction they are facing (so it doesnt look like they're too far from walls they run into)
 
-* retroactively apply user inputs to server
-* apply time deltas to server world upates on client before accepting them (reduce rubberbanding)
 * implement actions + animations for characters (attack, death, etc)
 * optimize: do partial catch ups if an incremental update is missed by a client
 
@@ -20,8 +21,9 @@ TODO:
 * eventually: template based random quest generation
 
 Completed:
-* client: make back button return to character select screen
-* on character creation; go directly to gameplay with new character on create success
+* CLIENT: apply time deltas to server world updates on client before accepting them (reduce rubberbanding)
+* CLIENT: make back button return to character select screen
+* CLIENT: on character creation; go directly to gameplay with new character on create success
 - FIXED: server ticking game time too slow
 - FIXED: client side fps is low (Views were not being updated as often as Models)
 * added updates per second counter to client in BattleView

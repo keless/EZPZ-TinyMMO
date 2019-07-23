@@ -1,4 +1,4 @@
-import { AppState, BaseStateModel, NodeView, Service, CastCommandTime, CastWorldModel, TiledMap } from '../clientEZPZ.js'
+import { AppState, BaseStateModel, NodeView, Service, CastCommandTime, TiledMap } from '../clientEZPZ.js'
 //import PlayerModel from '../../shared/model/PlayerModel.js'
 import GameSim from '../../shared/controller/GameSim.js'
 import BattleStateView from '../view/BattleView.js'
@@ -25,21 +25,21 @@ class BattleStateModel extends BaseStateModel {
 
 		this.gameSim = GameSim.instance
 		
+		//xxx todo: refactor loading tiledMap into ClientGameController (like server)
 		var RP = ResourceProvider.instance
 		var levelJson = RP.getJson("gfx/levels/test2.json")
 		this.gameSim.LoadMapFromJson(levelJson, false)
 
 		this.playerImpulse = new ImpulseController(this.controlledEntityId)
-
 		this.playerEntity = this.gameSim.getEntityForId(this.controlledEntityId)
-		//this.gameSim.AddEntity(this.player.physicsEntity)
 
 		this.pState = state;
 		
 		this.controllers = [];
 
-		this.castWorldModel = CastWorldModel.Get();
-		this.castWorldModel.setPhysicsInterface( this );
+		//xxx get rid of this, making GameSim the castWorldModel
+		//this.castWorldModel = CastWorldModel.Get();
+		//this.castWorldModel.setPhysicsInterface( this );
 
 		//this.playerModel = PlayerModel.Get();
 		//this.addPlayerEntity(this.playerModel.entity);
@@ -231,7 +231,7 @@ class BattleStateModel extends BaseStateModel {
 	Update(ct, dt) {
 		super.Update(ct, dt);
 		
-		this.castWorldModel.updateStep(dt);
+		//this.castWorldModel.updateStep(dt);
 		ct = CastCommandTime.Get();
 
 /*

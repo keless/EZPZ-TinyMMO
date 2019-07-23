@@ -2,7 +2,7 @@ import PlayerModel from '../../shared/model/PlayerModel.js'
 import {uuidv4} from '../clientEZPZ.js'
 import EntityModel from '../../shared/model/EntityModel.js';
 import GameSim from '../../shared/controller/GameSim.js'
-import { CastCommandTime } from '../../shared/EZPZ/castengine/CastWorldModel.js';
+import CastWorldModel, { CastCommandTime } from '../../shared/EZPZ/castengine/CastWorldModel.js';
 
 
 class ClientGameController {
@@ -71,19 +71,24 @@ class ClientGameController {
     }
   }
 
+  // How to apply a worldUpdate with a timestamp behind the current gameTime
+  // 1) store delta of  gameTime - worldUpdate.gameTime
+  // 2) set clock backwards to worldUpdate.gameTime
+  // 3) apply like a normal world update
+  // 4) run an extra updateStep(ct, dt) where dt = delta from (1)
   _retroactivelyApplyServerWorldUpdate(worldUpdateJson) {
-    var currentGameTime = CastCommandTime.Get()
-    var delta = currentGameTime - worldUpdateJson.gameTime
-    console.log(`WARN: world update is behind ${delta.toFixed(4)}`)
+    //console.log(`WARN: world update is behind ${delta.toFixed(4)}`)
 
-    if (worldUpdateJson.entities) {
-      //fast forward velocity->position
+    // 1) store delta of  gameTime - worldUpdate.gameTime
+    var ct = CastCommandTime.Get()
+    var dt = currentGameTime - worldUpdateJson.gameTime
 
-      worldUpdateJson.entities.forEach((entityJson) => {
-        //this.gameSim.updateEntityFromJson(entityJson)
-        this.gameSim.updateEntityFromJsonWithFFD(entityJson, delta)
-      })
-    }
+    // 2 & 3) set clock backwards to worldUpdate.gameTime, and apply like a normal world update
+    this._catchUpToServerWorldUpdate(worldUpdateJson)
+
+    // 4) run an extra updateStep(ct, dt) where dt = delta from (1)
+    var gameSim = GameSim.instance
+    gameSim.updateStep(ct, dt)
   }
 
 }

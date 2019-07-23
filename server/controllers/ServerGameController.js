@@ -67,7 +67,7 @@ class ServerGameController {
 
     _initGameSimFromDB() {
         this._log("initGameSimFromDB")
-        this.gameSim = new GameSim()
+        this.gameSim = new GameSim(true)
         
         //load json
         let rawdata = fs.readFileSync('./static/gfx/levels/test2.json');
