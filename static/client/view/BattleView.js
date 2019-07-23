@@ -283,6 +283,9 @@ export default class BattleStateView extends BaseStateView {
 	}
 */
 	onBtnBack(e) {
+		Service.Get("state").gotoState("manager")
+
+		/*
 		EventBus.game.dispatch({evtName:"playerReturn"});
 
 		var dt = this.pModel.getReturnPeriod();
@@ -297,6 +300,7 @@ export default class BattleStateView extends BaseStateView {
 		bar.pos.setVal(0,-200);
 		this.ghostView.addChild(bar);
 		this.progresslayer.addChild(this.ghostView);
+		*/
 	}
 
 	/*

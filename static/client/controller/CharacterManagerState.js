@@ -298,9 +298,13 @@ class CharacterCreationStateView extends BaseStateView {
         clientGame.updateOwnedEntities(data)
       }
 
-      //xxx todo: jump into game once character is created
-      //Service.Get("state").gotoState("battle", { locationIdx: locIdx, controlledEntityId: newCharID });
-      Service.Get("state").gotoState("manager");
+      // jump into game once character is created
+      if (data.createdCharacterId) {
+        var locIdx = -1  //xxx todo: care about locations
+        Service.Get("state").gotoState("battle", { locationIdx: locIdx, controlledEntityId: data.createdCharacterId });
+      } else {
+        Service.Get("state").gotoState("manager")
+      }
     })
   }
 }

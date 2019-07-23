@@ -38,7 +38,7 @@ class SocketClient {
     }
 
     /// Expect: { name:String, race:String, charClass:String }
-    /// Response: { worldUpdate:WorldUpdate }
+    /// Response: { entities:[ all currently owned entities, including new one ], createdCharacterId:String (id of new entity) }
     onCreateCharacter(data, response) {
         //create character for user
         var userId = this.clientID
@@ -61,7 +61,6 @@ class SocketClient {
             return
         }
 
-        
         this._log("on create character with name " + name + " race " + race + " class " + charClass)
         
         var entityID = gameSim.createCharacterForUser(userId, name, race, charClass)
@@ -69,7 +68,9 @@ class SocketClient {
             var entity = gameSim.getEntityForId(entityID)
             this._log("create character success; sending ack entityID " + entityID )
     
-            response( this._getWorldUpdateForEntityIDs([entityID]) )
+            var result = this._getWorldUpdateForEntityIDs([entityID])
+            result.createdCharacterId = entityID
+            response(result )
 
             ServerGameController.instance.flushToDB()
         } else {
