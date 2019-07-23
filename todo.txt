@@ -3,7 +3,6 @@ WIP:
 * SERVER: retroactively apply user inputs on server (fix snapping when changing direction)
 
 BUGS:
-- player controlled entity isnt always rendered on top of other character entities
 - turning is glitchy (snaps probably because locally applied impulse is different timing than server's)
 
 TODO:
@@ -20,6 +19,7 @@ TODO:
 * eventually: template based random quest generation
 
 Completed:
+- FIXED: draw entities sorted by Y value, so "front" entities draw "on top" of entities that are "behind" them
 * make GameSim the CastWorldModel
 * SERVER: create characters on map spawn point
 * CLIENT: apply time deltas to server world updates on client before accepting them (reduce rubberbanding)

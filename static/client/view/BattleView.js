@@ -33,16 +33,16 @@ export default class BattleStateView extends BaseStateView {
 			//var a = self.pModel.player.physicsEntity.getArea();
 			//gfx.drawRect(x + a.x, y + a.y, a.w, a.h)
 
+			var playerView = null
 
-			this.entityViews.forEach((entityView)=>{
-				entityView.Draw(gfx, x,y, ct);
-
-				/*
-				var color = "#0000FF"
-				gfx.drawRectEx(entityView.pos.x, entityView.pos.y, 3, 3, color) 
-				*/
+			//sort based on "y" value (so things in "front" draw last/on top)
+			this.entityViews.sort((a, b)=>{
+				return a.pos.y - b.pos.y
 			})
 
+			this.entityViews.forEach((entityView)=>{
+				entityView.Draw(gfx, x,y, ct)
+			})
 		}
 
     var screenSize = Graphics.ScreenSize;
