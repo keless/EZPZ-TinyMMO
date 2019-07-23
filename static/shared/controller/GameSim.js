@@ -24,7 +24,6 @@ class GameSim extends CastWorldModel {
         // signals server side to write to database
         this.dirty = false
 
-        this.entities = [] //xxx todo; get rid of this, since CastWorldModel has m_entities
         this.pWallRects = [];
 
         
@@ -99,9 +98,7 @@ class GameSim extends CastWorldModel {
         this.updateTimes.push(Date.now())
 
         //step each physics entity forward
-        for(var eIdx = 0; eIdx < this.entities.length; eIdx++) {
-            var entity = this.entities[eIdx];
-
+        this.m_allEntities.forEach((entity)=>{
             var stepVel = entity.vel.getScalarMult(dt);
 
             //check collision before moving forward (assuming current position is not colliding)
@@ -142,7 +139,7 @@ class GameSim extends CastWorldModel {
                     entity.dispatch("update")
                 }
             }
-        }
+        })
         // perform AI
 
         EventBus.game.dispatch("gameSimUpdate", true)
@@ -179,7 +176,7 @@ class GameSim extends CastWorldModel {
         entity.pos.setVal(spawnBlob.x, spawnBlob.y)
 
 
-        this._addEntity(entity)
+        this.AddEntity(entity)
 
         this.setDirty()
 
@@ -198,7 +195,7 @@ class GameSim extends CastWorldModel {
         updateJson.gameTime = CastCommandTime.Get()
         
         var entities = []
-        this.entities.forEach((entity)=>{
+        this.m_allEntities.forEach((entity)=>{
             var entitySchema = {}
             entities.push( entity.writeToSchema(entitySchema) )
         })
@@ -216,32 +213,22 @@ class GameSim extends CastWorldModel {
         } else {
             entity = new EntityModel()
             entity.fromWorldUpdateJson(entityJson)
-            this._addEntity(entity)
+            this.AddEntity(entity)
             console.log("GameSim: update with new entity " + entity.owner +":"+ entity.uuid )
         }
 
         this.setDirty()
     }
 
-    _addEntity(entityModel) {
-        //debug: ensure entity is unique in entities
-        if (arrayContains(this.entities, entityModel)) {
-            console.error("GameSim: tried to insert entity that is already listed")
-            return;
-        }
-
-        this.entities.push(entityModel)
-    }
-
-    removeEntitiesById(entityIDs) {
-        //xxx todo: optimize this
+    //override CastWorldModel.RemoveEntitiesById so we can mark dirty
+    RemoveEntitiesById(entityIds) {
         var removed = false
-        for (var i=this.entities.length-1; i>=0; i--) {
-            if (entityIDs.includes(this.entities[i].uuid)) {
-                this.entities.splice(i, 1)
+
+        entityIds.forEach((entityId)=>{
+            if(this.m_allEntities.delete(entityId)) {
                 removed = true
             }
-        }
+        })
         
         if (removed) {
             console.log("set dirty after removing entity")
@@ -252,20 +239,18 @@ class GameSim extends CastWorldModel {
     // Accessor methods
 
     getEntityForId(entityId) {
-        return this.entities.find((entity)=> {
-            return entity.uuid == entityId
-        })
+        return this.m_allEntities.get(entityId)
     }
 
     getEntityForName(name) {
-        return this.entities.find((entity)=>{
+        return this.m_allEntities.values().find((entity)=>{
             return entity.name == name
         })
     }
 
     getEntityIDsForOwner(ownerId) {
         var entityIDs = []
-        this.entities.forEach((entity)=>{
+        this.m_allEntities.forEach((entity)=>{
             if (entity.owner == ownerId) {
                 entityIDs.push(entity.uuid)
             }
@@ -275,7 +260,7 @@ class GameSim extends CastWorldModel {
 
     getEntitiesForOwner(ownerId) {
         var owned = []
-        this.entities.forEach((entity)=>{
+        this.m_allEntities.forEach((entity)=>{
             if (entity.owner == ownerId) {
                 owned.push(entity)
             }
@@ -312,9 +297,9 @@ class GameSimCastPhysics extends ICastPhysics  {
                 return accumArray //skip this entity
             }
 
-            var deltaSq = entity.pos.getVecSub(p).getMagSq()
+            var dSq = entity.pos.getDistSqFromVec(p)
             
-            if (deltaSq < rSq) {
+            if (dSq < rSq) {
                 accumArray.push(entity);
             }
                 

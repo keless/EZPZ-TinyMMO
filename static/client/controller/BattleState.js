@@ -69,14 +69,6 @@ class BattleStateModel extends BaseStateModel {
 
 		//this.playerModel.entity.removeListener("dead", this.onPlayerDeath.bind(this));
 
-		/*
-		for( var e of this.gameSim.entities ) {
-			e.removeListener("dead", this.onEnemyDeath.bind(this));
-			e.Destroy();
-		}
-		this.gameSim.entities = [];
-		*/
-
 		for( var e of this.controllers ) {
 			e.Destroy();
 		}
@@ -136,7 +128,7 @@ class BattleStateModel extends BaseStateModel {
 		Service.Get("state").gotoState("location", e.idx);
 	}
 	
-
+	/*
 	addPlayerEntity( ent ) {
 		if(this.gameSim.entities.length == 0) {
 			this.gameSim.entities.push(ent);
@@ -152,7 +144,9 @@ class BattleStateModel extends BaseStateModel {
 
 		EventBus.game.dispatch({evtName:"entitySpawned"});
 	}
+	*/
 
+	/*
 	addEntity( ent ) {
 		this.gameSim.entities.push(ent);
 		var controller = new AIController(ent);
@@ -178,6 +172,7 @@ class BattleStateModel extends BaseStateModel {
 			EventBus.ui.dispatch({evtName:"entityRemoved"});
 		}
 	}
+	
 
 	onPlayerDeath(e) {
 		console.log("todo: on player death");
@@ -208,11 +203,10 @@ class BattleStateModel extends BaseStateModel {
 
 		EventBus.ui.dispatch({evtName:"playerRest"});
 	}
+	
 
 	onEnemyDeath(e) {
 		console.log("on enemy death");
-
-		/*
 		//gather XP & loot drop, give to player
 		var entity = e.entity;
 		var xpGained = entity.xp_next;
@@ -226,8 +220,7 @@ class BattleStateModel extends BaseStateModel {
 		this.playerModel.addItem(loot);
 
 		this.removeEntity(entity);
-		*/
-	}
+	}*/
 
 	Update(ct, dt) {
 		super.Update(ct, dt);

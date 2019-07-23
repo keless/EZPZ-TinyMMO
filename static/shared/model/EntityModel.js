@@ -400,6 +400,10 @@ class EntityModel extends ICastEntity {
 
 	//Implement ICastEntity
 
+	getID() {
+		return this.uuid
+	}
+
 	getTarget() {
 		return this.m_abilityTargets;
 	}

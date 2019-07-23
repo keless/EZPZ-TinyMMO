@@ -95,7 +95,7 @@ class ServerGameController {
 
         // does this trigger re-saving the entire entity list every time? or is it smart enough to delta?
         this.gameDB.entities = []
-        gameSim.entities.forEach((entity)=>{
+        gameSim.m_allEntities.forEach((entity)=>{
             this._log("get schema for object")
             var schemaObject = {}
             entity.writeToSchema(schemaObject)

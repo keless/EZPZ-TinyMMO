@@ -40,7 +40,7 @@ class CastWorldModel {
 	}
 	
 	constructor() {
-		this.m_allEntities = {}; //map<ICastentity, ICastEntity>
+		this.m_allEntities = new Map() // < ICastEntity.getID(), ICastEntity >
 		
 		this.m_effectsInTransit = []; //array<CastEffectPath>
 		
@@ -49,13 +49,16 @@ class CastWorldModel {
 	}
 	
 	AddEntity( entity ) {
-		this.m_allEntities[ entity ] = entity;
-	}
-	
-	RemoveEntity( entity ) { 
-		if(this.m_allEntities[entity]) {
-			delete this.m_allEntities[entity];
+		if (this.m_allEntities.has(entity.getID())) {
+			console.log("WARN: tried to insert entity that is already listed")
+			return
 		}
+
+		this.m_allEntities.set(entity.getID(), entity)
+	}
+
+	RemoveEntity( entity ) {
+		this.m_allEntities.delete(entity.getID())
 	}
 	
 	// in: ICastPhysics physics
@@ -220,7 +223,7 @@ class CastWorldModel {
 	// in: ICastEntity entity
 	//bool
 	isValid( entity ) {
-		if(this.m_allEntities[entity]) return true;
+		if(this.m_allEntities.has(entity.getID())) return true;
 		return false;
 	}
 	

@@ -364,9 +364,9 @@ export default class BattleStateView extends BaseStateView {
 	refreshEntityViews() {
 		this.removeAllEntityViews();
 
-    for(var i=0; i<this.pModel.gameSim.entities.length; i++ ) {
-			this.createEntityView(this.pModel.gameSim.entities[i], i);
-		}
+		this.pModel.gameSim.m_allEntities.forEach((entity)=>{
+			this.createEntityView(entity)
+		})
 	}
 
 	removeAllEntityViews() {
@@ -376,7 +376,7 @@ export default class BattleStateView extends BaseStateView {
 		this.entityViews = [];
 	}
 
-	createEntityView( entityModel, idx ) {
+	createEntityView( entityModel ) {
 		var entView = new EntityView(entityModel, false);
 
 		if (entityModel == this.controlledEntity) {
@@ -486,9 +486,11 @@ export default class BattleStateView extends BaseStateView {
 	*/
 
 	Destroy() {
+		/*
 		var playerEntity = this.pModel.gameSim.entities[0];
-    //playerEntity.removeListener("update", this.onPlayerModelUpdate.bind(this));
+    playerEntity.removeListener("update", this.onPlayerModelUpdate.bind(this));
 		playerEntity.removeListener("castEnd", this.onPlayerModelAttack.bind(this));
+		*/
 
 		this.pModel = null;
 		super.Destroy();

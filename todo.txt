@@ -1,16 +1,14 @@
 
 WIP:
-
-
+* SERVER: retroactively apply user inputs on server (fix snapping when changing direction)
 
 BUGS:
-
+- player controlled entity isnt always rendered on top of other character entities
+- turning is glitchy (snaps probably because locally applied impulse is different timing than server's)
 
 TODO:
-* make GameSim the CastWorldModel
-* SERVER: retroactively apply user inputs on server (fix snapping when changing direction)
-* ART: make sure sprites are closer to their borders in the direction they are facing (so it doesnt look like they're too far from walls they run into)
 
+* ART: make sure sprites are closer to their borders in the direction they are facing (so it doesnt look like they're too far from walls they run into)
 * implement actions + animations for characters (attack, death, etc)
 * optimize: do partial catch ups if an incremental update is missed by a client
 
@@ -18,9 +16,11 @@ TODO:
 * eventually: get cast engine working 
 * eventually: figure out automatic NAT translation / sharing server invites
 * eventually: plug-in content addition system
+* eventually: multiple location instances, only stream updates to clients based on the location they're in (or try seamless?)
 * eventually: template based random quest generation
 
 Completed:
+* make GameSim the CastWorldModel
 * SERVER: create characters on map spawn point
 * CLIENT: apply time deltas to server world updates on client before accepting them (reduce rubberbanding)
 * CLIENT: make back button return to character select screen
@@ -40,6 +40,6 @@ Completed:
 - FIXED: graphics offset of players vs physics
 * load data files (abilities, items, gfx/levels/tiledMap.json ) on server
 * load tiledMap on server
-* implement map physics on server
-* no-sql no-setup database
+* implement map physics on server (TiledMap)
+* no-sql no-setup database (linvoDB3)
 * user registration

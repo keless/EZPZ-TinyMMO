@@ -9,6 +9,8 @@ export default class ICastEntity {
 		CastWorldModel.Get().RemoveEntity(this);
 	}
 	
+	getID() {}
+
 	// in: string propName, float value, CastEffect effect
 	setProperty( propName, value, effect ) {}
 	// in: string propName, float value, CastEffect effect
