@@ -1,4 +1,4 @@
-const SERVER_PORT = process.env.port || 2000
+const SERVER_PORT = process.env.port || 27015
 const SHARED_SECRET = "tricksie hobitses"
 const SESSION_COOKIE_NAME = "cookieMonster"
 const COMPILE_CLIENT_SCRIPTS = false
