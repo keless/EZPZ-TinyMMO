@@ -10,8 +10,9 @@ TODO:
 * ART: make sure sprites are closer to their borders in the direction they are facing (so it doesnt look like they're too far from walls they run into)
 * implement actions + animations for characters (attack, death, etc)
 * optimize: do partial catch ups if an incremental update is missed by a client
+* optimize: reduce some of the cruft from login/registration 3rd party stuff (or write our own and dont use it at all)
 
-
+* eventually: setup HTTP/2 and multi-file push
 * eventually: get cast engine working 
 * eventually: figure out automatic NAT translation / sharing server invites
 * eventually: plug-in content addition system
@@ -19,6 +20,7 @@ TODO:
 * eventually: template based random quest generation
 
 Completed:
+* SERVER: added HTTPS support 
 - FIXED: draw entities sorted by Y value, so "front" entities draw "on top" of entities that are "behind" them
 * make GameSim the CastWorldModel
 * SERVER: create characters on map spawn point
