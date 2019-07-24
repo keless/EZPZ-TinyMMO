@@ -29,6 +29,32 @@ class ImpulseController {
     setFacing( val ) {
         this.facing = val
     }
+    // Fix facing bug - testing steps:
+    //  press+hold right, 
+    //  press+release up, 
+    //  (observe still facing up), 
+    //  release right
+    // return facing of one of the directions we still have pressed down when we release the key corresponding to last pressed facing
+    checkFacing() {
+        var unbound = false
+        switch(this.facing) {
+            case 0: unbound = !this.up;  break;
+            case 1: unbound = !this.right;  break;
+            case 2: unbound = !this.down;  break;
+            case 3: unbound = !this.left;  break;
+        }
+        if (unbound) {
+            return this._facingForActiveDirection()
+        }
+        return -1
+    }
+    _facingForActiveDirection() {
+        if (this.up) { return 0 }
+        if (this.right) { return 1 }
+        if (this.down) { return 2 } 
+        if (this.left) { return 3 }
+        return -1
+    }
 
     setUp( val ) {
         if (this.up != val) {

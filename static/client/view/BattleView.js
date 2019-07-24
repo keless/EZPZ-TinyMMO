@@ -159,28 +159,28 @@ export default class BattleStateView extends BaseStateView {
 		var ct = 0;
 		//console.log("test keydown " + e.keyCode)
 		switch(e.keyCode) {
-		  case 'E'.charCodeAt(0):
+		  case 'E'.charCodeAt(0): //up
 			this.avatarNode.setDirection(ct, 0);
 			this.avatarNode.animEvent(0, "walk");
 			this.pModel.playerImpulse.setFacing(0);
 			this.pModel.playerImpulse.setUp(true);
 			
 		  break;
-		  case 'D'.charCodeAt(0):
+		  case 'D'.charCodeAt(0): //down
 			this.avatarNode.setDirection(ct, 2);
 			this.avatarNode.animEvent(0, "walk");
 			this.pModel.playerImpulse.setFacing(2);
 			this.pModel.playerImpulse.setDown(true);
 			
 		  break;
-		  case 'F'.charCodeAt(0):
+		  case 'F'.charCodeAt(0): //right
 			this.avatarNode.setDirection(ct, 1);
 			this.avatarNode.animEvent(0, "walk");
 			this.pModel.playerImpulse.setFacing(1);
 			this.pModel.playerImpulse.setRight(true);
 			
 		  break;
-		  case 'S'.charCodeAt(0):
+		  case 'S'.charCodeAt(0): //left
 			this.avatarNode.setDirection(ct, 3);
 			this.avatarNode.animEvent(0, "walk");
 			this.pModel.playerImpulse.setFacing(3);
@@ -196,23 +196,38 @@ export default class BattleStateView extends BaseStateView {
 	OnKeyUp(e, x, y) {
 		if (!this.avatarNode) { return }
 		var ct = 0;
+		var shouldCheckFacing = false
 		switch(e.keyCode) {
 		  case 'E'.charCodeAt(0):
-			this.avatarNode.animEvent(ct, "idle");
-			this.pModel.playerImpulse.setUp(false);
+			this.avatarNode.animEvent(ct, "idle")
+			this.pModel.playerImpulse.setUp(false)
+			shouldCheckFacing = true
 		  break;
 		  case 'D'.charCodeAt(0):
-			this.avatarNode.animEvent(ct, "idle");
-			this.pModel.playerImpulse.setDown(false);
+			this.avatarNode.animEvent(ct, "idle")
+			this.pModel.playerImpulse.setDown(false)
+			shouldCheckFacing = true
 		  break;
 		  case 'F'.charCodeAt(0):
-			this.avatarNode.animEvent(ct, "idle");
-			this.pModel.playerImpulse.setRight(false);
+			this.avatarNode.animEvent(ct, "idle")
+			this.pModel.playerImpulse.setRight(false)
+			shouldCheckFacing = true
 		  break;
 		  case 'S'.charCodeAt(0):
-			this.avatarNode.animEvent(ct, "idle");
-			this.pModel.playerImpulse.setLeft(false);
+			this.avatarNode.animEvent(ct, "idle")
+			this.pModel.playerImpulse.setLeft(false)
+			shouldCheckFacing = true
 		  break;
+		}
+
+		if (shouldCheckFacing) {
+			console.log("check facing")
+			var newFacing = this.pModel.playerImpulse.checkFacing()
+			if (newFacing != -1) {
+				console.log("snap to " + newFacing)
+				this.avatarNode.setDirection(ct, newFacing)
+				this.pModel.playerImpulse.setFacing(newFacing);
+			}
 		}
 	}
 	
