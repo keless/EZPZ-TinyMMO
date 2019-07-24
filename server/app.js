@@ -2,6 +2,17 @@ const SERVER_PORT = process.env.port || 27015
 const SHARED_SECRET = "tricksie hobitses"
 const SESSION_COOKIE_NAME = "cookieMonster"
 const COMPILE_CLIENT_SCRIPTS = false
+/* 
+How To Generate SSL keys for HTTPS
+openssl genrsa -out privatekey_pem.key 1024 
+openssl req -new -key privatekey_pem.key -out certrequest.csr 
+openssl x509 -req -in certrequest.csr -signkey privatekey_pem.key -out certificate_pem.cer
+
+Windows: double click certificate_pem.cer + install it
+MacOS: 
+*/
+const CERTS_PATH = "./certs/certificate_pem.cer"
+const KEY_PATH = "./certs/privatekey_pem.key"
 
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -15,6 +26,7 @@ import expressLayouts from 'express-ejs-layouts'
 import passport from 'passport'
 import flash from 'connect-flash'
 import session from 'express-session'
+import fs from 'fs'
 
 
 // Minify client library
@@ -82,8 +94,23 @@ app.use('/gfx', express.static(path.join(__dirname, '../static/gfx')))
 // Initialize socket protocol
 import ServerProtocol from './networking/ServerProtocol.js'
 import http from 'http'
+import https from 'https'
 import socketIO from 'socket.io'
-var serv = http.Server(app)
+
+var serv = null
+var httpsOptions = {}
+// try to load HTTPS key and cert
+if (fs.existsSync(KEY_PATH) && fs.existsSync(CERTS_PATH)) {
+  httpsOptions.key = fs.readFileSync(KEY_PATH)
+  httpsOptions.cert = fs.readFileSync(CERTS_PATH)
+}
+//start HTTPS or HTTP server
+if (httpsOptions.key && httpsOptions.cert) {
+  serv = https.Server(httpsOptions, app)
+} else {
+  console.log("could not find SSL certs, falling back to HTTP")
+  serv = http.Server(app)
+}
 var io = socketIO(serv, {})
 io.use((socket, next)=> {
   expressSessionMiddleware(socket.request, {}, next)

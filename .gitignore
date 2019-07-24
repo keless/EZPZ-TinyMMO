@@ -12,6 +12,9 @@ $RECYCLE.BIN/
 # Ignore the node_modules folder
 node_modules
 
+# Ignore the certs folder
+certs/
+
 # Ignore the linvodb files
 *.db
 
