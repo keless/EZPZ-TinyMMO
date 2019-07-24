@@ -4,6 +4,7 @@ import {Game} from '../models/linvoGame.js'
 import { isArray } from '../../static/shared/EZPZ/Utility.js'
 import { Vec2D, Rect2D } from '../../static/shared/EZPZ/Vec2D.js'
 import GameSim from '../../static/shared/controller/GameSim.js'
+import { ResourceProvider } from '../../static/shared/EZPZ/ResourceProvider.js'
 import { CastCommandTime } from '../../static/shared/EZPZ/castengine/CastWorldModel.js'
 import ServerProtocol from '../networking/ServerProtocol.js';
 import {performance} from 'perf_hooks'
@@ -15,6 +16,36 @@ class ServerGameController {
     constructor() {
         this.verbose = true
         
+        // Init server singletons
+        new ResourceProvider()
+        var rp = ResourceProvider.instance
+        rp._fnLoadJson = (url, fnCallback) => {
+            // use setImmediate: dont run until next frame to simulate client's async loading behavior
+            setImmediate(()=>{
+                try {
+                    var data = fs.readFileSync(url)
+                    var json = JSON.parse(data)
+                    fnCallback(json)
+                } catch (err) {
+                    if (err.code === 'ENOENT') {
+                        fnCallback(null)
+                        console.log('File not found!');
+                    } else {
+                        throw err;
+                    }
+                }
+            })
+        }
+        rp.serverMode = true
+        rp.baseURL = "./static/"
+
+        /* test serverMode ResourceProvider
+        rp.getSprite("gfx/ui/btn_blue.sprite", ()=>{
+            console.log("xxx sprite loaded on server")
+        })
+        */
+
+
         this.flagShutdown = false
         this.updateFreqMS = 1000 / 30.0 // 30 fps
         this.lastUpdateMS = performance.now()

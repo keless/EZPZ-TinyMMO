@@ -7,6 +7,12 @@ export default class ResourceProvider {
 	constructor() {
 		
 		this.eventBus = new EventBus("RP");
+
+		// serverMode is intended for server-side which should not load Images
+		this.serverMode = false
+
+		// make our json loading method easy for the server to replace
+		this._fnLoadJson = getJSON
 		
 		this.images = {};
 		this.numImagesLoading = 0;
@@ -50,12 +56,14 @@ export default class ResourceProvider {
 		this.eventBus.dispatch({"evtName":fileName, "status":"loadComplete", "res":resource});
 		this.eventBus.clearListeners(fileName);
 	}
-	
+
 	/**
 	 * Loads the image if it's not already loaded
 	 * @return:Image
 	 */
 	getImage(fileName, fnOnLoad) {
+		if (this.serverMode) { return; }
+
 		if(!this.images[fileName] || !this.images[fileName].isLoaded)
 		{
 			this.loadImage(fileName, fnOnLoad);
@@ -67,6 +75,8 @@ export default class ResourceProvider {
 		return this.images[fileName];
 	}
 	loadImage(fileName, fnOnLoad) {
+		if (this.serverMode) { return; }
+
 		var RP = this;
 		if(this.images[fileName]) {
 			if(this.images[fileName].isLoaded) {
@@ -135,12 +145,14 @@ export default class ResourceProvider {
 		var sprite = new Sprite(fileName);
 		
 		if(fnOnLoad) RP.eventBus.addListener(fileName, fnOnLoad);
-		getJSON(this.baseURL + fileName, function(data) {
+
+		var self = this
+		this._fnLoadJson(this.baseURL + fileName, function(data) {
 		 if(RP.verbose) console.log("sprite loaded: " + fileName);
 		 RP.sprites[fileName]._load(data, function(){
 			 RP.numSpritesLoading--;
 			 RP._didLoad(fileName, RP.sprites[fileName]);
-		 });
+		 }, self.serverMode);
 		});
 		
 		this.sprites[fileName] = sprite;
@@ -179,7 +191,7 @@ export default class ResourceProvider {
 		var spriteBatch = new SpriteBatch(fileName);
 		
 		if(fnOnLoad) RP.eventBus.addListener(fileName, fnOnLoad);
-		getJSON(this.baseURL + fileName, function(data) {
+		this._fnLoadJson(this.baseURL + fileName, function(data) {
 			if(RP.verbose) console.log("spriteBatch loaded: " + fileName);
 			RP.spriteBatches[fileName].LoadFromJson(data, function(){
 				RP.numSpriteBatchesLoading--;
@@ -222,7 +234,7 @@ export default class ResourceProvider {
 		anim.isLoaded = false
 		
 		if(fnOnLoad) RP.eventBus.addListener(resName, fnOnLoad);
-		getJSON(this.baseURL + fileName, function(data) {
+		this._fnLoadJson(this.baseURL + fileName, function(data) {
 			anim.LoadFromJson(data)
 			anim.QuickAttach(baseName, ".sprite", function(){
 				if(RP.verbose) console.log("animation quickAttach loaded: " + resName);
@@ -268,7 +280,7 @@ export default class ResourceProvider {
 		anim.isLoaded = false
 		
 		if(fnOnLoad) RP.eventBus.addListener(resName, fnOnLoad);
-		getJSON(this.baseURL + fileName, function(data) {
+		this._fnLoadJson(this.baseURL + fileName, function(data) {
 			anim.LoadFromJson(data)
 			anim.QuickAttach(baseName, ".sprite", function(){
 				if(RP.verbose) console.log("FourPole quickAttach loaded: " + resName);
@@ -310,7 +322,7 @@ export default class ResourceProvider {
 				
 		if(fnOnLoad) RP.eventBus.addListener(fileName, fnOnLoad);
 		var self = this;
-		getJSON(this.baseURL + fileName, function(data) {
+		this._fnLoadJson(this.baseURL + fileName, function(data) {
 		 if(self.verbose) console.log("json loaded: " + fileName);
 		 RP.jsonFiles[fileName].data = data;
 		 RP.jsonFiles[fileName].isLoaded = true;

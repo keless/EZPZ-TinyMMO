@@ -23,7 +23,7 @@ class ImpulseController {
     }
     set speed(val) {
         this._speed = val
-        this._sendUpdateToServer()
+        this._updateImpulse()
     }
 
     setFacing( val ) {

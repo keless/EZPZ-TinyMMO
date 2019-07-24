@@ -1,6 +1,8 @@
 
 WIP:
-* SERVER: retroactively apply user inputs on server (fix snapping when changing direction)
+- sync AnimInstance between client + server  (server will need to load anim.json AND sprite.json files, but not .PNG images)
+- support for de/serializing sub-objects (not just flat properties) of EntityModel when sending world updates
+
 
 BUGS:
 - turning is glitchy (snaps probably because locally applied impulse is different timing than server's)
@@ -20,6 +22,8 @@ TODO:
 * eventually: template based random quest generation
 
 Completed:
+* SERVER: adapt ResourceProvider for NodeJS server side (use fs instead of http for .json, and dont use Image().src = url)
+* SERVER: retroactively apply user inputs on server (fix snapping when changing direction)
 * SERVER: added HTTPS support 
 - FIXED: draw entities sorted by Y value, so "front" entities draw "on top" of entities that are "behind" them
 * make GameSim the CastWorldModel

@@ -425,26 +425,35 @@ class Sprite {
 	}
 	
 	//called by ResourceProvider
-	_load( dataJson, fnOnLoad ) {
+	_load( dataJson, fnOnLoad, dontLoadImgs ) {
 		var resourceProvider = Service.Get("rp");
 		this.data = dataJson;
 		this.format = dataJson["format"] || "xywh";
 		
 		var self = this;
 		var path = this.path + dataJson["image"];
-		this.img = resourceProvider.getImage(path, function(e){
-			if(!self.isLoaded) {
-				self.img = e.res;
-				self.isLoaded = true; //deferred load
-				if(self.verbose) console.log("sprite loaded late: " + path);
-				if(fnOnLoad) fnOnLoad();
+
+		if (dontLoadImgs) {
+			this.isLoaded = true
+			if (this.verbose) console.log("sprite loaded WITHOUT images: " + path)
+			if (this.isLoaded && fnOnLoad) fnOnLoad();
+		} else {
+			this.img = resourceProvider.getImage(path, function (e) {
+				if (!self.isLoaded) {
+					self.img = e.res;
+					self.isLoaded = true; //deferred load
+					if (self.verbose) console.log("sprite loaded late: " + path);
+					if (fnOnLoad) fnOnLoad();
+				}
+			});
+			if (this.img) {
+				this.isLoaded = this.img.isLoaded; //check for immediate load
+				if (this.verbose) console.log("sprite loaded immediately: " + path)
+				if (this.isLoaded && fnOnLoad) fnOnLoad();
 			}
-		});
-		if(this.img) {
-			this.isLoaded = this.img.isLoaded; //check for immediate load
-			if(this.verbose) console.log("sprite loaded immediately: " + path)
-			if(this.isLoaded && fnOnLoad) fnOnLoad();
 		}
+
+
 	}
 	
 	getWidth() {
@@ -469,7 +478,7 @@ class Sprite {
 		else if( this.format == "grid" ) {
 			var frameW = this.data.width;
 			var frameH = this.data.height;
-			var texW = this.img.width;
+			var texW = this.img ? this.img.width : this.data.imgWidth;
 			var framesPerRow = Math.floor(texW / frameW);
 			var numRows = Math.floor(this.img.height / frameH);
 			return numRows * framesPerRow;
