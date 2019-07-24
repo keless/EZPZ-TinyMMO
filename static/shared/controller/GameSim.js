@@ -58,6 +58,7 @@ class GameSim extends CastWorldModel {
         this.pWallRects = this.map.wallRects;
     }
 
+    /*
     handlePlayerImpulse(playerID, data) {
         if (!data.charID) {
             this._log("error: cant apply impulse without charID")
@@ -92,7 +93,7 @@ class GameSim extends CastWorldModel {
 
         //xxx todo: check if character can accept (if dead dont move, etc)
         character.vel = dir.getUnitized().scalarMult(speed)
-    }
+    }*/
 
     updateStep(ct, dt) {
         this.updateTimes.push(Date.now())

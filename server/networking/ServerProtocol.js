@@ -112,9 +112,9 @@ class SocketClient {
         this._logVerbose("got player impulse")
         this._logVerbose(data)
 
-        //xxx todo: apply this to next gameSim step
-        var gameSim = GameSim.instance
-        gameSim.handlePlayerImpulse(this.clientID, data)
+        var gameController = ServerGameController.instance
+        data.ownerID = this.clientID
+        gameController.queuePlayerImpulse(data)
 
         response({})
     }

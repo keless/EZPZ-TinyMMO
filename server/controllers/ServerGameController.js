@@ -2,6 +2,7 @@ import fs from 'fs'
 import {Game} from '../models/linvoGame.js'
 //import {EntityModel, EntitySchema} from '../../static/shared/model/EntityModel.js'
 import { isArray } from '../../static/shared/EZPZ/Utility.js'
+import { Vec2D, Rect2D } from '../../static/shared/EZPZ/Vec2D.js'
 import GameSim from '../../static/shared/controller/GameSim.js'
 import { CastCommandTime } from '../../static/shared/EZPZ/castengine/CastWorldModel.js'
 import ServerProtocol from '../networking/ServerProtocol.js';
@@ -23,6 +24,8 @@ class ServerGameController {
 
         this.gameDB = null
         this.gameSim = GameSim.instance
+
+        this.pendingPlayerInputs = []
     }
 
     static get instance() {
@@ -126,9 +129,19 @@ class ServerGameController {
         // perform update ticks
         var updatePeriodS = this.updateFreqMS / 1000.0
         for (var i=0; i<numLoopsToPerform; i++) {
-            CastCommandTime.UpdateDelta(updatePeriodS)
-            //update game timer
-            this.gameSim.updateStep(CastCommandTime.Get(), updatePeriodS)
+            // update game timer
+            var ct = CastCommandTime.UpdateDelta(updatePeriodS)
+            
+            // apply pending user inputs
+            while (this.pendingPlayerInputs.length > 0 && this.pendingPlayerInputs[0].gameTime <= ct) {
+                var impulseData = this.pendingPlayerInputs.shift()
+                this._applyPlayerImpulse(impulseData)
+                var inputDT = ct - impulseData.gameTime
+                this._log(`player input process lag ${inputDT.toFixed(2)}ms`)
+            }
+
+            // run simulation tick
+            this.gameSim.updateStep(ct, updatePeriodS)
         }
 
         this.lastUpdateMS = currentTimeMS
@@ -145,6 +158,59 @@ class ServerGameController {
                 this.update()
             }, timerPeriodMS);
         }
+    }
+
+    queuePlayerImpulse(impulseData) {
+        // validate data
+        if (!impulseData.charID || !impulseData.ownerID || !impulseData.gameTime) {
+            this._log("error: cant apply impulse, missing required field")
+            return
+        }
+        if (!impulseData.hasOwnProperty("speed")) {
+            impulseData.speed = 200 //xxx todo: get default from char?
+        }
+        if (!impulseData.hasOwnProperty("vecDir")) {
+            impulseData.vecDir = { x: 0, y: 0 }
+        } else {
+            if (!impulseData.vecDir.hasOwnProperty("x")) {
+                impulseData.vecDir.x = 0
+            }
+            if (!impulseData.vecDir.hasOwnProperty("y")) {
+                impulseData.vecDir.y = 0
+            }
+        }
+
+        var ct = CastCommandTime.Get()
+        if (impulseData.gameTime < ct) {
+            this._log(`rcvd input from ${impulseData.gameTime.toFixed(2)}ms at ${ct.toFixed(2)}ms`)
+        } else {
+            this._log(`rcvd input from user in time to apply to simulation correctly`)
+        }
+
+        // add to queue; this will be processed in updateTick
+        this.pendingPlayerInputs.push(impulseData)
+        // keep pendingPlayerInputs sorted by impulseData.gameTime (first element should be oldest gameTime)
+        //xxx todo: test that sort is happening in the correct direction
+        this.pendingPlayerInputs.sort((a, b)=>{
+            return a.gameTime < b.gameTime
+        })
+    }
+
+    _applyPlayerImpulse(impulseData) {
+        var character = this.gameSim.getEntityForId(impulseData.charID)
+        if (character.owner != impulseData.ownerID) {
+            this._log("error: cant apply impulse to character from non-owner")
+            return
+        }
+
+        var dir = new Vec2D(impulseData.vecDir.x, impulseData.vecDir.y)
+        var speed = impulseData.speed
+        if (impulseData.hasOwnProperty("facing")) {
+            character.facing = impulseData.facing
+        }
+
+        //xxx todo: check if character can accept (if dead dont move, etc)
+        character.vel = dir.getUnitized().scalarMult(speed)
     }
 }
 
