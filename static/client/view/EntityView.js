@@ -13,23 +13,14 @@ class EntityView extends NodeView
 		
 		this.pEntityModel = entityModel;
 
-		var avatarNode = new NodeView();
-		this.avatarAnim = new FourPoleAnimation();
-
-		var RP = ResourceProvider.instance
-		var json = RP.getJson("gfx/avatars/avatar.anim");
-		this.avatarAnim.LoadFromJson(json);
-		var race = entityModel.race;
-		//this.avatarAnim.QuickAttach("gfx/avatars/" + race + "_", ".sprite");
+		this.avatarNode = new NodeView();
+		this.pEntityModel.getAnimWhenReady((anim)=>{
+			this.avatarNode.setAnim(this.pEntityModel.avatarAnim)
+		})
 		
-		
-		this.avatarAnim.QuickAttach( race + "_", ".sprite", ()=>{
-			this.avatarNode = avatarNode
-		  	this.avatarNode.setAnim(this.avatarAnim)
-		  	this.avatarNode.pixelated = true
-			this.avatarNode.scale = 2
-			this.addChild(avatarNode)
-		});
+		this.avatarNode.pixelated = true
+		this.avatarNode.scale = 2
+		this.addChild(this.avatarNode)
 
 		var name = entityModel.name;
 		var lvl = this.pEntityModel.getProperty("xp_level");
@@ -81,7 +72,7 @@ class EntityView extends NodeView
 	}
 
 	setDirection(ct, dir) {
-		if(this.avatarNode) {
+		if (this.avatarNode) {
 			this.avatarNode.setDirection(ct, dir)
 		}
 	}

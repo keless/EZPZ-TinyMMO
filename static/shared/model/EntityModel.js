@@ -1,5 +1,7 @@
 import ICastEntity from '../EZPZ/castengine/CastEntity.js'
 import CastTarget from '../EZPZ/castengine/CastTarget.js'
+import {ResourceProvider} from '../EZPZ/ResourceProvider.js'
+import {Animation, AnimationInstance, FourPoleAnimation, FourPoleAnimationInstance} from '../EZPZ/Animation.js'
 import Vec2D, { Rect2D } from '../EZPZ/Vec2D.js'
 import EventBus from '../EZPZ/EventBus.js'
 import uuidv4 from '../../shared/EZPZ/ext/uuid.js'
@@ -95,10 +97,32 @@ class EntityModel extends ICastEntity {
 		this.m_lastPassiveUpdate = 0;
 		this.m_passiveAbilities = [];
 
+		this.avatarAnim = new FourPoleAnimation()
+		var RP = ResourceProvider.instance
+		var json = RP.getJson("gfx/avatars/avatar.anim")
+		this.avatarAnim.LoadFromJson(json)
+		this.testIsLoaded = false
+		this.avatarAnim.QuickAttach(this.race + "_", ".sprite", ()=>{
+			this.testIsLoaded = true
+			this.dispatch("animReady")
+		})
+
 		this.pos = new Vec2D();
 		this.vel = new Vec2D();
 		this.bounds = new Rect2D(0,0, 50,50)
 		this.facing = Facing.RIGHT;
+	}
+
+	getAnimWhenReady(fnCB) {
+		if (this.testIsLoaded) {
+			fnCB(this.avatarAnim)
+		}
+		var listener = null
+		listener = function(e) {
+			fnCB(this.avatarAnim)
+			this.removeListener("animReady", this)
+		}
+		this.addListener("animReady", listener)
 	}
 
 	getArea() {

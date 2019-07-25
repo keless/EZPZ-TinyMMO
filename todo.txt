@@ -1,11 +1,13 @@
 
 WIP:
-- sync AnimInstance between client + server  (server will need to load anim.json AND sprite.json files, but not .PNG images)
-- support for de/serializing sub-objects (not just flat properties) of EntityModel when sending world updates
 
+* sync AnimInstance between client + server  (server will need to load anim.json AND sprite.json files, but not .PNG images)
+
+* support for de/serializing sub-objects (not just flat properties) of EntityModel when sending world updates
+* Make model animation states client-server synced
 
 BUGS:
-- turning is glitchy (snaps probably because locally applied impulse is different timing than server's)
+- turning is glitchy (because animations are not synced by model)
 
 TODO:
 

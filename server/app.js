@@ -165,3 +165,7 @@ var dumpUsers = function() {
 
 dumpUsers()
 */
+
+
+//testing https://github.com/microsoft/vscode/issues/77855#issuecomment-514828528
+//works on MacOS: process.kill(process.pid, 'SIGINT')

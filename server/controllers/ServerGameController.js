@@ -10,6 +10,9 @@ import ServerProtocol from '../networking/ServerProtocol.js';
 import {performance} from 'perf_hooks'
 import { EventBus } from '../../static/shared/EZPZ/EventBus.js'
 
+//test
+import {LoadingState} from '../../static/shared/EZPZ/LoadingState.js'
+
 var g_instance = null
 
 class ServerGameController {
@@ -44,6 +47,8 @@ class ServerGameController {
             console.log("xxx sprite loaded on server")
         })
         */
+        this.loadResources()
+
 
 
         this.flagShutdown = false
@@ -122,7 +127,7 @@ class ServerGameController {
         this._log("flushToDB")
 
         var gameSim = this.gameSim
-        if (!gameSim.dirty) {
+        if (!gameSim || !gameSim.dirty) {
             if (cb) { cb(null); }
             return  // no changes to flush
         }
@@ -242,6 +247,98 @@ class ServerGameController {
 
         //xxx todo: check if character can accept (if dead dont move, etc)
         character.vel = dir.getUnitized().scalarMult(speed)
+    }
+
+
+    loadResources() {
+        //xxx todo: share this with client as .json resource instead of duplicating
+        var resources = [
+            "gfx/ui/btn_blue.sprite",
+            "gfx/ui/btn_dark.sprite",
+            "gfx/ui/btn_white.sprite",
+            "gfx/ui/btn_white_sm.sprite",
+            "gfx/items/arm_cloth.sprite",
+            "gfx/items/arm_leather.sprite",
+            "gfx/items/arm_metal.sprite",
+            "gfx/items/icon_book.sprite",
+            "gfx/items/icon_gear.sprite",
+            "gfx/items/icon_grind.sprite",
+            "gfx/items/icon_map.sprite",
+            "gfx/items/icon_rest.sprite",
+            "gfx/items/icon_return.sprite",
+            "gfx/items/icon_stop.sprite",
+            "gfx/items/weap_mace.sprite",
+            "gfx/items/weap_bow.sprite",
+            "gfx/items/weap_axe.sprite",
+            "gfx/items/weap_staff.sprite",
+            "gfx/items/weap_dagger.sprite",
+            "gfx/items/weap_sword.sprite",
+            "gfx/abilities/abilityIcons.sprite",
+            "gfx/items/craft_cloth.sprite",
+            "gfx/items/craft_leather.sprite",
+            "gfx/items/craft_metal.sprite",
+            "gfx/avatars/centaur_idle.sprite",
+            "gfx/avatars/centaur_attack.sprite",
+            "gfx/avatars/dwarf_idle.sprite",
+            "gfx/avatars/dwarf_attack.sprite",
+            "gfx/avatars/elf_idle.sprite",
+            "gfx/avatars/elf_attack.sprite",
+            "gfx/avatars/gnome_idle.sprite",
+            "gfx/avatars/gnome_attack.sprite",
+            "gfx/avatars/goblin_idle.sprite",
+            "gfx/avatars/goblin_attack.sprite",
+            "gfx/avatars/human_idle.sprite",
+            "gfx/avatars/human_attack.sprite",
+            "gfx/avatars/orc_idle.sprite",
+            "gfx/avatars/orc_attack.sprite",
+            "gfx/avatars/avatar.anim",
+            "gfx/avatars/avatars.spb",
+            "gfx/levels/test.json",
+            "gfx/levels/test2.json"
+        ];
+        var RP = ResourceProvider.instance
+        resources.forEach((loadingName)=>{
+            if (loadingName.substr(0, 4) == "fpql") {
+                //Handle fourpoleanimation quickload
+                var params = loadingName.split(":")
+                var fileName = params[1]
+                var baseName = params[2]
+                //console.log("LoadingState - quick load fourpoleanim " + fileName + " " + baseName)
+                RP.loadFourPoleAnimationQuickAttach(fileName, baseName)
+            } else if (loadingName.substr(0, 2) == "ql") {
+                //Handle animation quickload
+                var params = loadingName.split(":")
+                var fileName = params[1]
+                var baseName = params[2]
+                //console.log("LoadingState - quick load animation " + fileName + " " + baseName)
+                RP.loadAnimationQuickAttach(fileName, baseName)
+            } else {
+                //Handle normal extension detection
+                var ext = loadingName.substr(loadingName.lastIndexOf('.') + 1);
+
+                switch (ext) {
+                    case "png":
+                    case "PNG":
+                    case "bmp":
+                    case "BMP":
+                    case "jpg":
+                    case "JPG":
+                        // dont load images on server
+                        break;
+                    case "sprite":
+                        RP.loadSprite(loadingName);
+                        break;
+                    case "spb":
+                        RP.loadSpriteBatch(loadingName);
+                        break;
+                    //case "anim":
+                    //case "json":
+                    default:
+                        RP.loadJson(loadingName);
+                        break;
+                }
+            }
+        })
     }
 }
 
