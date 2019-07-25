@@ -348,6 +348,8 @@ class ServerGameController {
                     case "jpg":
                     case "JPG":
                         // dont load images on server
+                        console.log("WARN: server wont load images")
+                        removeFromArray(resources, loadingName)
                         break;
                     case "sprite":
                         RP.loadSprite(loadingName, (e)=>{

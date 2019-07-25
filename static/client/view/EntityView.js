@@ -14,7 +14,7 @@ class EntityView extends NodeView
 		this.pEntityModel = entityModel;
 
 		var avatarNode = new NodeView();
-		avatarNode.setAnimInstance(this.animInstance)
+		avatarNode.setAnimInstance(this.pEntityModel.animInstance)
 		avatarNode.pixelated = true
 		avatarNode.scale = 2
 		this.addChild(avatarNode)

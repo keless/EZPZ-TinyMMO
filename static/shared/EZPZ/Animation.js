@@ -170,11 +170,10 @@ class FourPoleAnimation extends Animation {
 		}
 
 		var processing = thingsToLoad.length
-
+	
 		thingsToLoad.forEach((thing)=>{
 			RP.getSprite( thing.spriteName, (e)=>{
 				this.AttachSprite( thing.stateName, e.res )
-
 				processing--
 				if (fnOnComplete && processing == 0) {
 					fnOnComplete()

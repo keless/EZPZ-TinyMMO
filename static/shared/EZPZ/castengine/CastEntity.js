@@ -3,7 +3,7 @@ import { CastWorldModel } from './CastWorldModel.js'
 export default class ICastEntity {
 	
 	constructor() { 
-		CastWorldModel.Get().AddEntity(this); 
+		//xxx CastWorldModel.Get().AddEntity(this); 
 	}
 	Destroy() {
 		CastWorldModel.Get().RemoveEntity(this);

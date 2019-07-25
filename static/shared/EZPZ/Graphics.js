@@ -565,7 +565,7 @@ class SpriteBatch {
 
 		sprite._load(spriteJson, ()=>{
 			RP._didLoad(fileName, RP.sprites[fileName]);
-		});
+		}, RP.serverMode);
 
 		//console.log("sb: add sprite from spriteBatch - " + fileName)
 	}

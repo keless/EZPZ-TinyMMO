@@ -1,8 +1,8 @@
-import Service from './Service.js'
-import EventBus from './EventBus.js'
-import { Sprite, SpriteBatch } from './Graphics.js'
-import { getJSON } from './Utility.js'
-import { Animation, AnimationInstance, FourPoleAnimation, FourPoleAnimationInstance } from './Animation.js'
+import { Animation, FourPoleAnimation } from './Animation.js';
+import EventBus from './EventBus.js';
+import { Sprite, SpriteBatch } from './Graphics.js';
+import Service from './Service.js';
+import { getJSON } from './Utility.js';
 
 export default class ResourceProvider {
 	constructor() {
@@ -276,14 +276,13 @@ export default class ResourceProvider {
 		}
 
 		if(this.verbose) console.log("load FourPole quickAttach " + fileName);
-
 		var anim = new FourPoleAnimation()
 		anim.isLoaded = false
 		
 		if(fnOnLoad) RP.eventBus.addListener(resName, fnOnLoad);
 		this._fnLoadJson(this.baseURL + fileName, function(data) {
 			anim.LoadFromJson(data)
-			anim.QuickAttach(baseName, ".sprite", function(){
+			anim.QuickAttach(baseName, ".sprite", function(e){
 				if(RP.verbose) console.log("FourPole quickAttach loaded: " + resName);
 				anim.isLoaded = true
 				RP.numAnimationsQuickLoading--
@@ -348,4 +347,4 @@ export default class ResourceProvider {
 	}
 }
 
-export { ResourceProvider }
+export { ResourceProvider };

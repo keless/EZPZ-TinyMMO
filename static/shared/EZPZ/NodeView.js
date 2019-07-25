@@ -421,6 +421,10 @@ export default class NodeView extends BaseListener {
 			console.error("NodeView: already has an anim, abort!")
 			return
 		}
+		if (!animInstance) {
+			console.error("wat")
+		}
+
 		this.animInstance = animInstance
 		var self = this
 		this.fnCustomDraw.push(function(gfx, x,y, ct){
