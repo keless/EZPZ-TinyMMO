@@ -126,6 +126,9 @@ class EntityModel extends ICastEntity {
 		this.charClass = charClass
 
 		this._loadAnim()
+
+		//xxx todo: reuse initWithSchema instead of duplicating code
+		//this.initWithSchema( { ownerId, name, race, charClass })
 	}
 
 	initWithSchema(schemaModel) {
@@ -148,25 +151,23 @@ class EntityModel extends ICastEntity {
 		}
 	}
 
-	writeToSchema(schemaModel = {}) {
+	toJson() {
+		var json = {}
 		for (var i=0; i<EntityModelAttributes.length; i++) {
-			this._copyAttribute(this, schemaModel, EntityModelAttributes[i])
+			this._copyAttribute(this, json, EntityModelAttributes[i])
 		}
-		schemaModel.pos = { x: this.pos.x, y: this.pos.y }
-		schemaModel.vel = { x: this.vel.x, y: this.vel.y }
+		json.pos = this.pos.toJson()
+		json.vel = this.vel.toJson()
 		//xxx todo: inventory
 		//xxx todo: abilities
 
 		//xxx todo; 
 		//this.avatarAnimInstance
+		json.animInstance = this.animInstance.toJson()
 
-		return schemaModel
-	}
-
-	getWorldUpdateJson() {
-		var json = this.writeToSchema({})
 		return json
 	}
+
 	fromWorldUpdateJson(json) {
 		this.initWithSchema(json)
 		this.eventBus.dispatch("update")
@@ -185,7 +186,10 @@ class EntityModel extends ICastEntity {
 			console.log("entity " + this.name + " moving (" + this.pos.x +","+ this.pos.y+") facing " + this.facing)
 		}*/
 		//xxx todo:
-		this.avatarAnim
+		if (json.animInstance) {
+			this.animInstance.LoadFromJson(json.animInstance)
+		}
+		
 
 		this.eventBus.dispatch("update")
 	}

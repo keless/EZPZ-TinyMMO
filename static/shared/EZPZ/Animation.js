@@ -77,6 +77,28 @@ class AnimationInstance {
 
 		this.pause = false
 	}
+
+	toJson() {
+		var json = {}
+		
+		//json.animation = this.pAnimation.getResName() //just assume its got the correct Animation or FourPoleAnimation instance already
+		json.currAnim = this.currAnim
+
+		json.startTime = this.startTime
+		json.drawFrame = this.drawFrame
+		json.fps = this.fps
+		return json
+	}
+
+	LoadFromJson(json) {
+		this.startTime = json.startTime
+		this.drawFrame = json.drawFrame
+		this.fps = json.fps
+		this.currAnim = json.currAnim
+
+		//infer from above
+		this.drawSprite = this.pAnimation.sprites[ this.currAnim ];
+	}
 	
 	event ( ct, evt ) {
 		var state = this.pAnimation.graph[ this.currAnim ];
@@ -188,6 +210,21 @@ class FourPoleAnimation extends Animation {
 }
 
 class FourPoleAnimationInstance extends AnimationInstance {
+	constructor(animation) {
+		super(animation)
+		this.dir = -1
+	}
+
+	toJson() {
+		var json = super.toJson()
+		json.dir = this.dir
+		return json
+	}
+
+	LoadFromJson(json) {
+		super.LoadFromJson(json)
+		this.dir = json.dir || this.dir
+	}
 
 	setDirection( ct, iDirIndex ) {
 		if (iDirIndex < 0 || iDirIndex > this.pAnimation.directions.length) {
@@ -205,7 +242,7 @@ class FourPoleAnimationInstance extends AnimationInstance {
 	}
 
 	startAnim( ct, animState ) {
-		if (this.dir == undefined) {
+		if (this.dir == -1 || this.dir == undefined) {
 			//grab a direction, any direction
 			this.dir = this.pAnimation.directions[0];
 		}

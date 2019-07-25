@@ -143,7 +143,7 @@ class SocketClient {
         entityIDs.forEach((entityID)=>{
             var entity = gameSim.getEntityForId(entityID)
             if (entity) {
-                entities.push( entity.getWorldUpdateJson() )
+                entities.push( entity.toJson() )
             }
         })
 

@@ -1,12 +1,12 @@
 
 WIP:
 
-* sync AnimInstance between client + server  (server will need to load anim.json AND sprite.json files, but not .PNG images)
-
+* refactor to toJson() LoadFromJson()  instead of crummy "fromSchema" idea
 * support for de/serializing sub-objects (not just flat properties) of EntityModel when sending world updates
 * Make model animation states client-server synced
 
 BUGS:
+- client animation constantly being overwritten now that AnimInstance is synced
 - turning is glitchy (because animations are not synced by model)
 
 TODO:
@@ -24,6 +24,7 @@ TODO:
 * eventually: template based random quest generation
 
 Completed:
+* sync AnimInstance between client + server  (server will need to load anim.json AND sprite.json files, but not .PNG images)
 * move avatarAnim into EntityModel
 * SERVER: adapt ResourceProvider for NodeJS server side (use fs instead of http for .json, and dont use Image().src = url)
 * SERVER: retroactively apply user inputs on server (fix snapping when changing direction)

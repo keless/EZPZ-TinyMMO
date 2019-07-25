@@ -143,8 +143,7 @@ class ServerGameController {
         this.gameDB.entities = []
         gameSim.m_allEntities.forEach((entity)=>{
             this._log("get schema for object")
-            var schemaObject = {}
-            entity.writeToSchema(schemaObject)
+            var schemaObject = entity.toJson()
             this.gameDB.entities.push(schemaObject)
         })
 

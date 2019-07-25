@@ -197,8 +197,7 @@ class GameSim extends CastWorldModel {
         
         var entities = []
         this.m_allEntities.forEach((entity)=>{
-            var entitySchema = {}
-            entities.push( entity.writeToSchema(entitySchema) )
+            entities.push( entity.toJson() )
         })
         updateJson.entities = entities
 

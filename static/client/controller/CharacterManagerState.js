@@ -52,7 +52,7 @@ class CharacterSelectStateView extends BaseStateView {
         var idx = (x+y*rows);
         var json = null //sd.load("char"+idx, null);
         if (idx < playerOwned.length) {
-          json = playerOwned[idx].writeToSchema()
+          json = playerOwned[idx].toJson()
         }
         var text = "<New>";
         var race = "";
