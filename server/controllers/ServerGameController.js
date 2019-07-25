@@ -50,7 +50,6 @@ class ServerGameController {
         this.loadResources()
 
 
-
         this.flagShutdown = false
         this.updateFreqMS = 1000 / 30.0 // 30 fps
         this.lastUpdateMS = performance.now()
@@ -96,11 +95,13 @@ class ServerGameController {
                 this.gameDB = new Game({_id:'gameID'})
             }
 
-            this._initGameSimFromDB()
+            setImmediate(()=>{
+                this._initGameSimFromDB()
 
-            if (fnCompletion) {
-                fnCompletion()
-            }
+                if (fnCompletion) {
+                    fnCompletion()
+                }
+            })
         })
     }
 
@@ -277,24 +278,31 @@ class ServerGameController {
             "gfx/items/craft_cloth.sprite",
             "gfx/items/craft_leather.sprite",
             "gfx/items/craft_metal.sprite",
-            "gfx/avatars/centaur_idle.sprite",
-            "gfx/avatars/centaur_attack.sprite",
-            "gfx/avatars/dwarf_idle.sprite",
-            "gfx/avatars/dwarf_attack.sprite",
-            "gfx/avatars/elf_idle.sprite",
-            "gfx/avatars/elf_attack.sprite",
-            "gfx/avatars/gnome_idle.sprite",
-            "gfx/avatars/gnome_attack.sprite",
-            "gfx/avatars/goblin_idle.sprite",
-            "gfx/avatars/goblin_attack.sprite",
-            "gfx/avatars/human_idle.sprite",
-            "gfx/avatars/human_attack.sprite",
-            "gfx/avatars/orc_idle.sprite",
-            "gfx/avatars/orc_attack.sprite",
+            //"gfx/avatars/centaur_idle.sprite",
+            //"gfx/avatars/centaur_attack.sprite",
+            //"gfx/avatars/dwarf_idle.sprite",
+            //"gfx/avatars/dwarf_attack.sprite",
+            //"gfx/avatars/elf_idle.sprite",
+            //"gfx/avatars/elf_attack.sprite",
+            //"gfx/avatars/gnome_idle.sprite",
+            //"gfx/avatars/gnome_attack.sprite",
+            //"gfx/avatars/goblin_idle.sprite",
+            //"gfx/avatars/goblin_attack.sprite",
+            //"gfx/avatars/human_idle.sprite",
+            //"gfx/avatars/human_attack.sprite",
+            //"gfx/avatars/orc_idle.sprite",
+            //"gfx/avatars/orc_attack.sprite",
             "gfx/avatars/avatar.anim",
             "gfx/avatars/avatars.spb",
             "gfx/levels/test.json",
-            "gfx/levels/test2.json"
+            "gfx/levels/test2.json",
+            "fpql:gfx/avatars/avatar.anim:centaur_",
+			"fpql:gfx/avatars/avatar.anim:dwarf_",
+			"fpql:gfx/avatars/avatar.anim:elf_",
+			"fpql:gfx/avatars/avatar.anim:gnome_",
+			"fpql:gfx/avatars/avatar.anim:goblin_",
+			"fpql:gfx/avatars/avatar.anim:human_",
+			"fpql:gfx/avatars/avatar.anim:orc_"
         ];
         var RP = ResourceProvider.instance
         resources.forEach((loadingName)=>{

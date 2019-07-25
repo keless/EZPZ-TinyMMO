@@ -2,6 +2,7 @@ import Service from './Service.js'
 import EventBus from './EventBus.js'
 import { Sprite, SpriteBatch } from './Graphics.js'
 import { getJSON } from './Utility.js'
+import { Animation, AnimationInstance, FourPoleAnimation, FourPoleAnimationInstance } from './Animation.js'
 
 export default class ResourceProvider {
 	constructor() {
@@ -159,7 +160,7 @@ export default class ResourceProvider {
 		this.numSpritesLoading++;
 	}
 	hasSprite(fileName) {
-		return this.sprites[fileName] != undefined;
+		return this.sprites.hasOwnProperty(fileName)
 	}
 	 
 	getSpriteBatch(fileName, fnOnLoad) {
@@ -252,7 +253,7 @@ export default class ResourceProvider {
 		var resName = fileName + ":" + baseName
 		if(!this.fourPoleAnimations[resName] || !this.fourPoleAnimations[resName].isLoaded)
 		{
-			this.loadAnimationQuickAttach(fileName, baseName, fnOnLoad);
+			this.loadFourPoleAnimationQuickAttach(fileName, baseName, fnOnLoad);
 			return;
 		}
 		

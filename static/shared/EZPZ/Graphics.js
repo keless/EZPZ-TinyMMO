@@ -427,7 +427,11 @@ class Sprite {
 	//called by ResourceProvider
 	_load( dataJson, fnOnLoad, dontLoadImgs ) {
 		var resourceProvider = Service.Get("rp");
-		this.data = dataJson;
+		this.data = dataJson
+		if (!dataJson) {
+			console.log("Wat")
+		}
+
 		this.format = dataJson["format"] || "xywh";
 		
 		var self = this;

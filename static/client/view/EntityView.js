@@ -13,15 +13,13 @@ class EntityView extends NodeView
 		
 		this.pEntityModel = entityModel;
 
-		this.avatarNode = new NodeView();
-		this.pEntityModel.getAnimWhenReady((anim)=>{
-			this.avatarNode.setAnim(this.pEntityModel.avatarAnim)
-		})
+		var avatarNode = new NodeView();
+		avatarNode.setAnim(this.pEntityModel.avatarAnim)
+		avatarNode.pixelated = true
+		avatarNode.scale = 2
+		this.addChild(avatarNode)
+		this.avatarNode = avatarNode
 		
-		this.avatarNode.pixelated = true
-		this.avatarNode.scale = 2
-		this.addChild(this.avatarNode)
-
 		var name = entityModel.name;
 		var lvl = this.pEntityModel.getProperty("xp_level");
 		name += " lvl " + lvl;

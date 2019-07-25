@@ -24,6 +24,7 @@ TODO:
 * eventually: template based random quest generation
 
 Completed:
+* move avatarAnim into EntityModel
 * SERVER: adapt ResourceProvider for NodeJS server side (use fs instead of http for .json, and dont use Image().src = url)
 * SERVER: retroactively apply user inputs on server (fix snapping when changing direction)
 * SERVER: added HTTPS support 

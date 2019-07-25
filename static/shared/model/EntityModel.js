@@ -97,32 +97,12 @@ class EntityModel extends ICastEntity {
 		this.m_lastPassiveUpdate = 0;
 		this.m_passiveAbilities = [];
 
-		this.avatarAnim = new FourPoleAnimation()
-		var RP = ResourceProvider.instance
-		var json = RP.getJson("gfx/avatars/avatar.anim")
-		this.avatarAnim.LoadFromJson(json)
-		this.testIsLoaded = false
-		this.avatarAnim.QuickAttach(this.race + "_", ".sprite", ()=>{
-			this.testIsLoaded = true
-			this.dispatch("animReady")
-		})
+		this.avatarAnim = null
 
 		this.pos = new Vec2D();
 		this.vel = new Vec2D();
 		this.bounds = new Rect2D(0,0, 50,50)
 		this.facing = Facing.RIGHT;
-	}
-
-	getAnimWhenReady(fnCB) {
-		if (this.testIsLoaded) {
-			fnCB(this.avatarAnim)
-		}
-		var listener = null
-		listener = function(e) {
-			fnCB(this.avatarAnim)
-			this.removeListener("animReady", this)
-		}
-		this.addListener("animReady", listener)
 	}
 
 	getArea() {
@@ -132,12 +112,19 @@ class EntityModel extends ICastEntity {
 		return area;
 	}
 
+	_loadAnim() {
+		var RP = ResourceProvider.instance
+		this.avatarAnim = RP.getFourPoleAnimationQuickAttach("gfx/avatars/avatar.anim", this.race + "_")
+	}
+
 	initNewCharacter(ownerId, name, race, charClass) {
 		this.uuid = uuidv4() //xxx todo: generate uuid correctly on client + server
 		this.owner = ownerId
 		this.name = name
 		this.race = race
 		this.charClass = charClass
+
+		this._loadAnim()
 	}
 
 	initWithSchema(schemaModel) {
@@ -152,6 +139,7 @@ class EntityModel extends ICastEntity {
 		}
 		//xxx todo: inventory
 		//xxx todo: abilities
+		this._loadAnim()
 	}
 	_copyAttribute(from, to, attrib) {
 		if (from.hasOwnProperty(attrib)) {
