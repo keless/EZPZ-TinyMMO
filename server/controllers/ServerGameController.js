@@ -1,7 +1,7 @@
 import fs from 'fs'
 import {Game} from '../models/linvoGame.js'
 //import {EntityModel, EntitySchema} from '../../static/shared/model/EntityModel.js'
-import { isArray } from '../../static/shared/EZPZ/Utility.js'
+import { isArray, removeFromArray } from '../../static/shared/EZPZ/Utility.js'
 import { Vec2D, Rect2D } from '../../static/shared/EZPZ/Vec2D.js'
 import GameSim from '../../static/shared/controller/GameSim.js'
 import { ResourceProvider } from '../../static/shared/EZPZ/ResourceProvider.js'
@@ -47,7 +47,7 @@ class ServerGameController {
             console.log("xxx sprite loaded on server")
         })
         */
-        this.loadResources()
+        //this.loadResources()
 
 
         this.flagShutdown = false
@@ -75,6 +75,12 @@ class ServerGameController {
         if (this.verbose) {
             console.log(text)
         }
+    }
+
+    initialize( fnCompletion ) {
+        this.loadResources(()=>{
+            this.startupFromDB(fnCompletion)
+        })
     }
 
     startupFromDB( fnCompletion ) {
@@ -251,7 +257,7 @@ class ServerGameController {
     }
 
 
-    loadResources() {
+    loadResources(fnCB) {
         //xxx todo: share this with client as .json resource instead of duplicating
         var resources = [
             "gfx/ui/btn_blue.sprite",
@@ -312,14 +318,24 @@ class ServerGameController {
                 var fileName = params[1]
                 var baseName = params[2]
                 //console.log("LoadingState - quick load fourpoleanim " + fileName + " " + baseName)
-                RP.loadFourPoleAnimationQuickAttach(fileName, baseName)
+                RP.loadFourPoleAnimationQuickAttach(fileName, baseName, (e)=>{
+                    removeFromArray(resources, loadingName)
+                    if (resources.length == 0) {
+                        fnCB()
+                    }
+                })
             } else if (loadingName.substr(0, 2) == "ql") {
                 //Handle animation quickload
                 var params = loadingName.split(":")
                 var fileName = params[1]
                 var baseName = params[2]
                 //console.log("LoadingState - quick load animation " + fileName + " " + baseName)
-                RP.loadAnimationQuickAttach(fileName, baseName)
+                RP.loadAnimationQuickAttach(fileName, baseName, (e)=>{
+                    removeFromArray(resources, loadingName)
+                    if (resources.length == 0) {
+                        fnCB()
+                    }
+                })
             } else {
                 //Handle normal extension detection
                 var ext = loadingName.substr(loadingName.lastIndexOf('.') + 1);
@@ -334,15 +350,30 @@ class ServerGameController {
                         // dont load images on server
                         break;
                     case "sprite":
-                        RP.loadSprite(loadingName);
+                        RP.loadSprite(loadingName, (e)=>{
+                            removeFromArray(resources, loadingName)
+                            if (resources.length == 0) {
+                                fnCB()
+                            }
+                        });
                         break;
                     case "spb":
-                        RP.loadSpriteBatch(loadingName);
+                        RP.loadSpriteBatch(loadingName, (e)=>{
+                            removeFromArray(resources, loadingName)
+                            if (resources.length == 0) {
+                                fnCB()
+                            }
+                        });
                         break;
                     //case "anim":
                     //case "json":
                     default:
-                        RP.loadJson(loadingName);
+                        RP.loadJson(loadingName, (e)=>{
+                            removeFromArray(resources, loadingName)
+                            if (resources.length == 0) {
+                                fnCB()
+                            }
+                        });
                         break;
                 }
             }

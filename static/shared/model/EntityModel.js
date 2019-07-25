@@ -97,7 +97,7 @@ class EntityModel extends ICastEntity {
 		this.m_lastPassiveUpdate = 0;
 		this.m_passiveAbilities = [];
 
-		this.avatarAnim = null
+		this.animInstance = null
 
 		this.pos = new Vec2D();
 		this.vel = new Vec2D();
@@ -114,7 +114,8 @@ class EntityModel extends ICastEntity {
 
 	_loadAnim() {
 		var RP = ResourceProvider.instance
-		this.avatarAnim = RP.getFourPoleAnimationQuickAttach("gfx/avatars/avatar.anim", this.race + "_")
+		var avatarAnim = RP.getFourPoleAnimationQuickAttach("gfx/avatars/avatar.anim", this.race + "_")
+		this.animInstance = avatarAnim.CreateInstance()
 	}
 
 	initNewCharacter(ownerId, name, race, charClass) {
@@ -156,6 +157,9 @@ class EntityModel extends ICastEntity {
 		//xxx todo: inventory
 		//xxx todo: abilities
 
+		//xxx todo; 
+		//this.avatarAnimInstance
+
 		return schemaModel
 	}
 
@@ -169,8 +173,7 @@ class EntityModel extends ICastEntity {
 	}
 
 	updateFromJson(json) {
-		//xxx todo; 
-		//console.log("TODO: update entity from json")
+		//console.log("update entity from json")
 		this._updateVecFromPartial(this.pos, json.pos)
 		this._updateVecFromPartial(this.vel, json.vel)
 		if (json.hasOwnProperty("facing") ) {
@@ -181,6 +184,8 @@ class EntityModel extends ICastEntity {
 		if ( this.verbose && (this.vel.getMagSq() > 0)) {
 			console.log("entity " + this.name + " moving (" + this.pos.x +","+ this.pos.y+") facing " + this.facing)
 		}*/
+		//xxx todo:
+		this.avatarAnim
 
 		this.eventBus.dispatch("update")
 	}

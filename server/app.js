@@ -121,7 +121,7 @@ var protocol = new ServerProtocol(io)
 import ServerGameController from './controllers/ServerGameController.js'
 var gameSimDatabaseConnector = ServerGameController.instance
 
-gameSimDatabaseConnector.startupFromDB((err)=>{
+gameSimDatabaseConnector.initialize((err)=>{
   if (err) {
     console.log("ERROR - could not start gameworld from database, abort starting server")
     return

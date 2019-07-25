@@ -191,9 +191,9 @@ export default class NodeView extends BaseListener {
 
 	Destroy() {
     
-    if(this.textInput) {
-      this.textInput.destroy();
-    }
+		if(this.textInput) {
+			this.textInput.destroy();
+		}
     
 		//override me to clean up
 		for(var child of this.children) {
@@ -406,17 +406,29 @@ export default class NodeView extends BaseListener {
 			console.warn("NodeView - cannot serialize setAnim")
 		}
 		if(this.animInstance) {
-			console.error("NodeView: already has an anim, abort!");
-			return;			
+			console.error("NodeView: already has an anim, abort!")
+			return
 		}
-		this.animInstance = anim.CreateInstance();
-		var self = this;
+		var animInstance = anim.CreateInstance()
+		this.setAnimInstance( animInstance )
+	}
+
+	setAnimInstance( animInstance ) {
+		if (this.serializable) {
+			console.warn("NodeView - cannot serialize setAnim")
+		}
+		if(this.animInstance) {
+			console.error("NodeView: already has an anim, abort!")
+			return
+		}
+		this.animInstance = animInstance
+		var self = this
 		this.fnCustomDraw.push(function(gfx, x,y, ct){
 			if(self.alpha != 1.0) gfx.setAlpha(self.alpha);
 			self.animInstance.Update(ct);
 			self.animInstance.Draw(gfx, x, y, self.hFlip);
 			if(self.alpha != 1.0) gfx.setAlpha(1.0);
-		});
+		})
 
 		//thin wrappers for AnimationInstance
 		this.animEvent = function(ct, evt) {
