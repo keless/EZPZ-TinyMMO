@@ -209,10 +209,10 @@ class GameSim extends CastWorldModel {
         //2) else create new from json
         var entity = this.getEntityForId(entityJson.uuid)
         if (entity) {
-            entity.updateFromJson(entityJson)
+            entity.LoadFromJson(entityJson)
         } else {
             entity = new EntityModel()
-            entity.fromWorldUpdateJson(entityJson)
+            entity.LoadFromJson(entityJson)
             this.AddEntity(entity)
             console.log("GameSim: update with new entity " + entity.owner +":"+ entity.uuid )
         }

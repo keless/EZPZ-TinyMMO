@@ -130,7 +130,7 @@ class AnimationInstance {
 	}
 	
 	Update( ct ) {
-		if (this.pause) return
+		if (this.pause || !this.drawSprite) return
 
 		//var state = this.graph[ this.currAnim ];
 		var sprite = this.drawSprite;
@@ -151,7 +151,9 @@ class AnimationInstance {
 	}
 	
 	Draw(gfx, x, y, hFlip) {
-		this.drawSprite.drawFrame(gfx, x,y, this.drawFrame, hFlip);
+		if (this.drawSprite) {
+			this.drawSprite.drawFrame(gfx, x,y, this.drawFrame, hFlip);
+		}
 	}
 	
 	getCurrentSprite() {

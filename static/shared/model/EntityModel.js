@@ -112,45 +112,36 @@ class EntityModel extends ICastEntity {
 		return area;
 	}
 
-	_loadAnim() {
-		var RP = ResourceProvider.instance
-		var avatarAnim = RP.getFourPoleAnimationQuickAttach("gfx/avatars/avatar.anim", this.race + "_")
-		this.animInstance = avatarAnim.CreateInstance()
+	_loadAnimIfNecessary() {
+		if (!this.animInstance) {
+			var RP = ResourceProvider.instance
+			var avatarAnim = RP.getFourPoleAnimationQuickAttach("gfx/avatars/avatar.anim", this.race + "_")
+			this.animInstance = avatarAnim.CreateInstance()
+		}
 	}
 
 	initNewCharacter(ownerId, name, race, charClass) {
 		this.uuid = uuidv4() //xxx todo: generate uuid correctly on client + server
-		this.owner = ownerId
-		this.name = name
-		this.race = race
-		this.charClass = charClass
-
-		this._loadAnim()
-
-		//xxx todo: reuse initWithSchema instead of duplicating code
-		//this.initWithSchema( { ownerId, name, race, charClass })
+		this.LoadFromJson( { ownerId:ownerId, name:name, race:race, charClass:charClass })
 	}
 
-	initWithSchema(schemaModel) {
-		for (var i=0; i<EntityModelAttributes.length; i++) {
-			this._copyAttribute(schemaModel, this, EntityModelAttributes[i])
-		}
-		if (schemaModel.pos) {
-			this.pos.setVal( schemaModel.pos.x, schemaModel.pos.y)
-		}
-		if (schemaModel.vel) {
-			this.vel.setVal( schemaModel.vel.x, schemaModel.vel.y)
-		}
-		//xxx todo: inventory
-		//xxx todo: abilities
-		this._loadAnim()
-	}
+	// serialization utilities
 	_copyAttribute(from, to, attrib) {
 		if (from.hasOwnProperty(attrib)) {
 			to[attrib] = from[attrib]
 		}
 	}
+	_updateVecFromPartial(vec, json) {
+		if (!json) { return }
+		if (json.hasOwnProperty('x')) {
+			vec.x = json.x
+		}
+		if (json.hasOwnProperty('y')) {
+			vec.y = json.y
+		}
+	}
 
+	// serialization methods
 	toJson() {
 		var json = {}
 		for (var i=0; i<EntityModelAttributes.length; i++) {
@@ -161,48 +152,29 @@ class EntityModel extends ICastEntity {
 		//xxx todo: inventory
 		//xxx todo: abilities
 
-		//xxx todo; 
-		//this.avatarAnimInstance
 		json.animInstance = this.animInstance.toJson()
 
 		return json
 	}
 
-	fromWorldUpdateJson(json) {
-		this.initWithSchema(json)
-		this.eventBus.dispatch("update")
-	}
-
-	updateFromJson(json) {
-		//console.log("update entity from json")
+	LoadFromJson(json) {
+		for (var i=0; i<EntityModelAttributes.length; i++) {
+			this._copyAttribute(json, this, EntityModelAttributes[i])
+		}
 		this._updateVecFromPartial(this.pos, json.pos)
 		this._updateVecFromPartial(this.vel, json.vel)
-		if (json.hasOwnProperty("facing") ) {
-			this.facing = json.facing
-		}
 
-		/*
-		if ( this.verbose && (this.vel.getMagSq() > 0)) {
-			console.log("entity " + this.name + " moving (" + this.pos.x +","+ this.pos.y+") facing " + this.facing)
-		}*/
-		//xxx todo:
+		//xxx todo: inventory
+		//xxx todo: abilities
+		this._loadAnimIfNecessary()
 		if (json.animInstance) {
 			this.animInstance.LoadFromJson(json.animInstance)
 		}
-		
 
 		this.eventBus.dispatch("update")
 	}
 
-	_updateVecFromPartial(vec, json) {
-		if (!json) { return }
-		if (json.hasOwnProperty('x')) {
-			vec.x = json.x
-		}
-		if (json.hasOwnProperty('y')) {
-			vec.y = json.y
-		}
-	}
+
 
 	/*
 	initWithJson(json) {
