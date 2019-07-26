@@ -98,7 +98,7 @@ class SocketClient {
         } else {
             //delete
             this._log("deleted character " + charId)
-            gameSim.removeEntitiesById([charId])
+            gameSim.RemoveEntitiesById([charId])
             response({entitiesRemoved:[charId]})
 
             ServerGameController.instance.flushToDB()

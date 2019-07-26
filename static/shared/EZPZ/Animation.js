@@ -83,20 +83,20 @@ class AnimationInstance {
 		
 		//json.animation = this.pAnimation.getResName() //just assume its got the correct Animation or FourPoleAnimation instance already
 		json.currAnim = this.currAnim
-
 		json.startTime = this.startTime
-		json.drawFrame = this.drawFrame
+		//json.drawFrame = this.drawFrame
 		json.fps = this.fps
 		return json
 	}
 
 	LoadFromJson(json) {
-		this.startTime = json.startTime
-		this.drawFrame = json.drawFrame
-		this.fps = json.fps
-		this.currAnim = json.currAnim
+		if (json.startTime != this.startTime || json.currAnim != this.currAnim) {
+			this.startAnim(json.startTime, json.currAnim)
+			this.fps = json.fps
+		}
+	}
 
-		//infer from above
+	_updateDrawSprite() {
 		this.drawSprite = this.pAnimation.sprites[ this.currAnim ];
 	}
 	
@@ -224,8 +224,8 @@ class FourPoleAnimationInstance extends AnimationInstance {
 	}
 
 	LoadFromJson(json) {
-		super.LoadFromJson(json)
 		this.dir = json.dir || this.dir
+		super.LoadFromJson(json)
 	}
 
 	setDirection( ct, iDirIndex ) {
@@ -255,6 +255,18 @@ class FourPoleAnimationInstance extends AnimationInstance {
 		
 		this.drawFrame = 0;
 
+		this._updateDrawSprite()
+
+		var state = this.pAnimation.graph[ this.currAnim ];
+		this.fps = state.fps || this.drawSprite.getFPS();
+
+		if(!this.drawSprite) {
+			console.warn("no sprite for startAnim("+animState+")");
+		}
+	}
+
+	// @override
+	_updateDrawSprite() {
 		if (this.pAnimation.sprites[ this.currAnim + this.dir ]) {
 			//console.log("start anim " + animState + this.dir )
 			// check if sprite has direction
@@ -263,13 +275,6 @@ class FourPoleAnimationInstance extends AnimationInstance {
 			// fall back to a sprite without direction
 			this.drawSprite = this.pAnimation.sprites[ this.currAnim ];
 			//console.log("fall back to non-directional for " + this.currAnim + " sprite " + this.drawSprite.path)
-		}
-
-		var state = this.pAnimation.graph[ this.currAnim ];
-		this.fps = state.fps || this.drawSprite.getFPS();
-
-		if(!this.drawSprite) {
-			console.warn("no sprite for startAnim("+animState+")");
 		}
 	}
 }

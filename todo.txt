@@ -1,11 +1,8 @@
 
 WIP:
-* support for de/serializing sub-objects (not just flat properties) of EntityModel when sending world updates
 * Make model animation states client-server synced
 
 BUGS:
-- character creation broken
-- client animation constantly being overwritten now that AnimInstance is synced (dont sync current frame, only startTime, and which anim?)
 - turning is glitchy (because animations are not synced by model)
 
 TODO:
@@ -23,6 +20,7 @@ TODO:
 * eventually: template based random quest generation
 
 Completed:
+- FIXED: character creation broken
 * refactor to toJson() LoadFromJson()  instead of crummy "fromSchema" idea
 * sync AnimInstance between client + server  (server will need to load anim.json AND sprite.json files, but not .PNG images)
 * move avatarAnim into EntityModel

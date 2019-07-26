@@ -243,7 +243,7 @@ class GameSim extends CastWorldModel {
     }
 
     getEntityForName(name) {
-        return this.m_allEntities.values().find((entity)=>{
+        return Array.from(this.m_allEntities.values()).find((entity)=>{
             return entity.name == name
         })
     }

@@ -122,7 +122,7 @@ class EntityModel extends ICastEntity {
 
 	initNewCharacter(ownerId, name, race, charClass) {
 		this.uuid = uuidv4() //xxx todo: generate uuid correctly on client + server
-		this.LoadFromJson( { ownerId:ownerId, name:name, race:race, charClass:charClass })
+		this.LoadFromJson( { owner:ownerId, name:name, race:race, charClass:charClass })
 	}
 
 	// serialization utilities
@@ -334,6 +334,10 @@ class EntityModel extends ICastEntity {
 	}
 	
 	Update(ct, dt) {
+		if (this.animInstance) {
+			this.animInstance.Update(ct)
+		}
+
 		if(ct > this.m_lastPassiveUpdate + this.m_passiveUpdatePeriod) {
 			this.m_lastPassiveUpdate += this.m_passiveUpdatePeriod;
 			for( var a of this.m_passiveAbilities ) {

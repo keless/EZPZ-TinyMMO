@@ -409,6 +409,7 @@ export default class NodeView extends BaseListener {
 			console.error("NodeView: already has an anim, abort!")
 			return
 		}
+		this._ownsAnimInstance = true
 		var animInstance = anim.CreateInstance()
 		this.setAnimInstance( animInstance )
 	}
@@ -424,12 +425,17 @@ export default class NodeView extends BaseListener {
 		if (!animInstance) {
 			console.error("wat")
 		}
+		if (!this._ownsAnimInstance) {
+			this._ownsAnimInstance = false
+		}
 
 		this.animInstance = animInstance
 		var self = this
 		this.fnCustomDraw.push(function(gfx, x,y, ct){
 			if(self.alpha != 1.0) gfx.setAlpha(self.alpha);
-			self.animInstance.Update(ct);
+			if (self._ownsAnimInstance) {
+				self.animInstance.Update(ct); // Only update the animInstance if NodeView owns it
+			}
 			self.animInstance.Draw(gfx, x, y, self.hFlip);
 			if(self.alpha != 1.0) gfx.setAlpha(1.0);
 		})

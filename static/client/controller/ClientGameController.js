@@ -28,7 +28,7 @@ class ClientGameController {
   }
 
   removeEntitiesById(entityIDs) {
-    this.gameSim.removeEntitiesById(entityIDs)
+    this.gameSim.RemoveEntitiesById(entityIDs)
   }
 
   getEntitiesForCurrentPlayer() {
