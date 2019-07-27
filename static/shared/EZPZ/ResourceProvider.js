@@ -230,7 +230,6 @@ export default class ResourceProvider {
 		}
 
 		if(this.verbose) console.log("load animation quickAttach " + fileName);
-
 		var anim = new Animation()
 		anim.isLoaded = false
 		
@@ -281,6 +280,9 @@ export default class ResourceProvider {
 		
 		if(fnOnLoad) RP.eventBus.addListener(resName, fnOnLoad);
 		this._fnLoadJson(this.baseURL + fileName, function(data) {
+			if(!data) {
+				console.error("couldnt get " + (this.baseURL + fileName))
+			}
 			anim.LoadFromJson(data)
 			anim.QuickAttach(baseName, ".sprite", function(e){
 				if(RP.verbose) console.log("FourPole quickAttach loaded: " + resName);

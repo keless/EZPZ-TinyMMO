@@ -32,7 +32,7 @@ class LoadingView extends BaseStateView {
 		
 		this.verbose = false;
 
-		this._loadNext( 5 );
+		this._loadNext( 2 );
 	}
 	
 	_loadNext( stride ) {
@@ -50,9 +50,8 @@ class LoadingView extends BaseStateView {
 			return;
 		}
 		
-		var currLoading = this.resToLoad[0];
+		var currLoading = this.resToLoad.shift()
 		this.loadingName = currLoading;
-		this.resToLoad.splice(0,1); //remove from front
 		var self = this;
 		
 		if (this.loadingName.substr(0,4) == "fpql") {
@@ -62,6 +61,7 @@ class LoadingView extends BaseStateView {
 			var baseName = params[2]
 			console.log("LoadingState - quick load fourpoleanim " + fileName + " " + baseName)
 			RP.loadFourPoleAnimationQuickAttach(fileName, baseName, function(e){
+				console.log(" got fourpoleanim " + fileName + " " + baseName)
 				self.resLoaded.push(currLoading);
 				self._loadNext( 1 ); //recursion inside of anonymous function, yay!
 			})

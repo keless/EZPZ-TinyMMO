@@ -28,6 +28,7 @@ class ImpulseController {
 
     setFacing( val ) {
         this.facing = val
+        this._sendUpdateToServer()
     }
     // Fix facing bug - testing steps:
     //  press+hold right, 

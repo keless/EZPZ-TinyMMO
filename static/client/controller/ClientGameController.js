@@ -85,6 +85,7 @@ class ClientGameController {
     // 1) store delta of  gameTime - worldUpdate.gameTime
     var ct = CastCommandTime.Get()
     var dt = currentGameTime - worldUpdateJson.gameTime
+    console.log(`server behind by ${dt.toFixed(4)}`)
 
     // 2 & 3) set clock backwards to worldUpdate.gameTime, and apply like a normal world update
     this._catchUpToServerWorldUpdate(worldUpdateJson)

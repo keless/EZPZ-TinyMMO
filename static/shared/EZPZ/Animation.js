@@ -91,6 +91,7 @@ class AnimationInstance {
 
 	LoadFromJson(json) {
 		if (json.startTime != this.startTime || json.currAnim != this.currAnim) {
+			//console.log(`anim ${json.currAnim} ${json.startTime.toFixed(2)}`)
 			this.startAnim(json.startTime, json.currAnim)
 			this.fps = json.fps
 		}
@@ -138,6 +139,13 @@ class AnimationInstance {
 		var animLengthS = numFrames / this.fps;
 		var dt = ct - this.startTime;
 		
+		if (dt < 0) {
+			// animInstance is stored in DB, but when restarting server ct starts over at 0
+			//  so, this should only happen on server start; lets 'fix' it by ignoring it
+			dt = 0 
+			//console.log(`-dt ct${ct.toFixed(2)} st${this.startTime.toFixed(2)}`)
+		}
+
 		if(dt > animLengthS) {
 			//handle end of animation
 			//var endTime = this.startTime + animLengthS;
@@ -146,7 +154,9 @@ class AnimationInstance {
 			return;
 		}
 		else {
+			
 			this.drawFrame = Math.floor((dt / animLengthS) * numFrames);
+			//console.log("anim frame " + this.drawFrame)
 		}
 	}
 	
@@ -189,16 +199,24 @@ class FourPoleAnimation extends Animation {
 			this.directions.forEach((dir)=>{
 				if (RP.hasSprite(baseName + state + dir + extName)) {
 					thingsToLoad.push({ spriteName: (baseName + state + dir + extName), stateName: state + dir })
-				}
+				} 
+				/*else if (dir != "") {
+					console.error("fpql no dir for " + (baseName + state + dir + extName))
+				}*/
 			})
 		}
 
 		var processing = thingsToLoad.length
-	
+		if (processing == 0) {
+			console.error("FPQL with zero things to attach, the anims probably didnt load yet!")
+		}
+		//console.log("fpql load things " + thingsToLoad.length)
+
 		thingsToLoad.forEach((thing)=>{
 			RP.getSprite( thing.spriteName, (e)=>{
 				this.AttachSprite( thing.stateName, e.res )
 				processing--
+				//console.log("fpql got thing " + processing + " more left")
 				if (fnOnComplete && processing == 0) {
 					fnOnComplete()
 				}

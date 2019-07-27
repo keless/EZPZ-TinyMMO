@@ -36,6 +36,8 @@ var game_create = function()
 	stateController.addState("battle", BattleState);
 	
 	var resources = [
+			"gfx/avatars/avatar.anim",
+			"gfx/avatars/avatars.spb",
 			"gfx/ui/btn_blue.sprite",
 			"gfx/ui/btn_dark.sprite",
 			"gfx/ui/btn_white.sprite",
@@ -88,8 +90,6 @@ var game_create = function()
 			//"gfx/avatars/human_attack.sprite",
 			//"gfx/avatars/orc_idle.sprite",
 			//"gfx/avatars/orc_attack.sprite",
-			"gfx/avatars/avatar.anim",
-			"gfx/avatars/avatars.spb",
 			"gfx/levels/test.json",
 			"gfx/levels/test2.json",
 			"gfx/levels/terrain.png",

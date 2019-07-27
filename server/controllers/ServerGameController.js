@@ -223,11 +223,12 @@ class ServerGameController {
         }
 
         var ct = CastCommandTime.Get()
+        /*
         if (impulseData.gameTime < ct) {
             this._log(`rcvd input from ${impulseData.gameTime.toFixed(2)}ms at ${ct.toFixed(2)}ms`)
         } else {
             this._log(`rcvd input from user in time to apply to simulation correctly`)
-        }
+        }*/
 
         // add to queue; this will be processed in updateTick
         this.pendingPlayerInputs.push(impulseData)
@@ -245,14 +246,37 @@ class ServerGameController {
             return
         }
 
+        var facingDidChange = false
+        var wasMoving = character.vel.nonZero()
+
+
         var dir = new Vec2D(impulseData.vecDir.x, impulseData.vecDir.y)
         var speed = impulseData.speed
-        if (impulseData.hasOwnProperty("facing")) {
+        if (impulseData.hasOwnProperty("facing") && character.facing != impulseData.facing) {
             character.facing = impulseData.facing
+            facingDidChange = true
         }
 
         //xxx todo: check if character can accept (if dead dont move, etc)
         character.vel = dir.getUnitized().scalarMult(speed)
+        var isMoving = character.vel.nonZero()
+
+        var ct = impulseData.gameTime
+        if (facingDidChange) {
+            character.animInstance.setDirection(ct, character.facing)
+        }
+
+        if (wasMoving != isMoving) {
+            if (isMoving) {
+                character.animInstance.event(ct, "walk")
+            } else {
+                character.animInstance.event(ct, "idle")
+            }
+        }
+
+        //xxx todo: update animation state
+
+//xxx WIP
     }
 
 

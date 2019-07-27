@@ -55,8 +55,13 @@ export function generateUUID(){
 //fnCallback = function (data)  where data = null on error
 export function getJSON( url, fnCallback ) {
 	var request = new XMLHttpRequest();
-	request.open('GET', url, true);
 	
+  
+  request.ontimeout = function(ev) {
+    console.error("getJSON timed out for " + url)
+    fnCallback(null);
+  }
+
 	request.onload = function() {
 		if ((this.status >= 200 && this.status < 400) || (this.status == 0 && this.response)) {
 			// Success!
@@ -68,13 +73,15 @@ export function getJSON( url, fnCallback ) {
 			fnCallback(null);
 		}
 	};
-	
+  
+  
 	request.onerror = function() {
 		console.error("unable to download " + url + " unable to connect");
 		// There was a connection error of some sort
 		fnCallback(null);
-	};
-	
+  };
+  
+  request.open('GET', url, true);
 	request.send();
 }
 

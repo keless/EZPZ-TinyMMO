@@ -140,6 +140,8 @@ class GameSim extends CastWorldModel {
                     entity.dispatch("update")
                 }
             }
+
+            entity.Update(ct, dt)
         })
         // perform AI
 

@@ -1,25 +1,25 @@
 
 WIP:
-* Make model animation states client-server synced
 
 BUGS:
-- turning is glitchy (because animations are not synced by model)
+- loading state sometimes does not finish (race condition in FPQL probably)
 
 TODO:
-
 * ART: make sure sprites are closer to their borders in the direction they are facing (so it doesnt look like they're too far from walls they run into)
 * implement actions + animations for characters (attack, death, etc)
+* get cast engine working 
 * optimize: do partial catch ups if an incremental update is missed by a client
 * optimize: reduce some of the cruft from login/registration 3rd party stuff (or write our own and dont use it at all)
 
 * eventually: setup HTTP/2 and multi-file push
-* eventually: get cast engine working 
 * eventually: figure out automatic NAT translation / sharing server invites
 * eventually: plug-in content addition system
 * eventually: multiple location instances, only stream updates to clients based on the location they're in (or try seamless?)
 * eventually: template based random quest generation
 
 Completed:
+- FIXED: turning is glitchy (because animations are not synced by model)
+* Make model animation states client-server synced
 - FIXED: character creation broken
 * refactor to toJson() LoadFromJson()  instead of crummy "fromSchema" idea
 * sync AnimInstance between client + server  (server will need to load anim.json AND sprite.json files, but not .PNG images)
