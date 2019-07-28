@@ -67,32 +67,32 @@
     },
 
     "goblin_idleN":{
-      "frames":[4, 5],
+      "frames":[84, 85],
       "fps":2
     },
     "goblin_idleE":{
-      "frames":[2, 3],
+      "frames":[82, 83],
       "fps":2
     },
     "goblin_idleS":{
-      "frames":[0, 1],
+      "frames":[80, 81],
       "fps":2
     },
     "goblin_idleW":{
-      "frames":[6, 7],
+      "frames":[86, 87],
       "fps":2
     },
     "goblin_walkN":{
-      "frames":[4, 5]
+      "frames":[84, 85]
     },
     "goblin_walkE":{
-      "frames":[2, 3]
+      "frames":[82, 83]
     },
     "goblin_walkS":{
-      "frames":[0, 1]
+      "frames":[80, 81]
     },
     "goblin_walkW":{
-      "frames":[6, 7]
+      "frames":[86, 87]
     },
 
    "dwarf_idleN":{
@@ -125,32 +125,32 @@
     },
 
     "gnome_idleN":{
-      "frames":[4, 5],
+      "frames":[68, 69],
       "fps":2
     },
     "gnome_idleE":{
-      "frames":[2, 3],
+      "frames":[66, 67],
       "fps":2
     },
     "gnome_idleS":{
-      "frames":[0, 1],
+      "frames":[64, 65],
       "fps":2
     },
     "gnome_idleW":{
-      "frames":[6, 7],
+      "frames":[70, 71],
       "fps":2
     },
     "gnome_walkN":{
-      "frames":[4, 5]
+      "frames":[68, 69]
     },
     "gnome_walkE":{
-      "frames":[2, 3]
+      "frames":[66, 67]
     },
     "gnome_walkS":{
-      "frames":[0, 1]
+      "frames":[64, 65]
     },
     "gnome_walkW":{
-      "frames":[6, 7]
+      "frames":[70, 71]
     },
 
     "orc_idleN":{
