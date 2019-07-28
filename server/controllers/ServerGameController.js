@@ -178,8 +178,12 @@ class ServerGameController {
             while (this.pendingPlayerInputs.length > 0 && this.pendingPlayerInputs[0].gameTime <= ct) {
                 var impulseData = this.pendingPlayerInputs.shift()
                 this._applyPlayerImpulse(impulseData)
+
+                // calculate lag between when user input happened, and when it was applied by the server to the game state
                 var inputDT = ct - impulseData.gameTime
-                this._log(`player input process lag ${inputDT.toFixed(2)}ms`)
+                if (inputDt > 0.15) {
+                    this._log(`player input process lag ${inputDT.toFixed(2)}ms`)
+                }
             }
 
             // run simulation tick
