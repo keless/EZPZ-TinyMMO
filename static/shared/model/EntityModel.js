@@ -81,10 +81,10 @@ class EntityModel extends ICastEntity {
 		this.str_base = this.str_curr = 10;
 		this.agi_base = this.agi_curr = 10;
 
-		this.negativeEffects = [];
-		this.positiveEffects = [];
-		this.buffs = {};
-		this.debuffs = {};
+		this.negativeEffects = []; //CastEffect
+		this.positiveEffects = []; //CastEffect
+		this.buffs = {}; //CastEffect
+		this.debuffs = {}; //CastEffect
 
 		/* xxx todo
 		this.inventory = new InventoryModel();

@@ -66,7 +66,7 @@ class CastEffect {
 	init(originState, effectIdx, fromEntity, isChannelEffect) {
 		this.m_pParent = originState;
 		this.m_pModel = originState.m_pModel;
-		//TODO: this.m_pModel.retain();
+ 
 		this.m_modelEffectIndex = effectIdx;
 		this.m_isChannelEffect = isChannelEffect;
 		
@@ -316,10 +316,6 @@ class CastEffect {
 
 		if( this.m_pModel == null || this.m_modelEffectIndex < 0 ) return {};
 	
-		if( descriptorName ) {
-			return json[descriptorName] || {};
-		}
-	
 		var json;
 		if( this.m_isChannelEffect ) {
 			json = this.m_pModel.getEffectOnChannel(this.m_modelEffectIndex);
@@ -330,6 +326,10 @@ class CastEffect {
 		if( this.m_isReturnEffect )
 		{
 			json = json["returnEffect"] || {};
+		}
+
+		if( descriptorName ) {
+			return json[descriptorName] || {};
 		}
 	
 		return json;
@@ -358,6 +358,54 @@ class CastEffect {
 		effect.m_name = this.m_name;
 	
 		return effect;
+	}
+
+	toJson() {
+		var effect = {}
+		effect.type = this.m_type;
+		effect.startTime = this.m_startTime;
+		effect.lifeTime = this.m_lifeTime;
+		effect.tickFreq = this.m_tickFreq;
+		effect.damageType = this.m_damageType;
+		effect.targetStat = this.m_targetStat;
+		effect.stackFlag = this.m_stackFlag;
+		effect.numTicksCompleted = this.m_numTicksCompleted;
+		effect.value = this.m_value;
+		effect.modelEffectIndex = this.m_modelEffectIndex;
+		effect.isChannelEffect = this.m_isChannelEffect;
+		effect.isReturnEffect = this.m_isReturnEffect;
+		effect.name = this.m_name;
+
+		effect.pTarget = this.m_pTarget; //xxx audit for serialization
+		effect.pOrigin = this.m_pOrigin; //xxx audit for serialization
+		
+		//xxx WIP - how do we get serialize a reference to the parent CastCommandState here ?
+		effect.pParent = this.m_pParent;//xxx audit for serialization //CastCommandState //xxx WIP 
+		//effect.pModel = this.m_pModel; // dont serialize, pull it off of parent
+	
+		return effect;
+	}
+
+	fromJson(json) {
+		this.m_type = json.type;
+		this.m_startTime = json.startTime;
+		this.m_lifeTime = json.lifeTime;
+		this.m_tickFreq = json.tickFreq;
+		this.m_damageType = json.damageType;
+		this.m_targetStat = json.targetStat;
+		this.m_stackFlag = json.stackFlag;
+		this.m_numTicksCompleted = json.numTicksCompleted;
+		this.m_value = json.value;
+		this.m_modelEffectIndex = json.modelEffectIndex;
+		this.m_isChannelEffect = json.isChannelEffect;
+		this.m_isReturnEffect = json.isReturnEffect;
+		this.m_name = json.name;
+
+		this.m_pTarget = json.pTarget; //xxx audit for serialization  //ICastEntity   ( use getID() )
+		this.m_pOrigin = json.pOrigin; //xxx audit for serialization  //ICastEntity   ( use getID() )
+		
+		this.m_pParent = json.pParent; //xxx audit for serialization  //CastCommandState
+		this.m_pModel = this.m_pParent.m_pModel; //xxx audit for serialization    //CastCommandModel  m_pModel = m_pParent.m_pModel
 	}
 }
 

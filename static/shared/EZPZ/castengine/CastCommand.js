@@ -1,5 +1,4 @@
-import { CastCommandTime } from './CastWorldModel.js'
-
+import { CastCommandTime, CastCommandWorld } from './CastWorldModel.js'
 /*
 CastCommandState
   carries all the stateful information of an INSTANCE of a cast command
@@ -25,12 +24,31 @@ class CastCommandState {
 	static get COOLDOWN() { return 3; }
 
 	constructor(commandModel, entityOwner) {
-		this.m_state = CastCommandState.IDLE; //CCSstate
+		this.m_state = CastCommandState.IDLE; //CCSstate int
 		this.m_timeStart = 0; 							//double
 		this.m_channelTicks = 0; 						//int
 		this.m_costValue = 0
 		this.m_pModel = commandModel; 			//CastCommandModel
 		this.m_iOwner = entityOwner; 				//ICastEntity
+		
+		this.m_costStat = commandModel["costStat"] || ""; //string
+		this.m_costVal = commandModel["costVal"] || 0;		//float
+	}
+
+	toJson() {
+		var json = {}
+		//xxx WIP
+		return json
+	}
+
+	LoadFromJson(json) {
+		this.m_state = json.state //int
+		this.m_timeStart = json.timeStart //xxx audit (timers when restarting server)
+		this.m_channelTicks = json.channelTicks
+		this.m_costValue = json.costValue
+		this.m_pModel = commandModel; 			//CastCommandModel
+		var ownerID = json.iOwnerID 
+		this.m_iOwner = CastCommandWorld.instance.getEntityForId(ownerID)			//ICastEntity
 		
 		this.m_costStat = commandModel["costStat"] || ""; //string
 		this.m_costVal = commandModel["costVal"] || 0;		//float

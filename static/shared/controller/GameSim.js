@@ -35,6 +35,13 @@ class GameSim extends CastWorldModel {
         this.updateTimes = new SlidingWindowBuffer(60)
 
         
+        // SERVER ONLY
+        if (this.isServer) {
+            this.m_allCastCommandModels = new Map() // < abilityName:rank, CastCommandModel >
+            this.m_allCastCommandStates = new Map() // < CastCommandState.getID(), CastCommandState >
+        }
+
+
         Service.Add("gameSim", this)
     }
 
@@ -161,6 +168,30 @@ class GameSim extends CastWorldModel {
         return updatesPerMS * 1000
     }
 
+    // CALL ON SERVER ONLY
+	CreateCastCommandStateForEntity( abilityName, abilityRank, entityModel ) {
+		var key = abilityName + ":" + abilityRank
+		if (!this.m_allCastCommandModels.has(key)) {
+			var castCommandJson = g_abilityCatalog[abilityId].ranks[rank - 1];
+			castCommandJson.abilityId = abilityId;
+
+			if (!castCommandJson) {
+				console.warn("cant find castCommandJson for " + key)
+				return //guard
+			}
+
+			this.m_allCastCommandModels.set(key, new CastCommandModel(castCommandJson))
+		}
+
+
+		var castCommandModel = this.m_allCastCommandModels.get(key)
+        var castCommandState = new CastCommandState(castCommandModel, entityModel);
+
+        this.m_allCastCommandStates.set( entityModel.getID(), castCommandState )  //xxx WIP - better key?
+         
+        return castCommandState
+	}
+
     /// @return entityID if succesful, or null otherwise
     // CALL ON SERVER ONLY
     createCharacterForUser(userId, name, race, charClass) {
@@ -240,9 +271,7 @@ class GameSim extends CastWorldModel {
 
     // Accessor methods
 
-    getEntityForId(entityId) {
-        return this.m_allEntities.get(entityId)
-    }
+    // getEntityForId(entityId) // in CastWorldModel
 
     getEntityForName(name) {
         return Array.from(this.m_allEntities.values()).find((entity)=>{
