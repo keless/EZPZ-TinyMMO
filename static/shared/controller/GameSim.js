@@ -4,9 +4,9 @@ import { arrayContains, SlidingWindowBuffer } from '../EZPZ/Utility.js'
 import {EntityModel, EntitySchema} from '../model/EntityModel.js'
 import { ICastPhysics, CastCommandTime, CastWorldModel } from '../EZPZ/castengine/CastWorldModel.js'
 import { Vec2D, Rect2D } from '../EZPZ/Vec2D.js'
-import TiledMap from '../EZPZ/TiledMap.js';
-import EventBus from '../EZPZ/EventBus.js';
-
+import TiledMap from '../EZPZ/TiledMap.js'
+import EventBus from '../EZPZ/EventBus.js'
+import g_abilityCatalog from '../data/abilities.js'
 
 //xxx TODO: make this shared across client+server
 class GameSim extends CastWorldModel {
@@ -64,43 +64,6 @@ class GameSim extends CastWorldModel {
         this.map.LoadFromJson(json, withoutGraphics)
         this.pWallRects = this.map.wallRects;
     }
-
-    /*
-    handlePlayerImpulse(playerID, data) {
-        if (!data.charID) {
-            this._log("error: cant apply impulse without charID")
-            return 
-        }
-        if(!data.hasOwnProperty("speed")) {
-            data.speed = 200 //xxx get default from char?
-        }
-        if(!data.hasOwnProperty("vecDir")) {
-            data.vecDir = {x:0, y:0}
-        } else {
-            if (!data.vecDir.hasOwnProperty("x")) {
-                data.vecDir.x = 0
-            }
-            if (!data.vecDir.hasOwnProperty("y")) {
-                data.vecDir.y = 0
-            }
-        }
-
-        //xxx TODO: handle time offset
-        var character = this.getEntityForId(data.charID)
-        if (character.owner != playerID) {
-            this._log("error: cant apply impulse to character from non-owner")
-            return
-        }
-
-        var dir = new Vec2D(data.vecDir.x, data.vecDir.y)
-        var speed = data.speed
-        if (data.hasOwnProperty("facing")) {
-            character.facing = data.facing
-        }
-
-        //xxx todo: check if character can accept (if dead dont move, etc)
-        character.vel = dir.getUnitized().scalarMult(speed)
-    }*/
 
     updateStep(ct, dt) {
         this.updateTimes.push(Date.now())
@@ -183,12 +146,14 @@ class GameSim extends CastWorldModel {
 			this.m_allCastCommandModels.set(key, new CastCommandModel(castCommandJson))
 		}
 
-
 		var castCommandModel = this.m_allCastCommandModels.get(key)
         var castCommandState = new CastCommandState(castCommandModel, entityModel);
 
-        this.m_allCastCommandStates.set( entityModel.getID(), castCommandState )  //xxx WIP - better key?
+        //xxx WIP - better key?
+        this.m_allCastCommandStates.set( entityModel.getID() + ":" + key , castCommandState )  
          
+        entityModel.addAbility(castCommandState)
+
         return castCommandState
 	}
 
@@ -205,12 +170,17 @@ class GameSim extends CastWorldModel {
         //xxx todo: validate params
         entity.initNewCharacter(userId, name, race, charClass)
 
+  
+
         //choose initial position from spawn points
         var spawnBlob = this.map.GetRandomSpawn() 
         entity.pos.setVal(spawnBlob.x, spawnBlob.y)
 
 
         this.AddEntity(entity)
+
+        //test: add cast command
+        this.CreateCastCommandStateForEntity("attack1", 1, entity)
 
         this.setDirty()
 

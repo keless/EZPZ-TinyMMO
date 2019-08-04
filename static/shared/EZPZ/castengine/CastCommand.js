@@ -1,4 +1,4 @@
-import { CastCommandTime, CastCommandWorld } from './CastWorldModel.js'
+import { CastCommandTime, CastWorldModel } from './CastWorldModel.js'
 /*
 CastCommandState
   carries all the stateful information of an INSTANCE of a cast command
@@ -48,7 +48,7 @@ class CastCommandState {
 		this.m_costValue = json.costValue
 		this.m_pModel = commandModel; 			//CastCommandModel
 		var ownerID = json.iOwnerID 
-		this.m_iOwner = CastCommandWorld.instance.getEntityForId(ownerID)			//ICastEntity
+		this.m_iOwner = CastWorldModel.Get().getEntityForId(ownerID)			//ICastEntity
 		
 		this.m_costStat = commandModel["costStat"] || ""; //string
 		this.m_costVal = commandModel["costVal"] || 0;		//float

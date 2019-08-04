@@ -253,7 +253,6 @@ class ServerGameController {
         var facingDidChange = false
         var wasMoving = character.vel.nonZero()
 
-
         var dir = new Vec2D(impulseData.vecDir.x, impulseData.vecDir.y)
         var speed = impulseData.speed
         if (impulseData.hasOwnProperty("facing") && character.facing != impulseData.facing) {
@@ -270,6 +269,7 @@ class ServerGameController {
             character.animInstance.setDirection(ct, character.facing)
         }
 
+        // Update animation state
         if (wasMoving != isMoving) {
             if (isMoving) {
                 character.animInstance.event(ct, "walk")
@@ -277,12 +277,7 @@ class ServerGameController {
                 character.animInstance.event(ct, "idle")
             }
         }
-
-        //xxx todo: update animation state
-
-//xxx WIP
     }
-
 
     loadResources(fnCB) {
         //xxx todo: share this with client as .json resource instead of duplicating

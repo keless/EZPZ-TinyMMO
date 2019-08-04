@@ -174,8 +174,6 @@ class EntityModel extends ICastEntity {
 		this.eventBus.dispatch("update")
 	}
 
-
-
 	/*
 	initWithJson(json) {
 		this.uuid = json["uuid"] || "none"
