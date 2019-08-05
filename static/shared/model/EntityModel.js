@@ -152,6 +152,12 @@ class EntityModel extends ICastEntity {
 		//xxx todo: inventory
 		//xxx todo: abilities
 
+		json.pAbilities = []
+		this.m_passiveAbilities.forEach((ability)=>{
+			json.pAbilities.push( ability.getID() )  //name:rank
+		})
+		json.aAbilities = []
+
 		json.animInstance = this.animInstance.toJson()
 
 		return json

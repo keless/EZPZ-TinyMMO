@@ -324,7 +324,7 @@ export default class BattleStateView extends BaseStateView {
 		*/
 	}
 
-	/*
+	
 	onPlayerModelUpdate(e) {
 		this._updateAllAbilities();
   }
@@ -365,7 +365,7 @@ export default class BattleStateView extends BaseStateView {
 			this.abilityViews.push(av);
 		}
 	}
-	*/
+	
 
 	onEntitySpawned(e) {
 		//xxx TODO: dont recreate ALL views just to add a new one

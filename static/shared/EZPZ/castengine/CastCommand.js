@@ -326,10 +326,11 @@ class CastCommandState {
 */
 
 class CastCommandModel {
-	constructor(jsonCastData) {
+	constructor(jsonCastData, rank = 1) {
 		var descriptor = jsonCastData;
 
 		this.name = descriptor["name"] || "effectName"; //string
+		this.rank = rank //int
 		
 		//base values, unmodified by buff/debufs (which happens at time of cast)
 		this.castTime = descriptor["castTime"] || 0.0; //float - zero if instant
@@ -387,6 +388,10 @@ class CastCommandModel {
 	//string
 	getName() {
 		return this.name;
+	}
+
+	getID() {
+		return this.name + ":" + this.rank
 	}
 
 }

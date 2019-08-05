@@ -179,7 +179,7 @@ class GameSim extends CastWorldModel {
 
         this.AddEntity(entity)
 
-        //test: add cast command
+        //xxx WIP test: add cast command
         this.CreateCastCommandStateForEntity("attack1", 1, entity)
 
         this.setDirty()
