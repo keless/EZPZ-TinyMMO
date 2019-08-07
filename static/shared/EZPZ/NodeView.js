@@ -4,6 +4,7 @@ import {Vec2D, Rect2D} from './Vec2D.js'
 import {Service} from './Service.js'
 import {ResourceProvider} from './ResourceProvider.js'
 import {isString} from './Utility.js'
+import {EventBus} from './EventBus.js'
 
 //scene node heirarchy of sprites/animations
 export default class NodeView extends BaseListener {

@@ -3,10 +3,11 @@ import {Service} from '../EZPZ/Service.js'
 import { arrayContains, SlidingWindowBuffer } from '../EZPZ/Utility.js'
 import {EntityModel, EntitySchema} from '../model/EntityModel.js'
 import { ICastPhysics, CastCommandTime, CastWorldModel } from '../EZPZ/castengine/CastWorldModel.js'
+import { CastCommandModel, CastCommandState } from '../EZPZ/castengine/CastCommand.js'
 import { Vec2D, Rect2D } from '../EZPZ/Vec2D.js'
 import TiledMap from '../EZPZ/TiledMap.js'
 import EventBus from '../EZPZ/EventBus.js'
-import g_abilityCatalog from '../data/abilities.js'
+import {g_abilityCatalog} from '../data/abilities.js'
 
 //xxx TODO: make this shared across client+server
 class GameSim extends CastWorldModel {
@@ -135,8 +136,8 @@ class GameSim extends CastWorldModel {
 	CreateCastCommandStateForEntity( abilityName, abilityRank, entityModel ) {
 		var key = abilityName + ":" + abilityRank
 		if (!this.m_allCastCommandModels.has(key)) {
-			var castCommandJson = g_abilityCatalog[abilityId].ranks[rank - 1];
-			castCommandJson.abilityId = abilityId;
+			var castCommandJson = g_abilityCatalog[abilityName].ranks[abilityRank - 1];
+			castCommandJson.abilityId = abilityName;
 
 			if (!castCommandJson) {
 				console.warn("cant find castCommandJson for " + key)

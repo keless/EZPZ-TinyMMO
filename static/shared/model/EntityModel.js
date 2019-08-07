@@ -5,6 +5,7 @@ import {Animation, AnimationInstance, FourPoleAnimation, FourPoleAnimationInstan
 import Vec2D, { Rect2D } from '../EZPZ/Vec2D.js'
 import EventBus from '../EZPZ/EventBus.js'
 import uuidv4 from '../../shared/EZPZ/ext/uuid.js'
+import GameSim from '../controller/GameSim.js';
 
 // Note, this should match with FourPoleAnimation directions to render correctly (or we'll need to transform it for use with animations)
 class Facing {
@@ -90,12 +91,12 @@ class EntityModel extends ICastEntity {
 		this.inventory = new InventoryModel();
 		*/
 		
-		this.m_abilities = [];
+		this.m_abilities = []; // CastCommandState
 		this.m_abilityTargets = new CastTarget();
 
 		this.m_passiveUpdatePeriod = 5.0;
 		this.m_lastPassiveUpdate = 0;
-		this.m_passiveAbilities = [];
+		this.m_passiveAbilities = []; // CastCommandState
 
 		this.animInstance = null
 
@@ -150,13 +151,16 @@ class EntityModel extends ICastEntity {
 		json.pos = this.pos.toJson()
 		json.vel = this.vel.toJson()
 		//xxx todo: inventory
-		//xxx todo: abilities
 
-		json.pAbilities = []
+
+		json.abilities = []
 		this.m_passiveAbilities.forEach((ability)=>{
-			json.pAbilities.push( ability.getID() )  //name:rank
+			json.abilities.push( ability.getModelID() )  //name:rank
 		})
-		json.aAbilities = []
+
+		this.m_abilities.forEach((ability)=>{
+			json.abilities.push( ability.getModelID() )  //name:rank
+		})
 
 		json.animInstance = this.animInstance.toJson()
 
@@ -175,6 +179,15 @@ class EntityModel extends ICastEntity {
 		this._loadAnimIfNecessary()
 		if (json.animInstance) {
 			this.animInstance.LoadFromJson(json.animInstance)
+		}
+
+		var name, rank;
+		if (json.abilities) {
+			json.abilities.forEach((abilityModelID)=>{
+				[ name, rank ] = abilityModelID.split(":")
+				var gameSim = GameSim.instance
+				gameSim.CreateCastCommandStateForEntity(name, rank, this)
+			})
 		}
 
 		this.eventBus.dispatch("update")

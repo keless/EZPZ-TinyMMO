@@ -35,6 +35,10 @@ class CastCommandState {
 		this.m_costVal = commandModel["costVal"] || 0;		//float
 	}
 
+	getModelID() {
+		this.m_pModel.getID()
+	}
+
 	toJson() {
 		var json = {}
 		//xxx WIP
@@ -235,6 +239,11 @@ class CastCommandState {
 	}
 	
 	//bool
+	isPassive() {
+		return this.m_pModel.isPassive()
+	}
+
+	//bool
 	isIdle() {
 		return this.m_state == CastCommandState.IDLE;
 	}
@@ -356,6 +365,11 @@ class CastCommandModel {
 	//bool 
 	isInstant() {
 		return this.castTime <= 0;
+	}
+
+	//bool
+	isPassive() {
+		return false; //xxx todo: implement passive abilities
 	}
 	
 	//int - per tick
