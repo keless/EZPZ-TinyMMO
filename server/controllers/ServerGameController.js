@@ -181,7 +181,7 @@ class ServerGameController {
 
                 // calculate lag between when user input happened, and when it was applied by the server to the game state
                 var inputDT = ct - impulseData.gameTime
-                if (inputDt > 0.15) {
+                if (inputDT > 0.15) {
                     this._log(`player input process lag ${inputDT.toFixed(2)}ms`)
                 }
             }
