@@ -36,7 +36,7 @@ class CastCommandState {
 	}
 
 	getModelID() {
-		this.m_pModel.getID()
+		return this.m_pModel.getID()
 	}
 
 	toJson() {
@@ -335,11 +335,11 @@ class CastCommandState {
 */
 
 class CastCommandModel {
-	constructor(jsonCastData, rank = 1) {
+	constructor(jsonCastData, modelID) {
 		var descriptor = jsonCastData;
 
 		this.name = descriptor["name"] || "effectName"; //string
-		this.rank = rank //int
+		this.modelID = modelID //string
 		
 		//base values, unmodified by buff/debufs (which happens at time of cast)
 		this.castTime = descriptor["castTime"] || 0.0; //float - zero if instant
@@ -405,7 +405,7 @@ class CastCommandModel {
 	}
 
 	getID() {
-		return this.name + ":" + this.rank
+		return this.modelID
 	}
 
 }

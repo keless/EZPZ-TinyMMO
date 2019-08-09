@@ -159,7 +159,8 @@ class EntityModel extends ICastEntity {
 		})
 
 		this.m_abilities.forEach((ability)=>{
-			json.abilities.push( ability.getModelID() )  //name:rank
+			var abilityModelID = ability.getModelID()
+			json.abilities.push( abilityModelID )  //name:rank
 		})
 
 		json.animInstance = this.animInstance.toJson()

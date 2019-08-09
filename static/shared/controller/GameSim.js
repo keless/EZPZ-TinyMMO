@@ -36,11 +36,11 @@ class GameSim extends CastWorldModel {
         this.updateTimes = new SlidingWindowBuffer(60)
 
         
-        // SERVER ONLY
-        if (this.isServer) {
+        // SERVER ONLY --actually lets try client and server
+        //if (this.isServer) {
             this.m_allCastCommandModels = new Map() // < abilityName:rank, CastCommandModel >
             this.m_allCastCommandStates = new Map() // < CastCommandState.getID(), CastCommandState >
-        }
+        //}
 
 
         Service.Add("gameSim", this)
