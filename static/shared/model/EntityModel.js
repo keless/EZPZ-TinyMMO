@@ -185,9 +185,18 @@ class EntityModel extends ICastEntity {
 		var name, rank;
 		if (json.abilities) {
 			json.abilities.forEach((abilityModelID)=>{
-				[ name, rank ] = abilityModelID.split(":")
-				var gameSim = GameSim.instance
-				gameSim.CreateCastCommandStateForEntity(name, rank, this)
+				var ability = this.getAbilityForID(abilityModelID)
+
+				if (!ability) {
+					//create new ability
+					[ name, rank ] = abilityModelID.split(":")
+					var gameSim = GameSim.instance
+					gameSim.CreateCastCommandStateForEntity(name, rank, this)
+				} else {
+					//update existing ability
+					//xxx todo; update existing ability
+					//ability.LoadFromJson()
+				}
 			})
 		}
 
@@ -290,6 +299,12 @@ class EntityModel extends ICastEntity {
 		return this.m_passiveAbilities;
 	}
 
+	getAbilityForID(abilityModelID) {
+		return this.m_abilities.find((ability, idx, arr)=>{
+			return ability.getModelID() == abilityModelID
+		})
+	}
+
 	getPassiveDmgRedux() {
 		var result = 0.0;
 		for(var i=0; i<this.m_passiveAbilities.length; i++) {
@@ -325,10 +340,19 @@ class EntityModel extends ICastEntity {
 	}
 
 	addAbility(castCommandState) {
+		console.log("add ability to entity " + this.uuid)
 		if(castCommandState.isPassive()) {
 			this.m_passiveAbilities.push(castCommandState);
 		}else {
-			this.m_abilities.push(castCommandState);
+			var ability = this.m_abilities.find((ability, idx, arr)=>{
+				return (ability.getModelID() == castCommandState.getModelID())
+			})
+
+			if (!ability) {
+				this.m_abilities.push(castCommandState);
+			} else {
+				console.warn("trying to add duplicate of existing ability")
+			}
 		}
 	}
 
