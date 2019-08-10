@@ -1,6 +1,7 @@
 import { NodeView, CreateSimpleProgressBar, Animation, FourPoleAnimation } from '../clientEZPZ.js'
 import ResourceProvider from '../../shared/EZPZ/ResourceProvider.js';
 import { CastCommandTime } from '../../shared/EZPZ/castengine/CastWorldModel.js';
+import {g_abilityCatalog} from '../../shared/data/abilities.js'
 
 class EntityView extends NodeView
 {
@@ -120,7 +121,7 @@ class AbilityView extends NodeView
 		this.setRect(w, h, "#999999");
 		var self = this;
 
-		var abilityId = this.m_pAbility.getAbilityId();
+		var abilityId = this.m_pAbility.getModelID();
     var abilityIdx = Object.keys(g_abilityCatalog).indexOf(abilityId);
     var icon = new NodeView();
     icon.setSprite("gfx/abilities/abilityIcons.sprite", 1+ abilityIdx);

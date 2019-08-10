@@ -1,4 +1,4 @@
-import _ from './clientEZPZ.js'
+import { NodeView, EventBus } from '../clientEZPZ.js'
 
 // in-depth inventory "open" dialog
 export default class InventoryView extends NodeView {
@@ -8,7 +8,7 @@ export default class InventoryView extends NodeView {
 }
 
 // short view inventory 'closed' hud
-class InventoryHudView extends NodeView {
+export class InventoryHudView extends NodeView {
 	constructor( model ) {
 		super();
 

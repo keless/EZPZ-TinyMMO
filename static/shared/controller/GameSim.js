@@ -144,7 +144,7 @@ class GameSim extends CastWorldModel {
 				return //guard
 			}
 
-			this.m_allCastCommandModels.set(key, new CastCommandModel(castCommandJson))
+			this.m_allCastCommandModels.set(key, new CastCommandModel(castCommandJson, key))
 		}
 
 		var castCommandModel = this.m_allCastCommandModels.get(key)

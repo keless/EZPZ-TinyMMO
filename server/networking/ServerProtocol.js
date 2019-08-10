@@ -242,7 +242,13 @@ class ServerProtocol {
                     var entitiesForPlayer = gameSim.getEntitiesForOwner(userId)
 
                     var worldUpdate = new WorldUpdateModel()
-                    worldUpdate.addEntities(entitiesForPlayer)
+                    var entities = []
+                    entitiesForPlayer.forEach((entity)=>{
+                        if (entity) {
+                            entities.push( entity.toJson() )
+                        }
+                    })
+                    worldUpdate.addEntities(entities)
                     
 
                     client.emit("connected", { userId: userId, ownedEntities: worldUpdate.getPayloadJson() })

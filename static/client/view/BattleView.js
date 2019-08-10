@@ -1,9 +1,11 @@
-import { BaseStateView, NodeView, ButtonView, Graphics, CreateSimpleProgressBar, Service, Animation, EventBus } from '../clientEZPZ.js'
+import { BaseStateView, NodeView, ButtonView, Graphics, CreateSimpleProgressBar, Service, Animation, EventBus, TableView } from '../clientEZPZ.js'
 import {BattleStateModel} from '../controller/BattleState.js'
-import {EntityView} from './EntityView.js'
+import {EntityView, AbilityView} from './EntityView.js'
 import ResourceProvider from '../../shared/EZPZ/ResourceProvider.js'
 import { TiledMapNodeView, TiledMap } from '../../shared/EZPZ/TiledMap.js'
 import GameSim from '../../shared/controller/GameSim.js';
+import InventoryHudView from './InventoryView.js'
+import PlayerHudView from './PlayerHudView.js'
 import { CastCommandTime } from '../../shared/EZPZ/castengine/CastWorldModel.js';
 
 export default class BattleStateView extends BaseStateView {
@@ -15,7 +17,7 @@ export default class BattleStateView extends BaseStateView {
 		this.controlledEntity = this.pModel.playerEntity
 		this.avatarNode = null
 		//var playerEntityId = this.pModel.controlledEntityId
-		//var playerEntity = this.pModel.playerEntity
+		var playerEntity = this.pModel.playerEntity
 		this.entityViews = []
 
 		/*
@@ -33,8 +35,6 @@ export default class BattleStateView extends BaseStateView {
 		this.mapNode.fnDrawPlayerLayer = (gfx, x,y, ct)=>{
 			//var a = self.pModel.player.physicsEntity.getArea();
 			//gfx.drawRect(x + a.x, y + a.y, a.w, a.h)
-
-			var playerView = null
 
 			//sort based on "y" value (so things in "front" draw last/on top)
 			this.entityViews.sort((a, b)=>{
@@ -86,8 +86,8 @@ export default class BattleStateView extends BaseStateView {
 		}, EventBus.game)
 		this.rootView.addChild(this.fpsMeter)
 
-		/*
-		var playerEntity = this.pModel.entities[0];
+		
+		//var playerEntity = this.pModel.entities[0];
 
     this.playerAbilities = new TableView(screenSize.x, 80);
     this.playerAbilities.direction = TableView.HORIZONTAL;
@@ -112,7 +112,7 @@ export default class BattleStateView extends BaseStateView {
 		this.playerHud = new PlayerHudView(playerEntity);
 		this.playerHud.pos.setVal(screenSize.x - this.playerHud.size.x/2, 652);
 		this.rootView.addChild(this.playerHud);
-		*/
+		
 
 		//var playerEntityId = this.pModel.controlledEntityId
 		//var playerEntity = this.pModel.playerEntity
@@ -152,6 +152,8 @@ export default class BattleStateView extends BaseStateView {
 
 		this.topView = new NodeView();
 		this.rootView.addChild(this.topView);
+
+		this._rebuildAllAbilities(playerEntity)
 	}
 
 	
@@ -337,7 +339,7 @@ export default class BattleStateView extends BaseStateView {
 	_rebuildAllAbilities(entityModel) {
 		//remove old abilities
 		this.playerAbilities.removeAllCells();
-		this.abilityViews.length = 0;
+		this.abilityViews = []
 		
 		var abilities = entityModel.getAbilities();
 		for( var i=0; i< abilities.length; i++) {
@@ -345,7 +347,7 @@ export default class BattleStateView extends BaseStateView {
 			var av = new AbilityView(a);
 			(function(idx, ability){
 				av.setClick(function(e, x,y){
-					EventBus.ui.dispatch({evtName:"abilityViewClicked", idx:idx, abilityId:ability.getAbilityId()});
+					EventBus.ui.dispatch({evtName:"abilityViewClicked", idx:idx, abilityId:ability.getModelID()});
 				});
 			}(i, a));
 			this.playerAbilities.addCell(av);
@@ -358,7 +360,7 @@ export default class BattleStateView extends BaseStateView {
 			var av = new AbilityView(a);
 			(function(idx, ability){
 				av.setClick(function(e, x,y){
-					EventBus.ui.dispatch({evtName:"abilityViewClicked", idx:idx, abilityId:ability.getAbilityId()});
+					EventBus.ui.dispatch({evtName:"abilityViewClicked", idx:idx, abilityId:ability.getModelID()});
 				});
 			}(i + abilities.length, a));
 			this.playerAbilities.addCell(av);

@@ -1,4 +1,4 @@
-import _ from './clientEZPZ.js'
+import { NodeView, EventBus } from '../clientEZPZ.js'
 
 export default class PlayerHudView extends NodeView {
 	constructor( model ) {
