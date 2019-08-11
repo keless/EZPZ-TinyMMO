@@ -12,6 +12,7 @@ import { EventBus } from '../../static/shared/EZPZ/EventBus.js'
 
 //test
 import {LoadingState} from '../../static/shared/EZPZ/LoadingState.js'
+import { type } from 'os';
 
 var g_instance = null
 
@@ -176,11 +177,19 @@ class ServerGameController {
             
             // apply pending user inputs
             while (this.pendingPlayerInputs.length > 0 && this.pendingPlayerInputs[0].gameTime <= ct) {
-                var impulseData = this.pendingPlayerInputs.shift()
-                this._applyPlayerImpulse(impulseData)
+                var input = this.pendingPlayerInputs.shift()
+                switch(input.type) {
+                    case "impulse":
+                        this._applyPlayerImpulse(input.data)
+                        break;
+                    case "ability":
+                        this._applyPlayerAbility(input.data)
+                        break;
+                }
+                
 
                 // calculate lag between when user input happened, and when it was applied by the server to the game state
-                var inputDT = ct - impulseData.gameTime
+                var inputDT = ct - input.data.gameTime
                 if (inputDT > 0.15) {
                     this._log(`player input process lag ${inputDT.toFixed(2)}ms`)
                 }
@@ -207,25 +216,6 @@ class ServerGameController {
     }
 
     queuePlayerImpulse(impulseData) {
-        // validate data
-        if (!impulseData.charID || !impulseData.ownerID || !impulseData.gameTime) {
-            this._log("error: cant apply impulse, missing required field")
-            return
-        }
-        if (!impulseData.hasOwnProperty("speed")) {
-            impulseData.speed = 200 //xxx todo: get default from char?
-        }
-        if (!impulseData.hasOwnProperty("vecDir")) {
-            impulseData.vecDir = { x: 0, y: 0 }
-        } else {
-            if (!impulseData.vecDir.hasOwnProperty("x")) {
-                impulseData.vecDir.x = 0
-            }
-            if (!impulseData.vecDir.hasOwnProperty("y")) {
-                impulseData.vecDir.y = 0
-            }
-        }
-
         var ct = CastCommandTime.Get()
         /*
         if (impulseData.gameTime < ct) {
@@ -235,11 +225,28 @@ class ServerGameController {
         }*/
 
         // add to queue; this will be processed in updateTick
-        this.pendingPlayerInputs.push(impulseData)
+        this.pendingPlayerInputs.push({type:"impulse", data:impulseData})
         // keep pendingPlayerInputs sorted by impulseData.gameTime (first element should be oldest gameTime)
         //xxx todo: test that sort is happening in the correct direction
         this.pendingPlayerInputs.sort((a, b)=>{
-            return a.gameTime < b.gameTime
+            return a.data.gameTime < b.data.gameTime
+        })
+    }
+
+    queuePlayerAbility(abilityData) {
+        var ct = CastCommandTime.Get()
+        /*
+        if (impulseData.gameTime < ct) {
+            this._log(`rcvd input from ${impulseData.gameTime.toFixed(2)}ms at ${ct.toFixed(2)}ms`)
+        } else {
+            this._log(`rcvd input from user in time to apply to simulation correctly`)
+        }*/
+
+        // add to queue; this will be processed in updateTick
+        this.pendingPlayerInputs.push({type:"ability", data:abilityData})
+        // keep pendingPlayerInputs sorted by abilityData.gameTime (first element should be oldest gameTime)
+        this.pendingPlayerInputs.sort((a, b)=>{
+            return a.data.gameTime < b.data.gameTime
         })
     }
 
@@ -277,6 +284,10 @@ class ServerGameController {
                 character.animInstance.event(ct, "idle")
             }
         }
+    }
+
+    _applyPlayerAbility(abilityData) {
+        //xxx WIP 
     }
 
     loadResources(fnCB) {

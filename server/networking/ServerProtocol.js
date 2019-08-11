@@ -19,6 +19,7 @@ class SocketClient {
         this._addUserMessageHandler('createCharacter', this.onCreateCharacter)
         this._addUserMessageHandler('deleteCharacter', this.onDeleteCharacter)
         this._addUserMessageHandler('playerImpulse', this.onPlayerImpulse)
+        this._addUserMessageHandler('playerAbility', this.onPlayerAbility)
         this._addUserMessageHandler('requestFullWorldUpdate', this.onRequestFullWorldUpdate)
     }
 
@@ -105,7 +106,7 @@ class SocketClient {
         }
     }
 
-    /// Expect: { vecDir: Vec2D.jsonObject, speed:Number }
+    /// Expect: { charID:uuid, vecDir:Vec2D.toJson(), speed:Number, facing:int, gameTime:Double seconds }
     /// Response: { } //empty object (for now)
     onPlayerImpulse(data, response) {
 
@@ -113,8 +114,45 @@ class SocketClient {
         this._logVerbose(data)
 
         var gameController = ServerGameController.instance
+        
+
+        var impulseData = data
+        impulseData.ownerID = this.clientID
+
+        // validate data
+        if (!impulseData.charID || !impulseData.ownerID || !impulseData.gameTime) {
+            this._log("error: cant apply impulse, missing required field")
+            return response({ error: "missing input fields"})
+        }
+        if (!impulseData.hasOwnProperty("speed")) {
+            impulseData.speed = 200 //xxx todo: get default from char?
+        }
+        if (!impulseData.hasOwnProperty("vecDir")) {
+            impulseData.vecDir = { x: 0, y: 0 }
+        } else {
+            if (!impulseData.vecDir.hasOwnProperty("x")) {
+                impulseData.vecDir.x = 0
+            }
+            if (!impulseData.vecDir.hasOwnProperty("y")) {
+                impulseData.vecDir.y = 0
+            }
+        }
+
+        gameController.queuePlayerImpulse(impulseData)
+
+        response({})
+    }
+
+    /// Expect: { charID:uuid, abilityModelID:"name:rank", gameTime:Double seconds }
+    /// Response: { } //empty object (for now)
+    onPlayerAbility(data, response) {
+
+        this._logVerbose("got player ability " + data.abilityModelID)
+        this._logVerbose(data)
+
+        var gameController = ServerGameController.instance
         data.ownerID = this.clientID
-        gameController.queuePlayerImpulse(data)
+        gameController.queuePlayerAbility(data)
 
         response({})
     }

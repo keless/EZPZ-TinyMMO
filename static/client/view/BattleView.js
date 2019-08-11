@@ -7,6 +7,7 @@ import GameSim from '../../shared/controller/GameSim.js';
 import InventoryHudView from './InventoryView.js'
 import PlayerHudView from './PlayerHudView.js'
 import { CastCommandTime } from '../../shared/EZPZ/castengine/CastWorldModel.js';
+import ClientProtocol from '../networking/ClientProtocol.js';
 
 export default class BattleStateView extends BaseStateView {
 	constructor( model ) {
@@ -16,8 +17,6 @@ export default class BattleStateView extends BaseStateView {
 
 		this.controlledEntity = this.pModel.playerEntity
 		this.avatarNode = null
-		//var playerEntityId = this.pModel.controlledEntityId
-		var playerEntity = this.pModel.playerEntity
 		this.entityViews = []
 
 		/*
@@ -87,7 +86,7 @@ export default class BattleStateView extends BaseStateView {
 		this.rootView.addChild(this.fpsMeter)
 
 		
-		//var playerEntity = this.pModel.entities[0];
+		//var playerEntity = this.controlledEntity
 
     this.playerAbilities = new TableView(screenSize.x, 80);
     this.playerAbilities.direction = TableView.HORIZONTAL;
@@ -109,14 +108,10 @@ export default class BattleStateView extends BaseStateView {
 		this.inventoryHud.pos.setVal(screenSize.x - this.inventoryHud.size.x/2, 425);
 		this.rootView.addChild(this.inventoryHud);
 
-		this.playerHud = new PlayerHudView(playerEntity);
+		this.playerHud = new PlayerHudView(this.controlledEntity);
 		this.playerHud.pos.setVal(screenSize.x - this.playerHud.size.x/2, 652);
 		this.rootView.addChild(this.playerHud);
 		
-
-		//var playerEntityId = this.pModel.controlledEntityId
-		//var playerEntity = this.pModel.playerEntity
-    //this.createPlayerEntityView(playerEntity);
 
 		/*
     playerEntity.addListener("update", this.onPlayerModelUpdate.bind(this));
@@ -133,14 +128,16 @@ export default class BattleStateView extends BaseStateView {
 		this.SetListener("btnCloseSkills", this.onBtnCloseSkills);
     this.SetListener("battleModeChanged", this.onBattleModeChanged, EventBus.game);
 
-		this.SetListener("abilityViewClicked", this.onAbilityViewClicked);
+		
 		this.SetListener("btnCloseAbilityView", this.onBtnCloseAbilityView);
 
 		this.SetListener("noSkillsAlert", this.onShowNoSkillsAlert);
 		this.SetListener("btnCloseNoSkillsAlert", this.onHideNoSkillsAlert);
 
 		this.refreshXPBarView();
-    	*/
+			*/
+			
+		this.SetListener("abilityViewClicked", this.onAbilityViewClicked);
 
 		this.enemyLayer = new NodeView();
 		this.rootView.addChild(this.enemyLayer);
@@ -234,16 +231,18 @@ export default class BattleStateView extends BaseStateView {
 		}
 	}
 	
-	/*
+
 	onBtnCloseAbilityView(e) {
 		this._hideAbilityInfoView();
 	}
+
 	onAbilityViewClicked(e) {
 		this._hideAbilityInfoView();
 
 		var abilityId = e.abilityId;
 		var idx = e.idx;
 		
+		/*
 		var playerModel = PlayerModel.Get();
 		var skillModel = playerModel.getSkillsModel();
 		var rank = skillModel.getSkillRanks(abilityId);
@@ -254,14 +253,20 @@ export default class BattleStateView extends BaseStateView {
 		parent.addChild(window);
 
 		this.abilityInfoView = window;
+		*/
+
+		//send command to server
+		var gameTime = CastCommandTime.Get()
+		ClientProtocol.instance.sendAbility(this.controlledEntity.getID(), abilityId, gameTime)
 	}
+
 	_hideAbilityInfoView() {
 		if(this.abilityInfoView != null) {
 			this.abilityInfoView.removeFromParent(true);
 			this.abilityInfoView = null;
 		}
 	}
-*/
+
 	onPlayerModelAttack(e) {
 		var ct = Application.getTime();
 
@@ -269,6 +274,7 @@ export default class BattleStateView extends BaseStateView {
 			this.playerView.avatar.animEvent(ct, "attack");
 		}	
 	}
+
 /*
 	_removeGhostView() {
 		if(this.ghostView) {

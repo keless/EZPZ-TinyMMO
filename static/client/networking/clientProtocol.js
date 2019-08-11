@@ -185,7 +185,20 @@ export default class ClientProtocol {
             if (data.error) {
                 this._log("error " + data.error)
             }
-        } )
+        })
+    }
+
+    // Tell server player is using an ability
+    // charID should be the EntityModel.uuid of the character being controlled
+    // ability is the CastCommandState.getModelID() of the ability
+    // gameTime should be the gameTime the player input happened (so it can be applied retroactively on server) 
+    sendAbility( charID, abilityModelID, gameTime ) {
+        this.send("playerAbility", { charID:charID, abilityModelID:abilityModelID, gameTime:gameTime }, (data)=>{
+            if (data.error) {
+                //xxx todo: check if ability could not be cast because of non-fatal reason (lack of mana, stunned, etc)
+                this._log("error " + data.error)
+            }
+        })
     }
 
     // Ask server to send us a fullWorldUpdate for the latest, so we'll completely reset our state and catch up
