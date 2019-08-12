@@ -36,7 +36,7 @@ export default class AIController {
 				if(a.isSelfTargeted()) {
 					//if healing spell, target self
 					targetEntity = this.pEntityModel;
-				}else {
+				} else {
 					//if damaging spell, target enemy
 					var targetEntities = battleStateModel.GetEntitiesInRadius( this.pEntityModel.pos, abilityRange, ignoreFriendlies );
 					if( targetEntities.length == 0 ) continue;

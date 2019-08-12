@@ -269,6 +269,17 @@ class GameSim extends CastWorldModel {
         })
         return owned
     }
+
+    // ICastPhysics redirect
+    GetVecBetween(fromEntity, toEntity) {
+        return this.castPhysics.GetVecBetween(fromEntity, toEntity)
+    }
+    GetEntityPosition(entity) {
+        return this.castPhysics.GetEntityPosition(entity)
+    }
+    GetEntitiesInRadius(p, r, ignoreEntities) {
+        return this.castPhysics.GetEntitiesInRadius(p, r, ignoreEntities)
+    }
 }
 
 class GameSimCastPhysics extends ICastPhysics  {
@@ -294,19 +305,16 @@ class GameSimCastPhysics extends ICastPhysics  {
         //xxx todo: actually test this code
         var rSq = r * r
 
-        var results = gameSim.m_entities.reduce(function(accumArray, entity, i) {
-            if (ignoreEntities.includes(entity)) {
-                return accumArray //skip this entity
-            }
-
-            var dSq = entity.pos.getDistSqFromVec(p)
+        var results = []
+        gameSim.m_allEntities.forEach((entity, idx, arr)=>{
+            if (!ignoreEntities.includes(entity)) {
+                var dSq = entity.pos.getDistSqFromVec(p)
             
-            if (dSq < rSq) {
-                accumArray.push(entity);
+                if (dSq < rSq) {
+                    results.push(entity);
+                }
             }
-                
-            return accumArray
-        }, []);
+        })
 
         return results;
     }

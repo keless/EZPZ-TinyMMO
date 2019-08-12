@@ -244,6 +244,11 @@ class CastCommandState {
 	}
 
 	//bool
+	isSelfTargeted() {
+		this.m_pModel.isSelfTargeted()
+	}
+
+	//bool
 	isIdle() {
 		return this.m_state == CastCommandState.IDLE;
 	}
@@ -360,6 +365,10 @@ class CastCommandModel {
 	//bool
 	isChanneled() {
 		return this.channelTime > 0;
+	}
+
+	isSelfTargeted() {
+		return this.descriptor.target == "self";
 	}
 	
 	//bool 

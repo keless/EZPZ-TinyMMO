@@ -176,7 +176,7 @@ class ServerGameController {
             var ct = CastCommandTime.UpdateDelta(updatePeriodS)
             
             // apply pending user inputs
-            while (this.pendingPlayerInputs.length > 0 && this.pendingPlayerInputs[0].gameTime <= ct) {
+            while (this.pendingPlayerInputs.length > 0 && this.pendingPlayerInputs[0].data.gameTime <= ct) {
                 var input = this.pendingPlayerInputs.shift()
                 switch(input.type) {
                     case "impulse":
@@ -286,8 +286,45 @@ class ServerGameController {
         }
     }
 
+    //{ ownerID:uuid, charID:uuid, abilityModelID:"name:rank", gameTime:Double seconds }
+    //xxx TODO: send packet to client if ability failed for some reason?
     _applyPlayerAbility(abilityData) {
-        //xxx WIP 
+        //xxx WIP
+        var character = this.gameSim.getEntityForId(abilityData.charID)
+        if (character.owner != abilityData.ownerID) {
+            this._log("error: cant apply ability input from character as non-owner")
+            return
+        }
+
+        var a = character.getAbilityForID(abilityData.abilityModelID)
+        var ignoreFriendlies = [ character ];
+        if( a.isIdle() && a.canAfford() ) {
+            //attempt to find target for ability
+            var abilityRange = a.getRange();
+        
+            var targetEntity = null;
+            if(a.isSelfTargeted()) {
+                //if healing spell, target self
+                targetEntity = character;
+            } else {
+                //if damaging spell, target enemy
+                var gameSim = GameSim.instance
+                var targetEntities = gameSim.GetEntitiesInRadius( character.pos, abilityRange, ignoreFriendlies );
+                if( targetEntities.length != 0 ) {
+                    targetEntity = targetEntities[0];
+
+                    //todo: handle AOE
+                }
+            }
+
+            if (targetEntity) {
+                var targetGroup = character.getTarget();
+                targetGroup.clearTargetEntities();
+                targetGroup.addTargetEntity(targetEntity);
+                
+                a.startCast();
+            }
+        }
     }
 
     loadResources(fnCB) {

@@ -85,9 +85,6 @@ export default class BattleStateView extends BaseStateView {
 		}, EventBus.game)
 		this.rootView.addChild(this.fpsMeter)
 
-		
-		//var playerEntity = this.controlledEntity
-
     this.playerAbilities = new TableView(screenSize.x, 80);
     this.playerAbilities.direction = TableView.HORIZONTAL;
     this.playerAbilities.setRect(screenSize.x, 80, "#444444");
@@ -150,7 +147,7 @@ export default class BattleStateView extends BaseStateView {
 		this.topView = new NodeView();
 		this.rootView.addChild(this.topView);
 
-		this._rebuildAllAbilities(playerEntity)
+		this._rebuildAllAbilities(this.controlledEntity)
 	}
 
 	
@@ -332,16 +329,17 @@ export default class BattleStateView extends BaseStateView {
 		*/
 	}
 
-	
 	onPlayerModelUpdate(e) {
 		this._updateAllAbilities();
-  }
+	}
+	
 	_updateAllAbilities() {
     for( var i in this.abilityViews ) {
 			var av = this.abilityViews[i];
 			av.updateFromModel();
 		}
 	}
+
 	_rebuildAllAbilities(entityModel) {
 		//remove old abilities
 		this.playerAbilities.removeAllCells();
