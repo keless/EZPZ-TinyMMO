@@ -9,6 +9,8 @@ export default class ClientProtocol {
 
         this.dbgIgnoreServerWorldUpdates = false
 
+        this.avgLagMS = 0
+
         this.worldUpdateBuffer = new SlidingWindowBuffer(10)
         
         Service.Add("protocol", this);
@@ -184,6 +186,8 @@ export default class ClientProtocol {
         this.send("playerImpulse", { charID:charID, vecDir:vecDir.toJson(), speed:speed, facing:facing, gameTime:gameTime }, (data)=>{
             if (data.error) {
                 this._log("error " + data.error)
+            } else if (data.inputDT) {
+                this.avgLagMS = (this.avgLagMS + data.inputDT) / 2
             }
         })
     }
@@ -197,6 +201,8 @@ export default class ClientProtocol {
             if (data.error) {
                 //xxx todo: check if ability could not be cast because of non-fatal reason (lack of mana, stunned, etc)
                 this._log("error " + data.error)
+            } else if (data.inputDT) {
+                this.avgLagMS = (this.avgLagMS + data.inputDT) / 2
             }
         })
     }
@@ -213,6 +219,10 @@ export default class ClientProtocol {
                 this._acceptFullWorldUpdate(data)
             }
         })
+    }
+
+    getLagMS() {
+        return this.avgLagMS
     }
 }
 

@@ -78,12 +78,21 @@ export default class BattleStateView extends BaseStateView {
 		this.fpsMeter = new NodeView()
 		this.fpsMeter.setLabel("000 u/s", "16px Arial")
 		this.fpsMeter.pos.setVal(navX - 150, 75)
+		this.rootView.addChild(this.fpsMeter)
+
+		this.lagMeter = new NodeView()
+		this.lagMeter.setLabel("00 ms", "16px Arial")
+		this.lagMeter.pos.setVal(navX - 150, 90)
+		this.rootView.addChild(this.lagMeter)
 
 		this.SetListener("gameSimUpdate", (e)=>{
 			var gameSim = GameSim.instance
 			this.fpsMeter.updateLabel( gameSim.getGameUpdatesPerSecond().toFixed(2) + " u/s")
+
+			var clientProtocol = ClientProtocol.instance
+			this.lagMeter.updateLabel( clientProtocol.getLagMS().toFixed(2) + "ms" )
 		}, EventBus.game)
-		this.rootView.addChild(this.fpsMeter)
+		
 
     this.playerAbilities = new TableView(screenSize.x, 80);
     this.playerAbilities.direction = TableView.HORIZONTAL;

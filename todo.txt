@@ -1,14 +1,15 @@
 
 WIP:
-* implement actions + animations for characters (attack, death, etc)
+* get cast engine working 
+
 
 BUGS:
-- loading state sometimes does not finish (race condition in FPQL probably)
+
 
 TODO:
 * implement placing a physical object in the world from a character
+* implement actions + animations for characters (attack, death, etc)
 * ART: make sure sprites are closer to their borders in the direction they are facing (so it doesnt look like they're too far from walls they run into)
-* get cast engine working 
 * optimize: do partial catch ups if an incremental update is missed by a client
 * optimize: reduce some of the cruft from login/registration 3rd party stuff (or write our own and dont use it at all)
 
@@ -19,6 +20,7 @@ TODO:
 * eventually: template based random quest generation
 
 Completed:
+- FIXED: loading state sometimes does not finish (race condition in FPQL probably)
 * ART: added gnome and goblin walk and idle sprites
 - FIXED: turning is glitchy (because animations are not synced by model)
 * Make model animation states client-server synced

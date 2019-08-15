@@ -138,9 +138,9 @@ class SocketClient {
             }
         }
 
-        gameController.queuePlayerImpulse(impulseData)
+        gameController.queuePlayerImpulse(impulseData, response)
 
-        response({})
+        //response({})
     }
 
     /// Expect: { charID:uuid, abilityModelID:"name:rank", gameTime:Double seconds }
@@ -152,9 +152,9 @@ class SocketClient {
 
         var gameController = ServerGameController.instance
         data.ownerID = this.clientID
-        gameController.queuePlayerAbility(data)
+        gameController.queuePlayerAbility(data, response)
 
-        response({})
+        //response({})
     }
 
     /// Expect: { updateIdx:optional Number [-1 to n] }

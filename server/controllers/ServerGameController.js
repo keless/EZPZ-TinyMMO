@@ -193,6 +193,8 @@ class ServerGameController {
                 if (inputDT > 0.15) {
                     this._log(`player input process lag ${inputDT.toFixed(2)}ms`)
                 }
+
+                input.cbResponse( { inputDT: inputDT } )
             }
 
             // run simulation tick
@@ -215,7 +217,8 @@ class ServerGameController {
         }
     }
 
-    queuePlayerImpulse(impulseData) {
+    // response is a callback method that will send a response to client when impulse is executed
+    queuePlayerImpulse(impulseData, response) {
         var ct = CastCommandTime.Get()
         /*
         if (impulseData.gameTime < ct) {
@@ -225,7 +228,7 @@ class ServerGameController {
         }*/
 
         // add to queue; this will be processed in updateTick
-        this.pendingPlayerInputs.push({type:"impulse", data:impulseData})
+        this.pendingPlayerInputs.push({type:"impulse", data:impulseData, cbResponse:response})
         // keep pendingPlayerInputs sorted by impulseData.gameTime (first element should be oldest gameTime)
         //xxx todo: test that sort is happening in the correct direction
         this.pendingPlayerInputs.sort((a, b)=>{
@@ -233,7 +236,8 @@ class ServerGameController {
         })
     }
 
-    queuePlayerAbility(abilityData) {
+    // response is a callback method that will send a response to client when ability is executed
+    queuePlayerAbility(abilityData, response) {
         var ct = CastCommandTime.Get()
         /*
         if (impulseData.gameTime < ct) {
@@ -243,7 +247,7 @@ class ServerGameController {
         }*/
 
         // add to queue; this will be processed in updateTick
-        this.pendingPlayerInputs.push({type:"ability", data:abilityData})
+        this.pendingPlayerInputs.push({type:"ability", data:abilityData, cbResponse:response})
         // keep pendingPlayerInputs sorted by abilityData.gameTime (first element should be oldest gameTime)
         this.pendingPlayerInputs.sort((a, b)=>{
             return a.data.gameTime < b.data.gameTime
@@ -354,20 +358,6 @@ class ServerGameController {
             "gfx/items/craft_cloth.sprite",
             "gfx/items/craft_leather.sprite",
             "gfx/items/craft_metal.sprite",
-            //"gfx/avatars/centaur_idle.sprite",
-            //"gfx/avatars/centaur_attack.sprite",
-            //"gfx/avatars/dwarf_idle.sprite",
-            //"gfx/avatars/dwarf_attack.sprite",
-            //"gfx/avatars/elf_idle.sprite",
-            //"gfx/avatars/elf_attack.sprite",
-            //"gfx/avatars/gnome_idle.sprite",
-            //"gfx/avatars/gnome_attack.sprite",
-            //"gfx/avatars/goblin_idle.sprite",
-            //"gfx/avatars/goblin_attack.sprite",
-            //"gfx/avatars/human_idle.sprite",
-            //"gfx/avatars/human_attack.sprite",
-            //"gfx/avatars/orc_idle.sprite",
-            //"gfx/avatars/orc_attack.sprite",
             "gfx/avatars/avatar.anim",
             "gfx/avatars/avatars.spb",
             "gfx/levels/test.json",
