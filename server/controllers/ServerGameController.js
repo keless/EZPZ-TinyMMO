@@ -177,13 +177,14 @@ class ServerGameController {
             
             // apply pending user inputs
             while (this.pendingPlayerInputs.length > 0 && this.pendingPlayerInputs[0].data.gameTime <= ct) {
+                var responseData = {}
                 var input = this.pendingPlayerInputs.shift()
                 switch(input.type) {
                     case "impulse":
-                        this._applyPlayerImpulse(input.data)
+                        responseData = this._applyPlayerImpulse(input.data)
                         break;
                     case "ability":
-                        this._applyPlayerAbility(input.data)
+                        responseData = this._applyPlayerAbility(input.data)
                         break;
                 }
                 
@@ -194,7 +195,9 @@ class ServerGameController {
                     this._log(`player input process lag ${inputDT.toFixed(2)}ms`)
                 }
 
-                input.cbResponse( { inputDT: inputDT } )
+                responseData.inputDT = inputDT
+
+                input.cbResponse( responseData )
             }
 
             // run simulation tick
@@ -254,11 +257,12 @@ class ServerGameController {
         })
     }
 
+    // return: json response to send to client
     _applyPlayerImpulse(impulseData) {
         var character = this.gameSim.getEntityForId(impulseData.charID)
         if (character.owner != impulseData.ownerID) {
             this._log("error: cant apply impulse to character from non-owner")
-            return
+            return { error: "not owner"}
         }
 
         var facingDidChange = false
@@ -288,16 +292,18 @@ class ServerGameController {
                 character.animInstance.event(ct, "idle")
             }
         }
+
+        return {}
     }
 
     //{ ownerID:uuid, charID:uuid, abilityModelID:"name:rank", gameTime:Double seconds }
-    //xxx TODO: send packet to client if ability failed for some reason?
+    // return: json response to send to client
     _applyPlayerAbility(abilityData) {
         //xxx WIP
         var character = this.gameSim.getEntityForId(abilityData.charID)
         if (character.owner != abilityData.ownerID) {
             this._log("error: cant apply ability input from character as non-owner")
-            return
+            return { error: "not owner"}
         }
 
         var a = character.getAbilityForID(abilityData.abilityModelID)
@@ -327,6 +333,10 @@ class ServerGameController {
                 targetGroup.addTargetEntity(targetEntity);
                 
                 a.startCast();
+
+                return { status:"startCast" }
+            } else {
+                return { error:"noTarget" }
             }
         }
     }

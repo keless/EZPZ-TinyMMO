@@ -8,6 +8,7 @@ import InventoryHudView from './InventoryView.js'
 import PlayerHudView from './PlayerHudView.js'
 import { CastCommandTime } from '../../shared/EZPZ/castengine/CastWorldModel.js';
 import ClientProtocol from '../networking/ClientProtocol.js';
+import Vec2D from '../../shared/EZPZ/Vec2D.js';
 
 export default class BattleStateView extends BaseStateView {
 	constructor( model ) {
@@ -93,6 +94,17 @@ export default class BattleStateView extends BaseStateView {
 			this.lagMeter.updateLabel( clientProtocol.getLagMS().toFixed(2) + "ms" )
 		}, EventBus.game)
 		
+		this.SetListener("errNoTarget", (e)=>{
+			var node = new NodeView()
+			node.setLabel("No Target", "16px Arial bold")
+			node.pos.setVal(screenSize.x/2, 25)
+			this.rootView.addChild(node)
+			node.tweenPosDelta(2, new Vec2D(0, -20), ()=>{
+				node.tweenRemoveFromParent(0)
+			})
+
+			
+		}, EventBus.ui)
 
     this.playerAbilities = new TableView(screenSize.x, 80);
     this.playerAbilities.direction = TableView.HORIZONTAL;

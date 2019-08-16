@@ -184,11 +184,15 @@ export default class ClientProtocol {
     // ackCB should contain no error
     sendInputImpulseChange( charID, vecDir, speed, facing, gameTime ) {
         this.send("playerImpulse", { charID:charID, vecDir:vecDir.toJson(), speed:speed, facing:facing, gameTime:gameTime }, (data)=>{
-            if (data.error) {
-                this._log("error " + data.error)
-            } else if (data.inputDT) {
+            if (data.inputDT) {
                 this.avgLagMS = (this.avgLagMS + data.inputDT) / 2
             }
+
+            if (data.error) {
+                this._log("error " + data.error)
+            }
+            
+
         })
     }
 
@@ -198,12 +202,24 @@ export default class ClientProtocol {
     // gameTime should be the gameTime the player input happened (so it can be applied retroactively on server) 
     sendAbility( charID, abilityModelID, gameTime ) {
         this.send("playerAbility", { charID:charID, abilityModelID:abilityModelID, gameTime:gameTime }, (data)=>{
+            if (data.inputDT) {
+                this.avgLagMS = (this.avgLagMS + data.inputDT) / 2
+            }
+
             if (data.error) {
                 //xxx todo: check if ability could not be cast because of non-fatal reason (lack of mana, stunned, etc)
                 this._log("error " + data.error)
-            } else if (data.inputDT) {
-                this.avgLagMS = (this.avgLagMS + data.inputDT) / 2
+
+                EventBus.ui.dispatch("errNoTarget")
+            } else if(data.status) {
+                var status = data.status
+                switch(status) {
+                    case "startCast":
+                        console.log("start cast")
+                    break;
+                }
             }
+            
         })
     }
 
