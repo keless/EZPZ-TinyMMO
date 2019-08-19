@@ -159,9 +159,11 @@ class EntityModel extends ICastEntity {
 		})
 
 		this.m_abilities.forEach((ability)=>{
-			var abilityModelID = ability.getModelID()
-			json.abilities.push( abilityModelID )  //name:rank
+			var abilityModelId = ability.getModelID()
+			json.abilities.push( abilityModelId )  //name:rank
 		})
+
+		json.castTargets = this.m_abilityTargets.toJson()
 
 		json.animInstance = this.animInstance.toJson()
 
@@ -184,12 +186,12 @@ class EntityModel extends ICastEntity {
 
 		var name, rank;
 		if (json.abilities) {
-			json.abilities.forEach((abilityModelID)=>{
-				var ability = this.getAbilityForID(abilityModelID)
+			json.abilities.forEach((abilityModelId)=>{
+				var ability = this.getAbilityForId(abilityModelId)
 
 				if (!ability) {
 					//create new ability
-					[ name, rank ] = abilityModelID.split(":")
+					[ name, rank ] = abilityModelId.split(":")
 					var gameSim = GameSim.instance
 					gameSim.CreateCastCommandStateForEntity(name, rank, this)
 				} else {
@@ -198,6 +200,10 @@ class EntityModel extends ICastEntity {
 					//ability.LoadFromJson()
 				}
 			})
+		}
+
+		if(json.castTargets) {
+			this.m_abilityTargets.LoadFromJson(json.castTargets)
 		}
 
 		this.eventBus.dispatch("update")
@@ -299,9 +305,16 @@ class EntityModel extends ICastEntity {
 		return this.m_passiveAbilities;
 	}
 
-	getAbilityForID(abilityModelID) {
+	getAbilityIdAtIdx(idx) {
+		if (this.m_abilities.length <= idx) {
+			return null
+		}
+		return this.m_abilities[idx].getModelID()
+	}
+
+	getAbilityForId(abilityModelId) {
 		return this.m_abilities.find((ability, idx, arr)=>{
-			return ability.getModelID() == abilityModelID
+			return ability.getModelID() == abilityModelId
 		})
 	}
 

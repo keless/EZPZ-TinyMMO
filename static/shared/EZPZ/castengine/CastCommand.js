@@ -329,8 +329,6 @@ class CastCommandState {
 			}
 		}
 	}
-
-
 }
 
 /*

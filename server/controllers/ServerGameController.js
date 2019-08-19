@@ -10,9 +10,6 @@ import ServerProtocol from '../networking/ServerProtocol.js';
 import {performance} from 'perf_hooks'
 import { EventBus } from '../../static/shared/EZPZ/EventBus.js'
 
-//test
-import {LoadingState} from '../../static/shared/EZPZ/LoadingState.js'
-import { type } from 'os';
 
 var g_instance = null
 
@@ -296,7 +293,7 @@ class ServerGameController {
         return {}
     }
 
-    //{ ownerID:uuid, charID:uuid, abilityModelID:"name:rank", gameTime:Double seconds }
+    //{ ownerID:uuid, charID:uuid, abilityModelId:"name:rank", gameTime:Double seconds }
     // return: json response to send to client
     _applyPlayerAbility(abilityData) {
         //xxx WIP
@@ -306,13 +303,28 @@ class ServerGameController {
             return { error: "not owner"}
         }
 
-        var a = character.getAbilityForID(abilityData.abilityModelID)
+        var a = character.getAbilityForId(abilityData.abilityModelId)
+
+        if (!a.isIdle()) {
+            return { error: "notIdle" }
+        }
+
+        if (!a.canAfford()) {
+            return { error:"cantAfford" }
+        }
+
         var ignoreFriendlies = [ character ];
-        if( a.isIdle() && a.canAfford() ) {
-            //attempt to find target for ability
-            var abilityRange = a.getRange();
-        
-            var targetEntity = null;
+        //attempt to find target for ability
+        var abilityRange = a.getRange();
+    
+        if (abilityData.castTarget) {
+            character.getTarget().LoadFromJson(abilityData.castTarget)
+
+            a.startCast();
+    
+            return { status:"startCast" }
+        } else {
+            var targetEntity = null
             if(a.isSelfTargeted()) {
                 //if healing spell, target self
                 targetEntity = character;
@@ -321,8 +333,9 @@ class ServerGameController {
                 var gameSim = GameSim.instance
                 var targetEntities = gameSim.GetEntitiesInRadius( character.pos, abilityRange, ignoreFriendlies );
                 if( targetEntities.length != 0 ) {
+                    console.log("found entity to target")
                     targetEntity = targetEntities[0];
-
+    
                     //todo: handle AOE
                 }
             }
@@ -333,7 +346,7 @@ class ServerGameController {
                 targetGroup.addTargetEntity(targetEntity);
                 
                 a.startCast();
-
+    
                 return { status:"startCast" }
             } else {
                 return { error:"noTarget" }

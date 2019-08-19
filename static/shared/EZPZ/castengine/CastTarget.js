@@ -1,4 +1,5 @@
 import Vec2D from '../Vec2D.js'
+import CastWorldModel from './CastWorldModel.js'
 
 /*
  CastTarget 
@@ -21,6 +22,34 @@ class CastTarget
 		this.m_position = new Vec2D();
 		this.m_entityList = []; //array<ICastEntity>
 	}
+
+	toJson() {
+		var json = { type: this.m_type }
+		if (this.m_type == CastTargetType.ENTITIES) {
+			var entityIDs = []
+			this.m_entityList.forEach((entity)=>{
+				entityIDs.push(entity.getID())
+			})
+			json.entities = entityIDs
+		} else {
+			json.pos = this.m_position.toJson()
+		}
+		return json
+	}
+
+	LoadFromJson(json) {
+		this.m_type = json.type
+		if (this.m_type == CastTargetType.ENTITIES) {
+			var castWorldModel = CastWorldModel.Get()
+			json.entities.forEach((entityID)=>{
+				//get entity by id
+				var entity = castWorldModel.getEntityForId(entityID)
+				this.m_entityList.push(entity)
+			})
+		} else {
+			this.m_position.LoadFromJson(json.pos)
+		}
+	}
 	
 	//array<ICastEntity>
 	getEntityList() { 
@@ -29,6 +58,12 @@ class CastTarget
 	//CastTargetType
 	getType() { return this.m_type; }
 	
+
+	clearTarget() {
+		this.m_type = CastTargetType.ENTITIES;
+		this.clearTargetEntities()
+	}
+
 	clearTargetEntities() {
 		this.m_entityList.length = 0;
 	}
@@ -39,6 +74,22 @@ class CastTarget
 		
 		this.m_type = CastTargetType.ENTITIES;
 		this.m_entityList.push(target);
+	}
+
+	setTargetEntity( target ) {
+		if(!target) return;
+		
+		this.m_type = CastTargetType.ENTITIES;
+		this.clearTargetEntities()
+		this.m_entityList.push(target);
+	}
+
+	// return first entity in list of entities, or null
+	getTargetEntity() {
+		if (!this.m_type == CastTargetType.ENTITIES || this.m_entityList.length < 1) {
+			return null
+		}
+		return this.m_entityList[0]
 	}
 	
 	// in: Vec2D target

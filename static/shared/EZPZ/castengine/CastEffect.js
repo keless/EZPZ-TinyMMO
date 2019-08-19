@@ -386,7 +386,7 @@ class CastEffect {
 		return effect;
 	}
 
-	fromJson(json) {
+	LoadFromJson(json) {
 		this.m_type = json.type;
 		this.m_startTime = json.startTime;
 		this.m_lifeTime = json.lifeTime;

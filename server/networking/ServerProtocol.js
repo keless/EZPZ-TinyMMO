@@ -143,11 +143,11 @@ class SocketClient {
         //response({})
     }
 
-    /// Expect: { charID:uuid, abilityModelID:"name:rank", gameTime:Double seconds }
+    /// Expect: { charID:uuid, abilityModelId:"name:rank", castTarget:json, gameTime:Double seconds }
     /// Response: { } //empty object (for now)
     onPlayerAbility(data, response) {
 
-        this._logVerbose("got player ability " + data.abilityModelID)
+        this._logVerbose("got player ability " + data.abilityModelId)
         this._logVerbose(data)
 
         var gameController = ServerGameController.instance

@@ -197,11 +197,12 @@ export default class ClientProtocol {
     }
 
     // Tell server player is using an ability
-    // charID should be the EntityModel.uuid of the character being controlled
-    // ability is the CastCommandState.getModelID() of the ability
-    // gameTime should be the gameTime the player input happened (so it can be applied retroactively on server) 
-    sendAbility( charID, abilityModelID, gameTime ) {
-        this.send("playerAbility", { charID:charID, abilityModelID:abilityModelID, gameTime:gameTime }, (data)=>{
+    // @param {string} charID should be the EntityModel.uuid of the character being controlled
+    // @param {string} abilityModelId is the CastCommandState.getModelID() of the ability
+    // @param {json} castTarget is the CastTarget.getJson() of the targeting
+    // @param {number} gameTime should be the gameTime the player input happened (so it can be applied retroactively on server) 
+    sendAbility( charID, abilityModelId, castTarget, gameTime ) {
+        this.send("playerAbility", { charID:charID, abilityModelId:abilityModelId, castTarget:castTarget, gameTime:gameTime }, (data)=>{
             if (data.inputDT) {
                 this.avgLagMS = (this.avgLagMS + data.inputDT) / 2
             }
@@ -210,12 +211,22 @@ export default class ClientProtocol {
                 //xxx todo: check if ability could not be cast because of non-fatal reason (lack of mana, stunned, etc)
                 this._log("error " + data.error)
 
-                EventBus.ui.dispatch("errNoTarget")
+                var error = data.error
+                if (error == "noTarget") {
+                    EventBus.ui.dispatch("errNoTarget")
+                } else if (error == "notIdle") {
+                    console.log("ability already running")
+                } else {
+                    console.log(error)
+                }
+
+                
             } else if(data.status) {
                 var status = data.status
                 switch(status) {
                     case "startCast":
                         console.log("start cast")
+                        EventBus.game.dispatch({evtName:"updateCastTarget", castTargetJson: data.target})
                     break;
                 }
             }

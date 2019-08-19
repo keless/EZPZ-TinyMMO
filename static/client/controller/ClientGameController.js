@@ -4,6 +4,8 @@ import EntityModel from '../../shared/model/EntityModel.js';
 import GameSim from '../../shared/controller/GameSim.js'
 import { CastWorldModel, CastCommandTime } from '../../shared/EZPZ/castengine/CastWorldModel.js'
 import {ResourceProvider} from '../../shared/EZPZ/ResourceProvider.js'
+import EventBus from '../../shared/EZPZ/EventBus.js';
+import CastTarget from '../../shared/EZPZ/castengine/CastTarget.js';
 
 
 class ClientGameController {
@@ -16,6 +18,7 @@ class ClientGameController {
 
     this.uuid = uuidv4()
     this.currentUserID = null
+    this.playerTarget = new CastTarget()
 
     this.latestKnownWorldUpdateIdx = 0
 
@@ -33,6 +36,16 @@ class ClientGameController {
 
   getEntitiesForCurrentPlayer() {
     return this.gameSim.getEntitiesForOwner(this.currentUserID)
+  }
+
+  setTarget(entityModel) {
+    if (entityModel == null) {
+      this.playerTarget.clearTarget()
+    } else {
+      this.playerTarget.setTargetEntity(entityModel)
+    }
+    
+    EventBus.game.dispatch("targetChanged")
   }
 
   updateOwnedEntities( updateJson ) {
@@ -94,7 +107,6 @@ class ClientGameController {
     var gameSim = GameSim.instance
     gameSim.updateStep(ct, dt)
   }
-
 }
 
 export default ClientGameController

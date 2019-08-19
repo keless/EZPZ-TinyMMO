@@ -9,6 +9,8 @@ import PlayerHudView from './PlayerHudView.js'
 import { CastCommandTime } from '../../shared/EZPZ/castengine/CastWorldModel.js';
 import ClientProtocol from '../networking/ClientProtocol.js';
 import Vec2D from '../../shared/EZPZ/Vec2D.js';
+import HUDTargetView from './HUDTargetView.js'
+import ClientGameController from '../controller/ClientGameController.js';
 
 export default class BattleStateView extends BaseStateView {
 	constructor( model ) {
@@ -19,6 +21,8 @@ export default class BattleStateView extends BaseStateView {
 		this.controlledEntity = this.pModel.playerEntity
 		this.avatarNode = null
 		this.entityViews = []
+
+		this.MAX_TARGET_RANGE = 1000
 
 		/*
 		this.playerView = null;
@@ -130,6 +134,9 @@ export default class BattleStateView extends BaseStateView {
 		this.playerHud.pos.setVal(screenSize.x - this.playerHud.size.x/2, 652);
 		this.rootView.addChild(this.playerHud);
 		
+		this.targetHud = new HUDTargetView()
+		this.targetHud.pos.setVal(screenSize.x/2, 30) 
+		this.rootView.addChild(this.targetHud)
 
 		/*
     playerEntity.addListener("update", this.onPlayerModelUpdate.bind(this));
@@ -204,10 +211,43 @@ export default class BattleStateView extends BaseStateView {
 			this.pModel.playerImpulse.setFacing(3);
 			this.pModel.playerImpulse.setLeft(true);
 			break;
+
+			case '\t'.charCodeAt(0): //tab
+			e.preventDefault();
+			this._tabTarget();
+			break;
 			
 			case 'M'.charCodeAt(0): 
 			console.log(this.avatarNode.pos.toJson())
 			break;
+		}
+
+		//handle number keys as range
+		if (e.keyCode >= '1'.charCodeAt(0) && e.keyCode <= '9'.charCodeAt(0)) {
+			var numberKey = e.keyCode - '1'.charCodeAt(0)
+			this.onAbilityHotKey(numberKey)
+		}
+	}
+
+	_tabTarget() {
+		//get list of entities minus self, and current target if one is selected
+		var gameController = ClientGameController.instance
+		var gameSim = GameSim.instance
+
+		var castTarget = this.controlledEntity.getTarget()
+		var ignoreList = castTarget.getEntityList().slice(0)
+		ignoreList.push(this.controlledEntity)
+
+		var potentialTargets = gameSim.GetEntitiesInRadius( this.controlledEntity.pos, this.MAX_TARGET_RANGE, ignoreList)
+		if (potentialTargets.length > 0) {
+			//sort by distance
+			//xxx todo
+
+			//pick closest
+			var targetEntity = potentialTargets[0]
+			gameController.setTarget(targetEntity)
+		} else {
+			gameController.clearTarget()
 		}
 	}
 	
@@ -258,9 +298,18 @@ export default class BattleStateView extends BaseStateView {
 		this._hideAbilityInfoView();
 
 		var abilityId = e.abilityId;
-		var idx = e.idx;
-		
-		/*
+		this._sendAbility(abilityId)
+	}
+
+	onAbilityHotKey(idx) {
+		var abilityId = this.controlledEntity.getAbilityIdAtIdx(idx)
+		if (abilityId) {
+			this._sendAbility(abilityId)
+		}
+	}
+
+	_sendAbility(abilityId) {
+				/*
 		var playerModel = PlayerModel.Get();
 		var skillModel = playerModel.getSkillsModel();
 		var rank = skillModel.getSkillRanks(abilityId);
@@ -273,9 +322,12 @@ export default class BattleStateView extends BaseStateView {
 		this.abilityInfoView = window;
 		*/
 
+		var gameController = ClientGameController.instance
+		
+
 		//send command to server
 		var gameTime = CastCommandTime.Get()
-		ClientProtocol.instance.sendAbility(this.controlledEntity.getID(), abilityId, gameTime)
+		ClientProtocol.instance.sendAbility(this.controlledEntity.getID(), abilityId, gameController.playerTarget, gameTime)
 	}
 
 	_hideAbilityInfoView() {

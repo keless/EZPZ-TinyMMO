@@ -1,7 +1,8 @@
 
 WIP:
 * get cast engine working 
-
+* normalize new character names (lower case with first char as upper)
+* normalize disc serialization of times (dont use time stamps, use delta from current time so if server restarts gametime it'll still work)
 
 BUGS:
 
