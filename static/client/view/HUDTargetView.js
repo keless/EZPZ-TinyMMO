@@ -24,8 +24,15 @@ export default class HUDTargetView extends NodeView {
     }
   }
 
+  /*
+  Draw(gfx, x, y, ct) {
+    super.Draw(gfx, x, y, ct)
+  }*/
+
   _createTargetNode(entityModel) {
     this.targetNode = new EntityView(entityModel, false)
+    this.targetNode.ignorePosition = true
+    this.targetNode.pos.x -= 50
     this.addChild(this.targetNode)
     this.targetModel = entityModel
     //this.SetListener("update", this.onTargetUpdate, this.targetNode)

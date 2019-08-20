@@ -13,6 +13,7 @@ class EntityView extends NodeView
 		//this.setRect(w, h, "#000000");
 		
 		this.pEntityModel = entityModel;
+		this.ignorePosition = false
 
 		var avatarNode = new NodeView();
 		avatarNode.setAnimInstance(this.pEntityModel.animInstance)
@@ -25,24 +26,26 @@ class EntityView extends NodeView
 		var lvl = this.pEntityModel.getProperty("xp_level");
 		name += " lvl " + lvl;
 
+		/*
 		var title = new NodeView();
 		title.setLabel( name, "10px Arial", "#FFFFFF" );
 		title.pos.setVal(0, -h/4);
-		//this.addChild(title);
+		this.addChild(title);
 		
 		this.hpBar = CreateSimpleProgressBar("#11FF11", "#FF1111", 30, 10);
 		this.hpBar.pct = 0.7;
 		this.hpBar.setLabel(entityModel.hp_base, "6px Arial", "#FFFFFF");
 		this.hpBar.pos.y = 22;
-		//this.addChild(this.hpBar);
+		this.addChild(this.hpBar);
 
 		this.floatHeal = new NodeView();
 		this.floatHeal.setLabelWithOutline("", "12px Arial", "#00FF00", "#FFFFFF", 3);
-		//this.hpBar.addChild(this.floatHeal);
+		this.hpBar.addChild(this.floatHeal);
 
 		this.floatText = new NodeView();
 		this.floatText.setLabelWithOutline("", "12px Arial", "#FF0000", "#FFFFFF", 3);
-		//this.hpBar.addChild(this.floatText);
+		this.hpBar.addChild(this.floatText);
+		*/
 
 		this.pEntityModel.addListener("update", this.updateFromModel.bind(this));
 		this.pEntityModel.addListener("damaged", this.onDamaged.bind(this));
@@ -60,9 +63,15 @@ class EntityView extends NodeView
 	
 	updateFromModel() {
 		//update any dynamic visuals based on model data
-		this.hpBar.pct = this.pEntityModel.hp_curr / this.pEntityModel.hp_base;
-		this.hpBar.updateLabel( this.pEntityModel.hp_curr + " / " + this.pEntityModel.hp_base);
-		this.pos.setVec( this.pEntityModel.pos )
+		if (this.hpBar) {
+			this.hpBar.pct = this.pEntityModel.hp_curr / this.pEntityModel.hp_base;
+			this.hpBar.updateLabel( this.pEntityModel.hp_curr + " / " + this.pEntityModel.hp_base);
+		}
+
+		if (!this.ignorePosition) {
+			this.pos.setVec( this.pEntityModel.pos )
+		}
+		
 
 		if (this.avatarNode) {
 			var ct = CastCommandTime.Get()

@@ -16,8 +16,7 @@ class CastTargetType
 class CastTarget
 {
 	// in: CastTargetType
-	constructor( ctype ) {
-		ctype = ctype || CastTargetType.ENTITIES;
+	constructor( ctype = CastTargetType.ENTITIES ) {
 		this.m_type = ctype;
 		this.m_position = new Vec2D();
 		this.m_entityList = []; //array<ICastEntity>
@@ -38,8 +37,10 @@ class CastTarget
 	}
 
 	LoadFromJson(json) {
-		this.m_type = json.type
+		this.m_type = json.type || CastTargetType.ENTITIES
 		if (this.m_type == CastTargetType.ENTITIES) {
+			json.entities = json.entities || []
+
 			var castWorldModel = CastWorldModel.Get()
 			json.entities.forEach((entityID)=>{
 				//get entity by id
@@ -47,7 +48,7 @@ class CastTarget
 				this.m_entityList.push(entity)
 			})
 		} else {
-			this.m_position.LoadFromJson(json.pos)
+			this.m_position.loadJson(json.pos)
 		}
 	}
 	
