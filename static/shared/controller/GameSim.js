@@ -15,6 +15,12 @@ class GameSim extends CastWorldModel {
         super() 
         console.log("new GameSim created")
 
+        if (CastWorldModel.instance) {
+            console.warn("overwritting existing CastWorldModel instance (this shouldnt happen)")
+        }
+
+        CastWorldModel.instance = this
+
         this.verbose = true
         this.isServer = isServer
 
@@ -35,11 +41,12 @@ class GameSim extends CastWorldModel {
         //tracks how often updates happen in real time (NOTE: not game time)
         this.updateTimes = new SlidingWindowBuffer(60)
 
-        
+
+        // moved this into CastCommandWorld
         // SERVER ONLY --actually lets try client and server
         //if (this.isServer) {
-            this.m_allCastCommandModels = new Map() // < abilityName:rank, CastCommandModel >
-            this.m_allCastCommandStates = new Map() // < CastCommandState.getID(), CastCommandState >
+        //    this.m_allCastCommandModels = new Map() // < abilityName:rank, CastCommandModel >
+        //    this.m_allCastCommandStates = new Map() // < CastCommandState.getID(), CastCommandState >
         //}
 
 

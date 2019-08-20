@@ -24,15 +24,22 @@ class CastCommandState {
 	static get COOLDOWN() { return 3; }
 
 	constructor(commandModel, entityOwner) {
+		this.verbose = true
+
 		this.m_state = CastCommandState.IDLE; //CCSstate int
 		this.m_timeStart = 0; 							//double
 		this.m_channelTicks = 0; 						//int
-		this.m_costValue = 0
 		this.m_pModel = commandModel; 			//CastCommandModel
 		this.m_iOwner = entityOwner; 				//ICastEntity
 		
 		this.m_costStat = commandModel["costStat"] || ""; //string
 		this.m_costVal = commandModel["costVal"] || 0;		//float
+	}
+
+	_log(text) {
+		if (this.verbose) {
+			console.log(text)
+		}
 	}
 
 	getModelID() {
@@ -41,6 +48,15 @@ class CastCommandState {
 
 	toJson() {
 		var json = {}
+
+		json.state = this.m_state
+		json.timeStart = this.m_timeStart
+		json.channelTicks = this.m_channelTicks
+		json.commandModelID = this.getModelID()
+		json.iOwnerID = this.m_iOwner.getID()
+
+		console.warn("castcommandstate toJson not implemented yet")
+
 		//xxx WIP
 		return json
 	}
@@ -49,10 +65,13 @@ class CastCommandState {
 		this.m_state = json.state //int
 		this.m_timeStart = json.timeStart //xxx audit (timers when restarting server)
 		this.m_channelTicks = json.channelTicks
-		this.m_costValue = json.costValue
+
+		var castWorldModel = CastWorldModel.Get()
+		console.warn("castcommandstate LoadFromJson not implemented yet - get command model from factory?")
+		var commandModel = castWorldModel.getCastCommandModelforID(json.commandModelID)
 		this.m_pModel = commandModel; 			//CastCommandModel
 		var ownerID = json.iOwnerID 
-		this.m_iOwner = CastWorldModel.Get().getEntityForId(ownerID)			//ICastEntity
+		this.m_iOwner = castWorldModel.getEntityForId(ownerID)			//ICastEntity
 		
 		this.m_costStat = commandModel["costStat"] || ""; //string
 		this.m_costVal = commandModel["costVal"] || 0;		//float
@@ -175,7 +194,7 @@ class CastCommandState {
 	
 	//bool
 	canAfford() {
-		if (this.m_costValue == 0) return true;
+		if (this.m_costVal == 0) return true;
 
 		var val = this.m_iOwner.getProperty(this.m_costStat);
 		return val >= this.m_costVal;

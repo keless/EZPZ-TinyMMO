@@ -42,6 +42,9 @@ class CastWorldModel {
 	constructor() {
 		this.m_allEntities = new Map() // < ICastEntity.getID(), ICastEntity >
 
+		this.m_allCastCommandModels = new Map() // < abilityName:rank, CastCommandModel >
+		this.m_allCastCommandStates = new Map() // < CastCommandState.getID(), CastCommandState >
+
 		this.m_effectsInTransit = []; //array<CastEffectPath>
 		
 		this.m_pPhysics = null; //ICastPhysics
@@ -63,6 +66,10 @@ class CastWorldModel {
 
 	getEntityForId(entityId) {
 		return this.m_allEntities.get(entityId)
+	}
+
+	getCastCommandModelforID(modelID) { 
+		return this.m_allCastCommandModels.get(modelID)
 	}
 	
 	// in: ICastPhysics physics

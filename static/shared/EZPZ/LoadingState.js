@@ -59,9 +59,11 @@ class LoadingView extends BaseStateView {
 			var params = this.loadingName.split(":")
 			var fileName = params[1]
 			var baseName = params[2]
-			console.log("LoadingState - quick load fourpoleanim " + fileName + " " + baseName)
+			if (this.verbose) {
+				console.log("LoadingState - quick load fourpoleanim " + fileName + " " + baseName)
+			}
 			RP.loadFourPoleAnimationQuickAttach(fileName, baseName, function(e){
-				console.log(" got fourpoleanim " + fileName + " " + baseName)
+				//console.log(" got fourpoleanim " + fileName + " " + baseName)
 				self.resLoaded.push(currLoading);
 				self._loadNext( 1 ); //recursion inside of anonymous function, yay!
 			})
@@ -70,7 +72,9 @@ class LoadingView extends BaseStateView {
 			var params = this.loadingName.split(":")
 			var fileName = params[1]
 			var baseName = params[2]
-			console.log("LoadingState - quick load animation " + fileName + " " + baseName)
+			if (this.verbose) {
+				console.log("LoadingState - quick load animation " + fileName + " " + baseName)
+			}
 			RP.loadAnimationQuickAttach(fileName, baseName, function(e){
 				self.resLoaded.push(currLoading);
 				self._loadNext( 1 ); //recursion inside of anonymous function, yay!
