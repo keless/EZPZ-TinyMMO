@@ -5,7 +5,7 @@ import { isArray, removeFromArray } from '../../static/shared/EZPZ/Utility.js'
 import { Vec2D, Rect2D } from '../../static/shared/EZPZ/Vec2D.js'
 import GameSim from '../../static/shared/controller/GameSim.js'
 import { ResourceProvider } from '../../static/shared/EZPZ/ResourceProvider.js'
-import { CastCommandTime } from '../../static/shared/EZPZ/castengine/CastWorldModel.js'
+import { CastCommandTime } from '../../static/shared/EZPZ/castengine/CastCommand.js'
 import ServerProtocol from '../networking/ServerProtocol.js';
 import {performance} from 'perf_hooks'
 import { EventBus } from '../../static/shared/EZPZ/EventBus.js'
@@ -318,12 +318,17 @@ class ServerGameController {
         var abilityRange = a.getRange();
     
         if (abilityData.castTarget) {
+            //xxx WIP 
+            //xxx TODO: check that castTarget has a valid target in it
+
             character.getTarget().LoadFromJson(abilityData.castTarget)
 
-            a.startCast();
+            var success = a.startCast();
+
+            //xxx TODO: check success
     
             return { status:"startCast" }
-        } else {
+        } else if (abilityData.autoTarget) {
             var targetEntity = null
             if(a.isSelfTargeted()) {
                 //if healing spell, target self
@@ -351,6 +356,8 @@ class ServerGameController {
             } else {
                 return { error:"noTarget" }
             }
+        } else {
+            return { error:"noTarget" }
         }
     }
 

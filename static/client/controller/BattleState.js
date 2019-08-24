@@ -37,18 +37,6 @@ class BattleStateModel extends BaseStateModel {
 		this.controllers = [];
 
 
-
-		//xxx get rid of this, making GameSim the castWorldModel
-		//this.castWorldModel = CastWorldModel.Get();
-		//this.castWorldModel.setPhysicsInterface( this );
-
-		//this.playerModel = PlayerModel.Get();
-		//this.addPlayerEntity(this.playerModel.entity);
-
-		//ensure player is registered in cast world after multiple returns
-		//this.castWorldModel.RemoveEntity(this.playerModel.entity);
-		//this.castWorldModel.AddEntity(this.playerModel.entity);
-
 		/*
 		this.SetListener("btnMapLoc", this.onBtnMapLoc);
 		this.SetListener("btnEquipSlot", this.onBtnEquipSlot);
@@ -225,39 +213,13 @@ class BattleStateModel extends BaseStateModel {
 	Update(ct, dt) {
 		super.Update(ct, dt);
 		
-		//this.castWorldModel.updateStep(dt);
 		ct = CastCommandTime.Get();
 
-/*
-		//check if player has skills equipped, if not, dont let them grind
-		if(this.playerModel.entity.getAbilities().length == 0 ) {
-			EventBus.ui.dispatch({evtName:"noSkillsAlert"});
-			this.setMode(BattleState.MODE_IDLE);
-		} else {
-			this.doSpawnLogic(ct);
-		}
-			
-		for( var e of this.gameSim.entities ) {
-			e.Update(ct, dt);
-		}
-		*/
 		for( var c of this.controllers ) {
 			c.Update(ct, dt);
 		}
 
 		this.gameSim.updateStep(ct, dt)
-
-/*
-		if(this.playerModel.isGhost() && this.playerModel.shouldRespawn(ct)) {
-			this.doPlayerRespawn();
-		}
-		if(this.playerModel.isResting() && this.playerModel.shouldFinishResting(ct)) {
-			this.doPlayerRestEnd();
-		}
-
-
-		this.playerModel.save();
-		*/
 		
 	}
 	

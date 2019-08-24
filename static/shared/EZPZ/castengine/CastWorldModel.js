@@ -1,4 +1,7 @@
-import { CastCommandScheduler } from './CastCommand.js'
+import { CastCommandScheduler, CastCommandTime } from './CastCommand.js'
+import { CastTargetType } from './CastTarget.js'
+import { Vec2D } from '../Vec2D.js'
+
 
 //TODO: FIX POSSIBLE BUG: to and from could be pointing at entities that die and delete before castPath is finished
 class CastEffectPath
@@ -242,30 +245,6 @@ class CastWorldModel {
 
 CastWorldModel.instance = null;
 
-class CastCommandTime
-{
-	//double
-	static Get() { 
-		return CastCommandTime.s_time;
-	}
-	
-	// in: double dt in SECONDS
-	//double
-	static UpdateDelta( dt ) {
-		CastCommandTime.s_time += dt;
-		return CastCommandTime.s_time;
-	}
-	
-	// in: double t
-	//double
-	static Set( t ) {
-		CastCommandTime.s_time = t;
-		return CastCommandTime.s_time;
-	}
-}
-
-CastCommandTime.s_time = 0.0; //double
-
 class ICastPhysics 
 {
 	// in: ICastEntity fromEntity, ICastEntity toEntity
@@ -282,4 +261,4 @@ class ICastPhysics
 }
 
 export default CastWorldModel
-export { CastWorldModel, CastEffectPath, CastCommandTime, ICastPhysics }
+export { CastWorldModel, CastEffectPath, ICastPhysics }

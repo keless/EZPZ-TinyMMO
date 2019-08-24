@@ -6,7 +6,7 @@ import { TiledMapNodeView, TiledMap } from '../../shared/EZPZ/TiledMap.js'
 import GameSim from '../../shared/controller/GameSim.js';
 import InventoryHudView from './InventoryView.js'
 import PlayerHudView from './PlayerHudView.js'
-import { CastCommandTime } from '../../shared/EZPZ/castengine/CastWorldModel.js';
+import { CastCommandTime } from '../../shared/EZPZ/castengine/CastCommand.js';
 import ClientProtocol from '../networking/ClientProtocol.js';
 import Vec2D from '../../shared/EZPZ/Vec2D.js';
 import HUDTargetView from './HUDTargetView.js'
@@ -247,7 +247,8 @@ export default class BattleStateView extends BaseStateView {
 			var targetEntity = potentialTargets[0]
 			gameController.setTarget(targetEntity)
 		} else {
-			gameController.clearTarget()
+			//clear target
+			gameController.setTarget(null)
 		}
 	}
 	
@@ -327,7 +328,7 @@ export default class BattleStateView extends BaseStateView {
 
 		//send command to server
 		var gameTime = CastCommandTime.Get()
-		ClientProtocol.instance.sendAbility(this.controlledEntity.getID(), abilityId, gameController.playerTarget, gameTime)
+		ClientProtocol.instance.sendAbility(this.controlledEntity.getID(), abilityId, gameController.playerTarget.toJson(), gameTime)
 	}
 
 	_hideAbilityInfoView() {

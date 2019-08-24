@@ -2,8 +2,8 @@
 import {Service} from '../EZPZ/Service.js'
 import { arrayContains, SlidingWindowBuffer } from '../EZPZ/Utility.js'
 import {EntityModel, EntitySchema} from '../model/EntityModel.js'
-import { ICastPhysics, CastCommandTime, CastWorldModel } from '../EZPZ/castengine/CastWorldModel.js'
-import { CastCommandModel, CastCommandState } from '../EZPZ/castengine/CastCommand.js'
+import { ICastPhysics, CastWorldModel } from '../EZPZ/castengine/CastWorldModel.js'
+import { CastCommandModel, CastCommandTime, CastCommandState } from '../EZPZ/castengine/CastCommand.js'
 import { Vec2D, Rect2D } from '../EZPZ/Vec2D.js'
 import TiledMap from '../EZPZ/TiledMap.js'
 import EventBus from '../EZPZ/EventBus.js'
@@ -122,6 +122,8 @@ class GameSim extends CastWorldModel {
             entity.Update(ct, dt)
         })
         // perform AI
+
+        super.updateStep(dt)
 
         EventBus.game.dispatch("gameSimUpdate", true)
     }

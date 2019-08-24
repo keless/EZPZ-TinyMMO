@@ -21,6 +21,10 @@ class SocketClient {
         this._addUserMessageHandler('playerImpulse', this.onPlayerImpulse)
         this._addUserMessageHandler('playerAbility', this.onPlayerAbility)
         this._addUserMessageHandler('requestFullWorldUpdate', this.onRequestFullWorldUpdate)
+
+        this.socket.on('error', (error)=>{
+            console.error("Error: " + error)
+        });
     }
 
     emit(message, data) {
@@ -216,9 +220,8 @@ class SocketClient {
                 return
             }
 
-            if (data === 'undefined') {
-                data = {} //xxx todo: fix bug where this doesnt handle messages that dont send data?
-            }
+            // If caller didnt send data, create dummy object
+            data = data || {}
 
             callback.bind(this)(data, response)
         })

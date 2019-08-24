@@ -1,5 +1,7 @@
 import ICastEntity from '../EZPZ/castengine/CastEntity.js'
 import CastTarget from '../EZPZ/castengine/CastTarget.js'
+import CastCommandTime from '../EZPZ/castengine/CastCommand.js'
+import CastEffectType from '../EZPZ/castengine/CastEffect.js'
 import {ResourceProvider} from '../EZPZ/ResourceProvider.js'
 import {Animation, AnimationInstance, FourPoleAnimation, FourPoleAnimationInstance} from '../EZPZ/Animation.js'
 import Vec2D, { Rect2D } from '../EZPZ/Vec2D.js'

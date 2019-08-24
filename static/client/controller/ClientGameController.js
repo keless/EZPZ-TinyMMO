@@ -2,7 +2,7 @@ import PlayerModel from '../../shared/model/PlayerModel.js'
 import {uuidv4} from '../clientEZPZ.js'
 import EntityModel from '../../shared/model/EntityModel.js';
 import GameSim from '../../shared/controller/GameSim.js'
-import { CastWorldModel, CastCommandTime } from '../../shared/EZPZ/castengine/CastWorldModel.js'
+import { CastCommandTime } from '../../shared/EZPZ/castengine/CastCommand.js'
 import {ResourceProvider} from '../../shared/EZPZ/ResourceProvider.js'
 import EventBus from '../../shared/EZPZ/EventBus.js';
 import CastTarget from '../../shared/EZPZ/castengine/CastTarget.js';

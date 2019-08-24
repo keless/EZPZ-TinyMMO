@@ -1,4 +1,4 @@
-import _ from './clientEZPZ.js'
+import { NodeView, Rect2D, Vec2D, ButtonView } from './clientEZPZ.js';
 
 export default class MapView extends NodeView {
 	constructor( currentLocationIdx ) {

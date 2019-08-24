@@ -1,6 +1,6 @@
-import { NodeView, CreateSimpleProgressBar, Animation, FourPoleAnimation } from '../clientEZPZ.js'
+import { NodeView, Vec2D, CreateSimpleProgressBar, Animation, FourPoleAnimation } from '../clientEZPZ.js'
 import ResourceProvider from '../../shared/EZPZ/ResourceProvider.js';
-import { CastCommandTime } from '../../shared/EZPZ/castengine/CastWorldModel.js';
+import { CastCommandTime } from '../../shared/EZPZ/castengine/CastCommand.js';
 import {g_abilityCatalog} from '../../shared/data/abilities.js '
 
 class EntityView extends NodeView

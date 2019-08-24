@@ -1,4 +1,6 @@
-import { CastCommandTime, CastWorldModel } from './CastWorldModel.js'
+import {  CastWorldModel } from './CastWorldModel.js'
+import { CastEffect } from './CastEffect.js'
+
 /*
 CastCommandState
   carries all the stateful information of an INSTANCE of a cast command
@@ -493,5 +495,29 @@ class CastCommandScheduler {
 
 CastCommandScheduler.instance = null;
 
+class CastCommandTime
+{
+	//double
+	static Get() { 
+		return CastCommandTime.s_time;
+	}
+	
+	// in: double dt in SECONDS
+	//double
+	static UpdateDelta( dt ) {
+		CastCommandTime.s_time += dt;
+		return CastCommandTime.s_time;
+	}
+	
+	// in: double t
+	//double
+	static Set( t ) {
+		CastCommandTime.s_time = t;
+		return CastCommandTime.s_time;
+	}
+}
+
+CastCommandTime.s_time = 0.0; //double
+
 export default CastCommandModel
-export { CastCommandState, CastCommandModel, CastCommandScheduler }
+export { CastCommandState, CastCommandModel, CastCommandScheduler, CastCommandTime }

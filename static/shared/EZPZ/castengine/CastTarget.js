@@ -45,7 +45,12 @@ class CastTarget
 			json.entities.forEach((entityID)=>{
 				//get entity by id
 				var entity = castWorldModel.getEntityForId(entityID)
-				this.m_entityList.push(entity)
+
+				if (!entity) {
+					console.error("Could not find entity for ID " + entityID)
+				} else {
+					this.m_entityList.push(entity)
+				}
 			})
 		} else {
 			this.m_position.loadJson(json.pos)
