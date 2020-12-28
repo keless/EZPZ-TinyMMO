@@ -241,7 +241,12 @@ export default class BattleStateView extends BaseStateView {
 		var potentialTargets = gameSim.GetEntitiesInRadius( this.controlledEntity.pos, this.MAX_TARGET_RANGE, ignoreList)
 		if (potentialTargets.length > 0) {
 			//sort by distance
-			//xxx todo
+			var playerPos = this.controlledEntity.pos
+			potentialTargets.sort((a, b)=>{
+				var distSqA = playerPos.getDistSqFromVec(a.pos)
+				var distSqB = playerPos.getDistSqFromVec(b.pos)
+				return distSqA - distSqB
+			});
 
 			//pick closest
 			var targetEntity = potentialTargets[0]
