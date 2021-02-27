@@ -35,11 +35,10 @@ export default class ClientProtocol {
         this.closeConnection()
 
         this._log("Protocol: beginning socket connection")
-        this.socket = io()
+        this.socket = io.connect({ transports: ["websocket"] })
 
-        var self = this
         this.socket.on("connected", (data)=>{
-            self._log("connected to server")
+            this._log("connected to server")
 
             if (data) {
                 var clientGame = ClientGameController.instance
@@ -66,7 +65,7 @@ export default class ClientProtocol {
         })
 
         this.socket.on("worldUpdate", (data)=> {
-            //this._log("handle world update")
+            this._logVerbose("handle world update")
 
             if (data.hasOwnProperty("deltaWorldUpdate")) {
                 // attempt to apply patch and use it

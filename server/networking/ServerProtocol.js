@@ -13,6 +13,8 @@ class SocketClient {
         this.socket = socket
         this.clientID = clientID
 
+        //xxx this.socket.setNoDelay(true) //xxx WIP
+
         this.verbose = true
         this._veryVerbose = false
         
@@ -260,10 +262,12 @@ class ServerProtocol {
     beginListening() {
         this._log("Protocol: begin listening")
         this.io.on('connection', (socket)=>{
-            this._log("Protocol: new socket connection")
+            this._log("Protocol: new socket connection " + socket.handshake.query.transport)
+
+
 
             if (!socket.request.session.passport) {
-                //connection from invalid client, throw away
+                // connection from invalid client, throw away
                 socket.disconnect(true)
                 return
             }
@@ -278,7 +282,7 @@ class ServerProtocol {
                     var client = new SocketClient(socket, userId)
                     this.socketClients.push(client)
                     
-                    //return player's characters
+                    // return player's characters
                     var gameSim = Service.Get("gameSim")
                     var entitiesForPlayer = gameSim.getEntitiesForOwner(userId)
 

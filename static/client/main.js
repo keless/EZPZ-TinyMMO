@@ -4,7 +4,7 @@ import ConnectingState from './controller/ConnectingState.js'
 import LocationState from './controller/LocationState.js'
 import BattleState from './controller/BattleState.js'
 import CharacterManagerState from './controller/CharacterManagerState.js'
-import {ClientGameController} from './controller/ClientGameController.js'
+import { ClientGameController } from './controller/ClientGameController.js'
 
 var bShowDebug = false;
 
