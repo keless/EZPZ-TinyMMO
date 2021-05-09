@@ -27,7 +27,7 @@
     "fossil-delta": "^1.0.2",
     "leveldown": "^5.1.1",
     "linvodb3": "^3.26.0",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "socket.io": "^2.2.0",
